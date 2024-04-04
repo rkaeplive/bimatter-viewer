@@ -11,17 +11,17 @@ All about us you can see on our website [Bimatter](https://bimatter.ru/)
 4. Install bimatter-viewer library with command `npm i bimatter-viewer`
 5. Create html file `index.html` (you can use `! + TAB` if you work with VS Code and dont forget to add `<script src="./build/bundle.js"></script>` inside body setcion)
 ```JavaScript
-    <!DOCTYPE html>
-      <html lang="en">
-          <head>
-              <meta charset="UTF-8" />
-              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-              <title>viewer show</title>
-          </head>
-          <body style="padding: 0; margin: 0">
-              <script src="./build/bundle.js"></script>
-          </body>
-      </html>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>viewer show</title>
+    </head>
+    <body style="padding: 0; margin: 0">
+        <script src="./build/bundle.js"></script>
+    </body>
+</html>
 ```
 6. Create script file `index.js` where `"./model.ifc"` - is path to your ifc model
 ```JavaScript
