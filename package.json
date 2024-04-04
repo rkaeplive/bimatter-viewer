@@ -1,0 +1,37 @@
+{
+    "name": "bimatter-viewer",
+    "version": "1.0.0",
+    "description": "",
+    "private": false,
+    "main": "./dist/index.js",
+    "scripts": {
+        "start": "nodemon --max-old-space-size=4096 server.js",
+        "build": "webpack --mode=production",
+        "watch": "webpack --watch --mode=development",
+        "serve": "webpack serve --mode=development",
+        "serve-memory": "node --max-old-space-size=16384 node_modules/webpack-dev-server/bin/webpack-dev-server.js --mode=development",
+        "prod": "npm run build && npm version patch && npm publish"
+    },
+    "browser": {
+        "path": false,
+        "stream": false
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "camera-controls": "^2.7.1",
+        "three-mesh-bvh": "^0.6.3",
+        "web-ifc": "^0.0.44"
+    },
+    "devDependencies": {
+        "ts-loader": "^9.4.4",
+        "typescript": "^5.1.6",
+        "webpack": "^5.88.2",
+        "webpack-cli": "^5.1.4",
+        "webpack-dev-server": "^4.15.1",
+        "css-loader": "^6.8.1",
+        "style-loader": "^3.3.3",
+        "three": "^0.155.0",
+        "@types/three": "^0.155.0"
+    }
+}
