@@ -1,6 +1,6 @@
 {
     "name": "bimatter-viewer",
-    "version": "1.1.2",
+    "version": "1.2.0",
     "description": "",
     "private": false,
     "main": "./dist/index.js",
@@ -20,8 +20,7 @@
     "license": "ISC",
     "dependencies": {
         "camera-controls": "^2.7.1",
-        "three": "^0.163.0",
-        "web-ifc": "^0.0.44"
+        "three": "^0.163.0"
     },
     "devDependencies": {
         "@types/three": "^0.163.0",
