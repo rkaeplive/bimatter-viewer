@@ -1,14 +1,14 @@
-import * as THREE from "three";
 import ClippingUtils from "./ClippingUtils";
 import { DragControls } from "../../Context/Controls/DragControls";
-export default class PlaneHelper extends THREE.Object3D {
+import { Group, Object3D, Plane, Vector3 } from "three";
+export default class PlaneHelper extends Object3D {
     readonly context: ClippingUtils;
-    readonly plane: THREE.Plane;
+    readonly plane: Plane;
     private location;
-    helper: THREE.Group;
+    helper: Group;
     active: boolean;
     dragControl: DragControls;
-    constructor(context: ClippingUtils, plane: THREE.Plane, location: THREE.Vector3);
+    constructor(context: ClippingUtils, plane: Plane, location: Vector3);
     addDragControlEvents(): void;
     removeDragControlEvents(): void;
     private dragStart;

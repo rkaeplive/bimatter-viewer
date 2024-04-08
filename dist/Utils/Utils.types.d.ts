@@ -1,8 +1,8 @@
-import { Color } from "three";
+import { Color, Material } from "three";
 import pako from "./Decoder/decoder";
 export type GeometryChunkConfig = {
     modelID: number;
-    material?: THREE.Material;
+    material?: Material;
     color?: Color | string;
     ids: number[];
     removePrevious?: boolean;

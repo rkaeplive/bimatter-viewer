@@ -1,17 +1,17 @@
-import * as THREE from "three";
 import Utils from "../Utils";
 import PlaneHelper from "./PlaneHelper";
 import ClippingEdges from "./ClippingEdges";
+import { Plane } from "three";
 export default class ClippingUtils {
     readonly context: Utils;
-    planes: THREE.Plane[];
+    planes: Plane[];
     active: boolean;
     _edgesActive: boolean;
     _helpersActive: boolean;
     edges: ClippingEdges[];
     heplers: PlaneHelper[];
     constructor(context: Utils);
-    createPlane(): THREE.Plane | undefined;
+    createPlane(): Plane | undefined;
     private createPlaneHelper;
     deleteAllPlanes(): void;
     toggle(): void;

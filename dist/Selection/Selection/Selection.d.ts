@@ -1,19 +1,19 @@
 import Selector from "../Selector";
-import * as THREE from "three";
+import { BufferGeometry, Group } from "three";
 export default class Selection {
     readonly context: Selector;
     _active: boolean;
-    _selectedMesh: THREE.Group;
+    _selectedMesh: Group;
     _useSelectBind: (e: MouseEvent) => void;
     _activeFace: number;
     _activeElement: number;
     selectModels: {
-        [modelID: number]: THREE.BufferGeometry;
+        [modelID: number]: BufferGeometry;
     };
     constructor(context: Selector);
-    _addToGroup: (geom: THREE.BufferGeometry) => void;
+    _addToGroup: (geom: BufferGeometry) => void;
     private addToGroup;
-    get selectedMesh(): THREE.Group;
+    get selectedMesh(): Group<import("three").Object3DEventMap>;
     get active(): boolean;
     set active(active: boolean);
     private useSelect;

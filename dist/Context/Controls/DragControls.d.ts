@@ -1,4 +1,4 @@
-export class DragControls extends EventDispatcher<import("three").Event> {
+export class DragControls extends EventDispatcher<any> {
     constructor(_objects: any, _camera: any, _domElement: any);
     defaultActive: boolean;
     enabled: boolean;

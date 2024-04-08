@@ -12,5 +12,5 @@ export default class BimatterViewer {
     readonly selector: Selector;
     readonly utils: Utils;
     constructor();
-    loadModel(arg1: string | File, fitToView?: boolean): Promise<unknown>;
+    loadModel(arg1: string | File, fitToView?: boolean): Promise<import("./Model/Model").default>;
 }

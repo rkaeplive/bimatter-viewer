@@ -1,14 +1,14 @@
-import * as THREE from "three";
+import { BufferGeometry, LineBasicMaterial, LineSegments, Mesh, Object3D, Plane } from "three";
 import ClippingUtils from "./ClippingUtils";
-export default class ClippingEdges extends THREE.Object3D {
+export default class ClippingEdges extends Object3D {
     readonly context: ClippingUtils;
     active: boolean;
-    readonly edges: THREE.LineSegments[];
+    readonly edges: LineSegments[];
     constructor(context: ClippingUtils);
     dispose(): void;
     toggle(): void;
     private removeFromView;
     private addToView;
-    update(mesh: THREE.Mesh, clippingPlane: THREE.Plane, name: string, edgesMesh: THREE.Mesh): void;
-    getClippingEdges(obj: THREE.Mesh, clippingPlane: THREE.Plane, name: string): THREE.LineSegments<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.LineBasicMaterial>;
+    update(mesh: Mesh, clippingPlane: Plane, name: string, edgesMesh: Mesh): void;
+    getClippingEdges(obj: Mesh, clippingPlane: Plane, name: string): LineSegments<BufferGeometry<import("three").NormalBufferAttributes>, LineBasicMaterial, import("three").Object3DEventMap>;
 }

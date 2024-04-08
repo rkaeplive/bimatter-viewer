@@ -1,10 +1,10 @@
-import * as THREE from "three";
+import { Clock, WebGLRenderer } from "three";
 import Context from "../Context";
 export default class Renderer {
     readonly context: Context;
-    threeRenderer: THREE.WebGLRenderer;
+    threeRenderer: WebGLRenderer;
     private animationCallbackList;
-    clock: THREE.Clock;
+    clock: Clock;
     needUpdate: boolean;
     constructor(context: Context);
     resize(): void;

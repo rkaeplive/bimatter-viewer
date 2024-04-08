@@ -1,10 +1,10 @@
-import * as THREE from "three";
+import { Sphere } from "three";
 import Utils from "../Utils";
 import "./navigationCube.css";
 export default class ViewCubeContainer {
     readonly context: Utils;
     active: boolean;
-    boundingSphere: THREE.Sphere | null;
+    boundingSphere: Sphere | null;
     constructor(context: Utils);
     private epsilon;
     private getCameraCSSMatrix;

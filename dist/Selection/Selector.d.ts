@@ -1,17 +1,17 @@
-import * as THREE from "three";
 import Selection from "./Selection/Selection";
 import PreSelection from "./PreSelection/PreSelection";
 import BimatterViewer from "..";
 import SelectionBox from "./SelectionBox";
+import { Mesh, MeshLambertMaterial } from "three";
 export default class Selector {
     readonly context: BimatterViewer;
-    readonly selMaterial: THREE.MeshLambertMaterial;
-    readonly preSelMaterial: THREE.MeshStandardMaterial;
+    readonly selMaterial: MeshLambertMaterial;
+    readonly preSelMaterial: MeshLambertMaterial;
     selectedElements: {
         [modelID: number]: Set<number>;
     };
     isSelected: boolean;
-    readonly selectorModels: THREE.Mesh[];
+    readonly selectorModels: Mesh[];
     private _usePreSelection;
     private _selection;
     private _preSelection;

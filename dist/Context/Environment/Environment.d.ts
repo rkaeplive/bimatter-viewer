@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import { AmbientLight, DirectionalLight, Box3 } from "three";
 import Context from "../Context";
 export default class Environment {
     readonly context: Context;
@@ -7,10 +7,10 @@ export default class Environment {
 }
 declare class Lights {
     readonly context: Environment;
-    ambientLight: THREE.AmbientLight;
-    directionalLight1: THREE.DirectionalLight;
-    directionalLight2: THREE.DirectionalLight;
+    ambientLight: AmbientLight;
+    directionalLight1: DirectionalLight;
+    directionalLight2: DirectionalLight;
     constructor(context: Environment);
-    updateLightPosition(box: THREE.Box3): void;
+    updateLightPosition(box: Box3): void;
 }
 export {};
