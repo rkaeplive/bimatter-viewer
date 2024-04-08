@@ -1,8 +1,8 @@
 import Model from "../../Model/Model";
 import { PropsData } from "../../Model/Model.types";
 import Loaders from "../Loaders";
-import { IfcAPI } from "web-ifc";
 import { Group } from "three";
+import { IfcAPI } from "./IFCParser/web-ifc-api-node";
 export default class IFCLoader {
     readonly context: Loaders;
     private parser;

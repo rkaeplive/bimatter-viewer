@@ -39,3 +39,8 @@ export type DefaultState = {
 export type PropsData = {
     [element: number]: any;
 };
+export type PosData = {
+    posData: Float32Array;
+    idsData: Uint32Array;
+    indDAta: Uint32Array;
+};
