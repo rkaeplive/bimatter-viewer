@@ -6,10 +6,6 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.css/,
-                use: ["style-loader", "css-loader"],
-            },
-            {
                 test: /\.(ts|tsx)?$/,
                 use: ["ts-loader"],
                 exclude: /node_modules/,
@@ -24,28 +20,10 @@ module.exports = {
         poll: true,
         ignored: "**/node_modules",
     },
-    devServer: {
-        historyApiFallback: true,
-        static: [
-            {
-                directory: path.resolve(__dirname),
-            },
-            {
-                directory: path.resolve(__dirname, "Models"),
-            },
-            {
-                directory: path.resolve(__dirname, "Workers"),
-            },
-        ],
-        open: true,
-        compress: true,
-        hot: true,
-        port: 8000,
-    },
     output: {
         filename: "index.js",
         path: path.resolve(__dirname, "dist"),
         libraryTarget: "umd",
-        clean: true,
+        clean: false,
     },
 };

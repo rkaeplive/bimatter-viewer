@@ -1,6 +1,8 @@
 node_modules/
+Demo/node_modules
 src/
 Models/
-index.html
-server.js
-test.js
+webpack.config.js
+tsconfig.json
+/.vscode
+src.zip
