@@ -4,12 +4,12 @@ This is new ifc viewer core
 All about us you can see on our website [Bimatter](https://bimatter.ru/)
 ## Introduction demo
 
-1. Create new project, using come EDI.
+1. Create new project, using some IDE.
 2. Open terminal inside your new project
 3. Init new npm project with command
    `npm init` use flag `-y` to create project with default settings
 4. Install bimatter-viewer library with command `npm i bimatter-viewer`
-5. Create html file `index.html` (you can use `! + TAB` if you work with VS Code and dont forget to add `<script src="./build/bundle.js"></script>` inside body setcion)
+5. Create html file `index.html` (you can use `! + TAB` if you work with VS Code and dont forget to add `<script src="./build/bundle.js"></script>` inside body section)
 ```JavaScript
 <!DOCTYPE html>
 <html lang="en">
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
    
     7.3. install webpack-dev-server with command `npm i webpack-dev-server`
    
-    (you can use flad `-D` to intall it as devDependencies)
+    (you can use flag `-D` to intall it as devDependencies)
 
 8. Create webpack config file `webpack.config.js`
 ```JavaScript
