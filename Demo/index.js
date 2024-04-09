@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const demoIfc = document.getElementById("demo-ifc");
     const demoBmt = document.getElementById("demo-bmt");
     const exportBmt = document.getElementById("export-bmt");
+    const exportIsActiveView = document.getElementById("is-active-view");
 
     const color = document.getElementById("color");
     const colorize = document.getElementById("colorize");
@@ -43,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
             demoIfc.remove();
             demoBmt.remove();
             exportBmt.style.display = "block";
+            exportIsActiveView.parentElement.style.display = "block";
             input.parentNode.remove();
             inputConvert.parentNode.remove();
         },
@@ -63,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         demoIfc.remove();
         demoBmt.remove();
+        exportIsActiveView.parentElement.style.display = "block";
         exportBmt.style.display = "block";
         input.parentNode.remove();
         inputConvert.parentNode.remove();
@@ -78,13 +81,14 @@ document.addEventListener("DOMContentLoaded", () => {
         // });
         demoIfc.remove();
         demoBmt.remove();
+        exportIsActiveView.parentElement.style.display = "block";
         exportBmt.style.display = "block";
         input.parentNode.remove();
         inputConvert.parentNode.remove();
     });
-    exportBmt.addEventListener("click", () => {
+    exportBmt.addEventListener("click", (e) => {
         if (viewer && viewer.models[0]) {
-            viewer.utils.exportUtils.exportBMT(0);
+            viewer.utils.exportUtils.exportBMT(0, exportIsActiveView.checked);
         }
     });
     // demoIfc.click();
