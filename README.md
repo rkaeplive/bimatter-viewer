@@ -2,6 +2,8 @@
 This is new ifc viewer core
 
 All about us you can see on our website [Bimatter](https://bimatter.ru/)
+
+### Live [demo](https://rkaeplive.github.io/bimatter-viewer-demo/)
 ## Introduction demo
 
 1. Create new project, using some IDE.
