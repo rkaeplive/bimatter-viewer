@@ -10,7 +10,7 @@
         "watch": "webpack --watch --mode=development",
         "serve": "webpack serve --mode=development",
         "serve-memory": "node --max-old-space-size=16384 node_modules/webpack-dev-server/bin/webpack-dev-server.js --mode=development",
-        "prod": "npm run build && npm version patch && npm publish"
+        "prod": "npm version patch && npm publish"
     },
     "browser": {
         "path": false,
