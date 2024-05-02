@@ -37,10 +37,28 @@ export type DefaultState = {
     };
 };
 export type PropsData = {
-    [element: number]: any;
+    [element: number]: PropData;
 };
+export type PropData = {
+    id: number;
+    guid: string;
+    props: IfcProps;
+    tprops?: IfcTypeProps;
+    sets: PropSet[];
+};
+interface IfcProps {
+    [paramName: string]: any;
+}
+interface IfcTypeProps {
+    [paramName: string]: any;
+}
+interface PropSet {
+    name: string;
+    props: any;
+}
 export type PosData = {
     posData: Float32Array;
     idsData: Uint32Array;
     indDAta: Uint32Array;
 };
+export {};
