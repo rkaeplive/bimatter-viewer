@@ -1,5 +1,5 @@
 import Model from "../../Model/Model";
-import { PropsData } from "../../Model/Model.types";
+import { PropsData, Structure } from "../../Model/Model.types";
 import Loaders from "../Loaders";
 import { Group } from "three";
 import { IfcAPI } from "./IFCParser/web-ifc-api-node";
@@ -13,6 +13,7 @@ export default class IFCLoader {
     get _parser(): IfcAPI;
     loadModel(path: string, fitToView?: boolean): Promise<Model>;
     getModelData(path: string): Promise<{
+        structure: Structure;
         propsData: PropsData;
         group: Group;
         modelID: number;

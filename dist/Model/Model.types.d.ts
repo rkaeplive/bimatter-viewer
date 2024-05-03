@@ -39,6 +39,11 @@ export type DefaultState = {
 export type PropsData = {
     [element: number]: PropData;
 };
+export type Structure = {
+    id: number;
+    type: string;
+    children: Structure[];
+};
 export type PropData = {
     id: number;
     guid: string;
