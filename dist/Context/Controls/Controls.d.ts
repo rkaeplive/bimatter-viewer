@@ -14,7 +14,8 @@ export default class Controls {
     get moving(): boolean;
     set moving(moving: boolean);
     readonly createDragControl: (objects: THREE.Object3D[]) => DragControls;
-    readonly getIntersecs: (objects: THREE.Object3D[]) => THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>>[];
+    private getIntersect;
+    readonly getIntersects: (objects: THREE.Object3D[]) => THREE.Intersection<THREE.Object3D<THREE.Object3DEventMap>>[];
     private checkIntersect;
     private addEvents;
     private onControl;

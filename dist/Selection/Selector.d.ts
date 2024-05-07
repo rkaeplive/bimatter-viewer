@@ -17,6 +17,8 @@ export default class Selector {
     private _preSelection;
     readonly selectionBox: SelectionBox;
     constructor(context: BimatterViewer);
+    get useDoubleSideMaterial(): boolean;
+    set useDoubleSideMaterial(bool: boolean);
     set usePreSelection(usePreSelection: boolean);
     set useSelection(useSelection: boolean);
     get usePreSelection(): boolean;

@@ -91,6 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
             viewer.utils.exportUtils.exportBMT(0, exportIsActiveView.checked);
         }
     });
+
     // demoIfc.click();
     // demoBmt.click();
 });
