@@ -19,6 +19,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@types/pako": "^2.0.3",
         "camera-controls": "^2.7.1",
         "three": "^0.163.0"
     },
@@ -29,6 +30,8 @@
         "terser-webpack-plugin": "^5.3.10",
         "three-mesh-bvh": "^0.7.3",
         "ts-loader": "^9.4.4",
+        "typedoc": "^0.25.13",
+        "typedoc-plugin-missing-exports": "^2.2.0",
         "typescript": "^5.1.6",
         "webpack": "^5.88.2",
         "webpack-cli": "^5.1.4",

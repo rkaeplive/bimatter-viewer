@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
             demoBmt.remove();
             exportBmt.style.display = "block";
             exportIsActiveView.parentElement.style.display = "block";
-            input.parentNode.remove();
+            // input.parentNode.remove();
             inputConvert.parentNode.remove();
         },
         false
