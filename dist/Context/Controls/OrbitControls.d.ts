@@ -1,0 +1,61 @@
+export class OrbitControls extends EventDispatcher<any> {
+    constructor(object: any, domElement: any);
+    object: any;
+    domElement: any;
+    enabled: boolean;
+    target: Vector3;
+    minDistance: number;
+    maxDistance: number;
+    minZoom: number;
+    maxZoom: number;
+    minPolarAngle: number;
+    maxPolarAngle: number;
+    minAzimuthAngle: number;
+    maxAzimuthAngle: number;
+    enableDamping: boolean;
+    dampingFactor: number;
+    enableZoom: boolean;
+    zoomSpeed: number;
+    enableRotate: boolean;
+    rotateSpeed: number;
+    enablePan: boolean;
+    panSpeed: number;
+    screenSpacePanning: boolean;
+    keyPanSpeed: number;
+    zoomToCursor: boolean;
+    EPS: number;
+    autoRotate: boolean;
+    autoRotateSpeed: number;
+    keys: {
+        LEFT: string;
+        UP: string;
+        RIGHT: string;
+        BOTTOM: string;
+    };
+    mouseButtons: {
+        LEFT: MOUSE;
+        MIDDLE: MOUSE;
+        RIGHT: MOUSE;
+    };
+    touches: {
+        ONE: TOUCH;
+        TWO: TOUCH;
+    };
+    target0: Vector3;
+    position0: any;
+    zoom0: any;
+    _domElementKeyEvents: any;
+    getPolarAngle: () => number;
+    getAzimuthalAngle: () => number;
+    getDistance: () => any;
+    listenToKeyEvents: (domElement: any) => void;
+    stopListenToKeyEvents: () => void;
+    saveState: () => void;
+    reset: () => void;
+    update: () => boolean;
+    dispose: () => void;
+}
+import { EventDispatcher } from "three";
+import { Vector3 } from "three";
+import { MOUSE } from "three";
+import { TOUCH } from "three";
