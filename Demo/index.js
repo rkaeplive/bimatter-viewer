@@ -1,4 +1,5 @@
 import BimatterViewer from "../src/Viewer";
+import { saveAs } from "file-saver";
 // import * as THREE from "three";
 const viewer = new BimatterViewer();
 viewer.utils.useStats = true;
@@ -110,12 +111,17 @@ function onKeyDown(event) {
 
     //     console.log(Date.now() - time, "ms");
     // }
+
     if (event.code === "Escape") {
         if (viewer.utils.dimentionsUtils.active) {
             viewer.utils.dimentionsUtils.cancelDrawing();
         } else {
         }
         // ViewerSelect.ViewerRemoveSelect(viewer, models, dispatch);
+    }
+    if (event.code === "KeyS") {
+        const screenshot = viewer.context.renderer.newScreenshot();
+        saveAs(screenshot, "screenshot.png");
     }
     if (event.code === "KeyM") {
         viewer.utils.dimentionsUtils.toggleDimentionsActive();
