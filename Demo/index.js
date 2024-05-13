@@ -118,7 +118,7 @@ function onKeyDown(event) {
         // ViewerSelect.ViewerRemoveSelect(viewer, models, dispatch);
     }
     if (event.code === "KeyM") {
-        viewer.utils.dimentionsUtils.measureEvent();
+        viewer.utils.dimentionsUtils.toggleDimentionsActive();
     }
     if (event.code === "Tab") {
         event.stopPropagation();

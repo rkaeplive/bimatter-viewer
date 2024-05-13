@@ -27,7 +27,7 @@ export declare class DimensionsUtils {
     measureObject: CSS2DObject;
     private _selectionState;
     drawInProcessEvent_binded: (e: MouseEvent) => void;
-    measureEventHandle_binded: () => void;
+    dimensionsClickEventHandle_binded: () => void;
     constructor(context: Utils);
     private dispose;
     private update;
@@ -61,7 +61,7 @@ export declare class DimensionsUtils {
     private getVertex;
     changeAxes(): void;
     drawInProcessEvent(e: MouseEvent): void;
-    setMeasureVisible(bool: boolean): void;
-    measureEventHandle(): void;
-    measureEvent(): void;
+    setDimentionVisibility(bool: boolean): void;
+    dimentionsClickEventHandle(): void;
+    toggleDimentionsActive(): void;
 }
