@@ -26,6 +26,8 @@ export declare class DimensionsUtils {
     measureStart: boolean;
     measureObject: CSS2DObject;
     private _selectionState;
+    drawInProcessEvent_binded: (e: MouseEvent) => void;
+    measureEventHandle_binded: () => void;
     constructor(context: Utils);
     private dispose;
     private update;

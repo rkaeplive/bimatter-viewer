@@ -110,6 +110,24 @@ function onKeyDown(event) {
 
     //     console.log(Date.now() - time, "ms");
     // }
+    if (event.code === "Escape") {
+        if (viewer.utils.dimentionsUtils.active) {
+            viewer.utils.dimentionsUtils.cancelDrawing();
+        } else {
+        }
+        // ViewerSelect.ViewerRemoveSelect(viewer, models, dispatch);
+    }
+    if (event.code === "KeyM") {
+        viewer.utils.dimentionsUtils.measureEvent();
+    }
+    if (event.code === "Tab") {
+        event.stopPropagation();
+        event.preventDefault();
+        if (viewer.utils.dimentionsUtils.measureStart) {
+            viewer.utils.dimentionsUtils.changeAxes();
+        }
+    }
+
     if (event.keyCode === 9) {
         event.preventDefault();
         viewer.selector.preSelection.setDeep;
@@ -123,10 +141,14 @@ function onKeyDown(event) {
         viewer.utils.geometryUtils.isolateSelectedElements();
     }
     if (event.code === "KeyC") {
-        if (event.altKey) {
-            viewer.utils.geometryUtils.resetAllModelsChunks();
+        if (viewer.utils.dimentionsUtils.active) {
+            viewer.utils.dimentionsUtils.deleteAll();
         } else {
-            viewer.utils.geometryUtils.showAll();
+            if (event.altKey) {
+                viewer.utils.geometryUtils.resetAllModelsChunks();
+            } else {
+                viewer.utils.geometryUtils.showAll();
+            }
         }
     }
     if (event.code === "KeyO") {
