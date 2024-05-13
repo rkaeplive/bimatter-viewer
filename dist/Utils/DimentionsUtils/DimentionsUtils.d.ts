@@ -1,4 +1,4 @@
-import { BufferGeometry, Color, ConeGeometry, LineDashedMaterial, Mesh, MeshBasicMaterial, Vector3 } from "three";
+import { BufferGeometry, Color, ConeGeometry, LineDashedMaterial, Mesh, MeshBasicMaterial, Plane, Vector3 } from "three";
 import Utils from "../Utils";
 import { DimensionLine } from "./DimentionLine";
 import "./Dimentions.css";
@@ -40,12 +40,12 @@ export declare class DimensionsUtils {
     set endpointGeometry(geometry: ConeGeometry);
     set endpointScaleFactor(factor: number);
     set endpointScale(scale: Vector3);
-    private create;
-    private createInPlane;
+    create(): void;
+    createInPlane(plane: Plane): void;
     delete(): void;
     deleteAll(): void;
-    private cancelDrawing;
-    private setDimensionUnit;
+    cancelDrawing(): void;
+    setDimensionUnit(units: typeof DimensionLine.units): void;
     private drawStart;
     private drawStartInPlane;
     private drawInProcess;
