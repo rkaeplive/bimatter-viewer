@@ -1,10 +1,12 @@
-import { PropData } from "../Model/Model.types";
 import Utils from "./Utils";
 export default class PropsUtils {
     readonly context: Utils;
     propConteiner: HTMLElement | undefined;
     constructor(context: Utils);
-    getPropertiesById(modelID: number, elementId: number): PropData | undefined;
+    private _getPropertiesByIdFunction;
+    private _getPropertiesById;
+    get getPropertiesById(): typeof this._getPropertiesById;
+    set getPropertiesById(func: typeof this._getPropertiesById);
     initPropConteiner(conteiner: HTMLElement): void;
     private generatePropsThree;
 }

@@ -2,7 +2,12 @@ import Model from "../Model";
 import { PropsData, Structure } from "../Model.types";
 export default class Properties {
     readonly context: Model;
-    readonly data: PropsData;
-    readonly structure: Structure;
+    data: PropsData;
+    structure: Structure;
+    hasProperties: boolean;
     constructor(context: Model, data: PropsData, structure: Structure);
+    loadStructure(path: string): void;
+    setStructure(structure: Structure): void;
+    loadProperties(path: string): void;
+    setProperties(properties: PropsData): void;
 }
