@@ -1,5 +1,5 @@
 import BvhManager from "./Utils/bvhUtils/BvhUtils";
-import { TModels } from "./BimatterViewer.types";
+import { TModels, ViewerSettings } from "./BimatterViewer.types";
 import Context from "./Context/Context";
 import Loaders from "./Loaders/Loaders";
 import Selector from "./Selection/Selector";
@@ -12,6 +12,7 @@ export default class BimatterViewer {
     readonly selector: Selector;
     readonly utils: Utils;
     readonly container: HTMLElement;
-    constructor(container: HTMLElement);
+    settings: ViewerSettings;
+    constructor(settings?: ViewerSettings);
     loadModel(arg1: string | File, fitToView?: boolean): Promise<import("./Model/Model").default>;
 }

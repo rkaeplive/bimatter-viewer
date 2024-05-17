@@ -7,6 +7,7 @@ import Environment from "./Environment/Environment";
 import Postproduction from "./Postproduction/Postproduction";
 import Renderer from "./Renderer/Renderer";
 import Scene from "./Scene/Scene";
+import { ViewerSettings } from "../BimatterViewer.types";
 export default class Context {
     readonly context: BimatterViewer;
     readonly scene: Scene;
@@ -23,7 +24,7 @@ export default class Context {
         cords: Vector2;
     };
     readonly mouseMoveHandleBind: (event: MouseEvent) => void;
-    constructor(context: BimatterViewer);
+    constructor(context: BimatterViewer, settings: ViewerSettings);
     private mouseMoveHandle;
     resizeViewer(width?: string, height?: string): void;
 }

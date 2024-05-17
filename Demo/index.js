@@ -4,7 +4,7 @@ import { saveAs } from "file-saver";
 
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("container");
-    const viewer = new BimatterViewer(container);
+    const viewer = new BimatterViewer({ container });
     viewer.utils.useStats = true;
     viewer.utils.propsUtils.initPropConteiner(document.getElementById("props"));
     window.addEventListener("keydown", onKeyDown);
