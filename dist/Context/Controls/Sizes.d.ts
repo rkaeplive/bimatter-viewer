@@ -6,4 +6,5 @@ export default class Sizes {
     height: number;
     modelSize: Box3;
     constructor(context: Context);
+    resize(): void;
 }

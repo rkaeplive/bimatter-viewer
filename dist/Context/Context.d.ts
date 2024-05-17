@@ -25,4 +25,5 @@ export default class Context {
     readonly mouseMoveHandleBind: (event: MouseEvent) => void;
     constructor(context: BimatterViewer);
     private mouseMoveHandle;
+    resizeViewer(width?: string, height?: string): void;
 }
