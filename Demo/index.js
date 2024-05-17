@@ -1,9 +1,11 @@
 import BimatterViewer from "../src/Viewer";
 import { saveAs } from "file-saver";
 // import * as THREE from "three";
-const viewer = new BimatterViewer();
-viewer.utils.useStats = true;
+
 document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("container");
+    const viewer = new BimatterViewer(container);
+    viewer.utils.useStats = true;
     viewer.utils.propsUtils.initPropConteiner(document.getElementById("props"));
     window.addEventListener("keydown", onKeyDown);
     const input = document.getElementById("file-input");
@@ -17,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const colorize = document.getElementById("colorize");
     const infoBut = document.getElementById("infoBut");
     const info = document.getElementById("info");
+
     infoBut.addEventListener("mouseenter", () => {
         info.style.display = "block";
     });
