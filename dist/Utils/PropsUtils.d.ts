@@ -6,7 +6,7 @@ export default class PropsUtils {
     constructor(context: Utils);
     private _getPropertiesByIdOveride;
     getPropertiesById(modelID: number, elementId: number): any;
-    setGetParamsByIdOverride(func: ((modelID: number, elementId: number, ...args: any) => any) | undefined): void;
+    setGetParamsByIdOverride(func: ((modelID: number, elementId: number, ...args: any) => any) | undefined, returnExSelection?: boolean): void;
     initPropConteiner(conteiner: HTMLElement): void;
     private generatePropsThree;
 }
