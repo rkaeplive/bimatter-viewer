@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
             viewer.utils.exportUtils.exportBMT(0, exportIsActiveView.checked);
         }
     });
-
+    window.viewer = viewer;
     // demoIfc.click();
     // demoBmt.click();
 });
@@ -171,4 +171,3 @@ function onKeyDown(event) {
         }
     }
 }
-window.viewer = viewer;

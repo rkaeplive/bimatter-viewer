@@ -6,11 +6,9 @@ export default class Controls {
     readonly context: Context;
     readonly cameraControl: CameraControls;
     readonly raycaster: THREE.Raycaster;
-    private _pointer;
     private _moving;
     private _position;
     constructor(context: Context);
-    get pointer(): THREE.Vector2 | null;
     get moving(): boolean;
     set moving(moving: boolean);
     readonly createDragControl: (objects: THREE.Object3D[]) => DragControls;
@@ -20,7 +18,6 @@ export default class Controls {
     private addEvents;
     private onControl;
     private _onControl;
-    readonly onPointerMove: (event: PointerEvent) => void;
     setOrbitByClick(): void;
     setOrbitByTarget(target: THREE.Vector3): void;
 }
