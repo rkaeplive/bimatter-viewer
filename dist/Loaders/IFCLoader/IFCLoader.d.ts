@@ -8,7 +8,10 @@ export default class IFCLoader {
     private parser;
     private propertySerializer;
     private _wasmPath;
+    private curModelId;
+    private coordinationMatrix;
     constructor(context: Loaders);
+    getPath(path: string, dir: string): string;
     set wasmPath(path: string);
     get _parser(): IfcAPI;
     loadModel(path: string, fitToView?: boolean): Promise<Model>;

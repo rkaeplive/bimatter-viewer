@@ -3,8 +3,8 @@ export default class PropertySerializer {
     readonly context: IFCLoader;
     private PropsNames;
     constructor(context: IFCLoader);
-    serializeAllProperties(modelID: number): Promise<any>;
-    getPropertiesAsBlobs(modelID: number): Promise<any>;
+    serializeAllProperties(modelID: number, ids: Set<number>): Promise<any>;
+    getPropertiesAsBlobs(modelID: number, ids: Set<number>): Promise<any>;
     getItemProperty(modelID: number, id: number, flatten?: boolean): Promise<any>;
     private formatItemProperties;
     private getAllRelDefinesByProps;
