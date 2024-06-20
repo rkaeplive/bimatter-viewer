@@ -9,7 +9,6 @@ export default class IFCLoader {
     private propertySerializer;
     private _wasmPath;
     private curModelId;
-    private coordinationMatrix;
     constructor(context: Loaders);
     getPath(path: string, dir: string): string;
     set wasmPath(path: string);
