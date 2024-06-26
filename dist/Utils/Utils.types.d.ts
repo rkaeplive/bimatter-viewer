@@ -9,3 +9,4 @@ export type GeometryChunkConfig = {
     chunkID?: string;
 };
 export type TDecoder = typeof pako;
+export type OSType = "Mac" | "IOS" | "Windows" | "Linux" | "Android" | "unknown";

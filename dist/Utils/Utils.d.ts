@@ -8,6 +8,8 @@ import NavigationCube from "./NavigationCube/NavigationCube";
 import ExportUtils from "./ExportUtils";
 import { TDecoder } from "./Utils.types";
 import { DimensionsUtils } from "./DimentionsUtils/DimentionsUtils";
+import { OsUtils } from "./OsUtils";
+import { KeysUtils } from "./KeysUtils/KeysUtils";
 export default class Utils {
     readonly context: BimatterViewer;
     readonly propsUtils: PropsUtils;
@@ -17,6 +19,8 @@ export default class Utils {
     readonly navigationCubeUtil: NavigationCube;
     readonly exportUtils: ExportUtils;
     readonly decoder: TDecoder;
+    readonly osUtils: OsUtils;
+    readonly keysUtils: KeysUtils;
     stats: Stats | undefined;
     constructor(context: BimatterViewer);
     set useStats(useStats: boolean);
