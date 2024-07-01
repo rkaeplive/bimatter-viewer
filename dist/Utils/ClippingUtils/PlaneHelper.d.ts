@@ -1,6 +1,6 @@
 import ClippingUtils from "./ClippingUtils";
 import { DragControls } from "../../Context/Controls/DragControls";
-import { Group, Object3D, Plane, Vector3 } from "three";
+import { Group, MeshBasicMaterial, Object3D, Plane, Vector3 } from "three";
 export default class PlaneHelper extends Object3D {
     readonly context: ClippingUtils;
     readonly plane: Plane;
@@ -8,7 +8,9 @@ export default class PlaneHelper extends Object3D {
     helper: Group;
     active: boolean;
     dragControl: DragControls;
-    constructor(context: ClippingUtils, plane: Plane, location: Vector3);
+    material: MeshBasicMaterial;
+    thickness: number;
+    constructor(context: ClippingUtils, plane: Plane, location: Vector3, normal: Vector3);
     addDragControlEvents(): void;
     removeDragControlEvents(): void;
     private dragStart;
@@ -20,5 +22,6 @@ export default class PlaneHelper extends Object3D {
     toggle(): void;
     private removeFromView;
     private addToView;
-    private getPlaneGeometry;
+    private getHelperGeometry;
+    customArrow(): Group<import("three").Object3DEventMap>;
 }

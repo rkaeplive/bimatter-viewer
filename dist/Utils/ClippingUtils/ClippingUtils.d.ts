@@ -11,6 +11,8 @@ export default class ClippingUtils {
     edges: ClippingEdges[];
     heplers: PlaneHelper[];
     constructor(context: Utils);
+    updateMaterials(modelID?: number): void;
+    private updateMaterial;
     createPlane(): Plane | undefined;
     private createPlaneHelper;
     deleteAllPlanes(): void;
