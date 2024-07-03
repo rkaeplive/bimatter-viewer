@@ -10,6 +10,7 @@ export default class PlaneHelper extends Object3D {
     dragControl: DragControls;
     material: MeshBasicMaterial;
     thickness: number;
+    private _deltaVector;
     constructor(context: ClippingUtils, plane: Plane, location: Vector3, normal: Vector3);
     addDragControlEvents(): void;
     removeDragControlEvents(): void;
@@ -23,5 +24,5 @@ export default class PlaneHelper extends Object3D {
     private removeFromView;
     private addToView;
     private getHelperGeometry;
-    customArrow(): Group<import("three").Object3DEventMap>;
+    customArrow(): void;
 }
