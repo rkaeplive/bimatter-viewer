@@ -15,4 +15,6 @@ export default class BimatterViewer {
     settings: ViewerSettings;
     constructor(settings?: ViewerSettings);
     loadModel(arg1: string | File, fitToView?: boolean): Promise<import("./Model/Model").default>;
+    removeModel(modelID: number): void;
+    dispose(): void;
 }
