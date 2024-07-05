@@ -1,14 +1,14 @@
 import { TextureLoader, Vector2 } from "three";
 import BimatterViewer from "..";
-import Camera from "./Camera/Camera";
-import Controls from "./Controls/Controls";
-import Sizes from "./Controls/Sizes";
-import Environment from "./Environment/Environment";
-import Postproduction from "./Postproduction/Postproduction";
-import Renderer from "./Renderer/Renderer";
-import Scene from "./Scene/Scene";
+import { Camera } from "./Camera/Camera";
+import { Controls } from "./Controls/Controls";
+import { Sizes } from "./Controls/Sizes";
+import { Environment } from "./Environment/Environment";
+import { Postproduction } from "./Postproduction/Postproduction";
+import { Renderer } from "./Renderer/Renderer";
+import { Scene } from "./Scene/Scene";
 import { ViewerSettings } from "../BimatterViewer.types";
-export default class Context {
+export declare class Context {
     readonly context: BimatterViewer;
     readonly scene: Scene;
     readonly camera: Camera;

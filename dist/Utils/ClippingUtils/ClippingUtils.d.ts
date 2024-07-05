@@ -1,8 +1,8 @@
-import Utils from "../Utils";
-import PlaneHelper from "./PlaneHelper";
-import ClippingEdges from "./ClippingEdges";
+import { Utils } from "../Utils";
+import { PlaneHelper } from "./PlaneHelper";
+import { ClippingEdges } from "./ClippingEdges";
 import { Plane } from "three";
-export default class ClippingUtils {
+export declare class ClippingUtils {
     readonly context: Utils;
     planes: Plane[];
     active: boolean;

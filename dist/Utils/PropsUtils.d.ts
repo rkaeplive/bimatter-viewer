@@ -1,5 +1,5 @@
-import Utils from "./Utils";
-export default class PropsUtils {
+import { Utils } from "./Utils";
+export declare class PropsUtils {
     readonly context: Utils;
     propConteiner: HTMLElement | undefined;
     useDefaultGetPropertiesById: boolean;

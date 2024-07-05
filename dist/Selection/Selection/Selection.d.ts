@@ -1,6 +1,6 @@
-import Selector from "../Selector";
+import { Selector } from "../Selector";
 import { BufferGeometry, Group } from "three";
-export default class Selection {
+export declare class Selection {
     readonly context: Selector;
     _active: boolean;
     _selectedMesh: Group;

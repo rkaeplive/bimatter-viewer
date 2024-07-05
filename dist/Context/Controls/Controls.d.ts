@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import Context from "../Context";
+import { Context } from "../Context";
 import CameraControls from "camera-controls";
 import { DragControls } from "./DragControls.js";
-export default class Controls {
+export declare class Controls {
     readonly context: Context;
     readonly cameraControl: CameraControls;
     readonly raycaster: THREE.Raycaster;

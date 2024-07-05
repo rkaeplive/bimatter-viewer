@@ -1,5 +1,5 @@
 import { BufferGeometry, Color, ConeGeometry, LineDashedMaterial, Mesh, MeshBasicMaterial, Plane, Vector3 } from "three";
-import Utils from "../Utils";
+import { Utils } from "../Utils";
 import { DimensionLine } from "./DimentionLine";
 import "./Dimentions.css";
 import { CSS2DObject } from "three/examples/jsm/renderers/CSS2DRenderer";

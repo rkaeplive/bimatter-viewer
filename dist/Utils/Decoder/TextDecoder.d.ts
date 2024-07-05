@@ -1,4 +1,4 @@
-export default class TextDecoder {
+export declare class TextDecoder {
     createEncodingTree(frequencies: string): Node;
     encode(message: string, encodingTree: any): string;
     buildEncoding(node: Node, prefix: string, encoding: any): void;

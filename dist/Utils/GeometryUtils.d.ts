@@ -1,6 +1,6 @@
-import Utils from "./Utils";
+import { Utils } from "./Utils";
 import { GeometryChunkConfig } from "./Utils.types";
-export default class GeometryUtils {
+export declare class GeometryUtils {
     readonly context: Utils;
     constructor(context: Utils);
     readonly hideSelectedElements: () => void;

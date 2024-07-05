@@ -1,8 +1,8 @@
 import { DefaultState, PropsData, State, Structure } from "./Model.types";
 import BimatterViewer from "..";
-import Properties from "./Properties/Properties";
+import { Properties } from "./Properties/Properties";
 import { Box3, Group } from "three";
-export default class Model {
+export declare class Model {
     readonly context: BimatterViewer;
     readonly modelID: number;
     readonly threeGeometry: Group;

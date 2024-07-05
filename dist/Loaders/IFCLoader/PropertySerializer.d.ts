@@ -1,10 +1,11 @@
-import IFCLoader from "./IFCLoader";
-export default class PropertySerializer {
+import { IFCLoader } from "./IFCLoader";
+import { onLoadCallbackT } from "../Loaders.types";
+export declare class PropertySerializer {
     readonly context: IFCLoader;
     private PropsNames;
     constructor(context: IFCLoader);
-    serializeAllProperties(modelID: number, ids: Set<number>): Promise<any>;
-    getPropertiesAsBlobs(modelID: number, ids: Set<number>): Promise<any>;
+    serializeAllProperties(modelID: number, ids: Set<number>, onLoadCallback?: onLoadCallbackT): Promise<any>;
+    getPropertiesAsBlobs(modelID: number, ids: Set<number>, onLoadCallback?: onLoadCallbackT): Promise<any>;
     getItemProperty(modelID: number, id: number, flatten?: boolean): Promise<any>;
     private formatItemProperties;
     private getAllRelDefinesByProps;

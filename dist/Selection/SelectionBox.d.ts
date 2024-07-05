@@ -1,4 +1,4 @@
-import Selector from "./Selector";
+import { Selector } from "./Selector";
 import "./SelectionHelper.css";
 import { Line, Line3, Matrix4, Ray, Vector3 } from "three";
 type ToolMode = "lasso" | "box";
@@ -9,7 +9,7 @@ interface SelectionBoxParam {
     liveUpdate: boolean;
     resetPrevous: boolean;
 }
-export default class SelectionBox {
+export declare class SelectionBox {
     readonly context: Selector;
     params: SelectionBoxParam;
     isMouseDown: boolean;

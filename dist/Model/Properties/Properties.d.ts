@@ -1,6 +1,6 @@
-import Model from "../Model";
+import { Model } from "../Model";
 import { PropsData, Structure } from "../Model.types";
-export default class Properties {
+export declare class Properties {
     readonly context: Model;
     data: PropsData;
     structure: Structure;

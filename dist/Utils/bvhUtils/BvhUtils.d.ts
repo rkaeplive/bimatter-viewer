@@ -1,6 +1,6 @@
 import { BufferGeometry } from "three";
 import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from "three-mesh-bvh";
-export default class BvhManager {
+export declare class BvhManager {
     readonly computeBoundsTree: typeof computeBoundsTree;
     readonly disposeBoundsTree: typeof disposeBoundsTree;
     readonly acceleratedRaycast: typeof acceleratedRaycast;

@@ -1,4 +1,4 @@
-import Model from "../../Model/Model";
+import { Model } from "../../Model/Model";
 export type TLoadModelFunction = (path: string, fitToView?: boolean) => Promise<Model>;
 export interface Imaterial {
     color: Array<number>;

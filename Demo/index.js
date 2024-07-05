@@ -63,10 +63,14 @@ document.addEventListener("DOMContentLoaded", () => {
         false
     );
     demoIfc.addEventListener("click", () => {
-        viewer.loadModel("Models/model.ifc", true).then((model) => {
-            console.log(model);
-            console.log(viewer);
-        });
+        viewer
+            .loadModel("Models/model.ifc", true, (a) => {
+                console.log(a.type, (a.current * 100) / a.total);
+            })
+            .then((model) => {
+                console.log(model);
+                console.log(viewer);
+            });
         demoIfc.remove();
         demoBmt.remove();
         exportIsActiveView.parentElement.style.display = "block";

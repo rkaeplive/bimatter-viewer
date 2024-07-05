@@ -1,5 +1,5 @@
-import Utils from "./Utils";
-export default class ExportUtils {
+import { Utils } from "./Utils";
+export declare class ExportUtils {
     readonly context: Utils;
     constructor(context: Utils);
     private jsonStringifySync;

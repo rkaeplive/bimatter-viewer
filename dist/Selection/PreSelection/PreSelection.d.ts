@@ -1,6 +1,6 @@
 import { BufferGeometry, Mesh, Vector3 } from "three";
-import Selector from "../Selector";
-export default class PreSelection {
+import { Selector } from "../Selector";
+export declare class PreSelection {
     readonly context: Selector;
     private _active;
     private _usePreSelectBind;

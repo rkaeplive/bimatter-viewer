@@ -1,7 +1,7 @@
-import ClippingUtils from "./ClippingUtils";
+import { ClippingUtils } from "./ClippingUtils";
 import { DragControls } from "../../Context/Controls/DragControls";
 import { Group, MeshBasicMaterial, Object3D, Plane, Vector3 } from "three";
-export default class PlaneHelper extends Object3D {
+export declare class PlaneHelper extends Object3D {
     readonly context: ClippingUtils;
     readonly plane: Plane;
     private location;

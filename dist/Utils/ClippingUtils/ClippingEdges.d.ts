@@ -1,6 +1,6 @@
 import { BufferGeometry, LineBasicMaterial, LineSegments, Material, Object3D, Plane } from "three";
-import ClippingUtils from "./ClippingUtils";
-export default class ClippingEdges extends Object3D {
+import { ClippingUtils } from "./ClippingUtils";
+export declare class ClippingEdges extends Object3D {
     readonly context: ClippingUtils;
     readonly plane: Plane;
     active: boolean;

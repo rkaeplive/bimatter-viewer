@@ -1,6 +1,6 @@
 import { AmbientLight, DirectionalLight, Box3 } from "three";
-import Context from "../Context";
-export default class Environment {
+import { Context } from "../Context";
+export declare class Environment {
     readonly context: Context;
     lights: Lights;
     constructor(context: Context);

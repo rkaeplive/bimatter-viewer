@@ -1,6 +1,6 @@
 import { Box3 } from "three";
-import Context from "../Context";
-export default class Sizes {
+import { Context } from "../Context";
+export declare class Sizes {
     readonly context: Context;
     width: number;
     height: number;

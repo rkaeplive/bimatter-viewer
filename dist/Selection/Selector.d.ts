@@ -1,9 +1,9 @@
-import Selection from "./Selection/Selection";
-import PreSelection from "./PreSelection/PreSelection";
+import { Selection } from "./Selection/Selection";
+import { PreSelection } from "./PreSelection/PreSelection";
 import BimatterViewer from "..";
-import SelectionBox from "./SelectionBox";
+import { SelectionBox } from "./SelectionBox";
 import { Mesh, MeshLambertMaterial } from "three";
-export default class Selector {
+export declare class Selector {
     readonly context: BimatterViewer;
     readonly selMaterial: MeshLambertMaterial;
     readonly preSelMaterial: MeshLambertMaterial;

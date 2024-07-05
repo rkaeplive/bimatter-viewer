@@ -1,7 +1,7 @@
 import { Matrix4 } from "three";
-import Model from "../../Model/Model";
-import Loaders from "../Loaders";
-export default class BMTLoader {
+import { Model } from "../../Model/Model";
+import { Loaders } from "../Loaders";
+export declare class BMTLoader {
     readonly context: Loaders;
     curMatrix: Matrix4;
     constructor(context: Loaders);

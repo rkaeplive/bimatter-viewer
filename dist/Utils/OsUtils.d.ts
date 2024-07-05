@@ -1,4 +1,4 @@
-import Utils from "./Utils";
+import { Utils } from "./Utils";
 import { OSType } from "./Utils.types";
 export declare class OsUtils {
     readonly context: Utils;

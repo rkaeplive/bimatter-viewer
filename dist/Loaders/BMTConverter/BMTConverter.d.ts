@@ -1,7 +1,7 @@
 import { Group } from "three";
-import Loaders from "../Loaders";
+import { Loaders } from "../Loaders";
 import { PropsData } from "../../Model/Model.types";
-export default class BMTConverter {
+export declare class BMTConverter {
     readonly context: Loaders;
     constructor(context: Loaders);
     convertIfcToBmt(arg1: string | File): Promise<void>;
