@@ -11,7 +11,9 @@ export default class Selector {
         [modelID: number]: Set<number>;
     };
     isSelected: boolean;
-    readonly selectorModels: Mesh[];
+    readonly selectorModels: {
+        [modelID: number]: Mesh;
+    };
     private _usePreSelection;
     private _selection;
     private _preSelection;
