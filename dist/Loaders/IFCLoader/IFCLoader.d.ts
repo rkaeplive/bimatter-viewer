@@ -10,8 +10,12 @@ export declare class IFCLoader {
     private propertySerializer;
     private _wasmPath;
     private curModelId;
-    constructor(context: Loaders);
+    constructor(context: Loaders, settings?: {
+        wasmPath: string;
+        func: any;
+    });
     getPath(path: string, dir: string): string;
+    initParser(func: any): void;
     set wasmPath(path: string);
     get _parser(): IfcAPI;
     loadModel(path: string, fitToView?: boolean, onLoadCallback?: onLoadCallbackT): Promise<Model | undefined>;
