@@ -96,7 +96,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     exportBmt.addEventListener("click", (e) => {
         if (viewer && viewer.models[0]) {
-            viewer.utils.exportUtils.exportBMT(0, exportIsActiveView.checked);
+            viewer.loaders.bmtConverter.exportBMT({
+                modelID: 0,
+                activeView: exportIsActiveView.checked,
+            });
         }
     });
     window.viewer = viewer;

@@ -5,7 +5,6 @@ import { PropsUtils } from "./PropsUtils";
 import Stats from "three/examples/jsm/libs/stats.module.js";
 import { ClippingUtils } from "./ClippingUtils/ClippingUtils";
 import { ViewCubeContainer } from "./NavigationCube/NavigationCube";
-import { ExportUtils } from "./ExportUtils";
 import { TDecoder } from "./Utils.types";
 import { DimensionsUtils } from "./DimentionsUtils/DimentionsUtils";
 import { OsUtils } from "./OsUtils";
@@ -17,7 +16,6 @@ export declare class Utils {
     readonly clippingUtils: ClippingUtils;
     readonly dimentionsUtils: DimensionsUtils;
     readonly navigationCubeUtil: ViewCubeContainer;
-    readonly exportUtils: ExportUtils;
     readonly decoder: TDecoder;
     readonly osUtils: OsUtils;
     readonly keysUtils: KeysUtils;
