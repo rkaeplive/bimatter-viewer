@@ -15,7 +15,13 @@ export default class BimatterViewer {
     readonly container: HTMLElement;
     settings: ViewerSettings;
     constructor(settings?: ViewerSettings);
-    loadModel(arg1: string | File, fitToView?: boolean, onLoadCallback?: onLoadCallbackT): Promise<import("./Model/Model").Model>;
+    loadModel(arg1: string | File, fitToView?: boolean, onLoadCallback?: onLoadCallbackT): Promise<import("./Model/Model").Model | undefined>;
     removeModel(modelID: number): void;
     dispose(): void;
+}
+export declare class BimatterConverter {
+    readonly loaders: Loaders;
+    readonly utils: any;
+    readonly models: any;
+    constructor();
 }

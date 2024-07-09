@@ -14,7 +14,7 @@ export declare class IFCLoader {
     getPath(path: string, dir: string): string;
     set wasmPath(path: string);
     get _parser(): IfcAPI;
-    loadModel(path: string, fitToView?: boolean, onLoadCallback?: onLoadCallbackT): Promise<Model>;
+    loadModel(path: string, fitToView?: boolean, onLoadCallback?: onLoadCallbackT): Promise<Model | undefined>;
     getModelData(path: string): Promise<{
         structure: Structure;
         propsData: PropsData;

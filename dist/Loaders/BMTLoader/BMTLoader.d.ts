@@ -6,7 +6,7 @@ export declare class BMTLoader {
     curMatrix: Matrix4;
     constructor(context: Loaders);
     streamToBlob(data: Blob, start: number): Promise<Blob>;
-    loadModel(path: string, fitToView?: boolean): Promise<Model>;
+    loadModel(path: string, fitToView?: boolean): Promise<Model | undefined>;
     private parseBinaryFile;
     private parseModelData;
 }
