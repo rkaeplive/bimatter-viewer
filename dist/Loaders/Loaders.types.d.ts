@@ -5,3 +5,7 @@ export interface LoadingState {
     current: number;
     step: number;
 }
+export interface Settings {
+    wasmPath: string;
+    func: any;
+}

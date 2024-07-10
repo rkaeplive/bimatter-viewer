@@ -4,7 +4,7 @@ import { Context } from "./Context/Context";
 import { Loaders } from "./Loaders/Loaders";
 import { Selector } from "./Selection/Selector";
 import { Utils } from "./Utils/Utils";
-import { onLoadCallbackT } from "./Loaders/Loaders.types";
+import { Settings, onLoadCallbackT } from "./Loaders/Loaders.types";
 export default class BimatterViewer {
     readonly loaders: Loaders;
     readonly models: TModels;
@@ -23,5 +23,5 @@ export declare class BimatterConverter {
     readonly loaders: Loaders;
     readonly utils: any;
     readonly models: any;
-    constructor();
+    constructor(settings?: Settings);
 }
