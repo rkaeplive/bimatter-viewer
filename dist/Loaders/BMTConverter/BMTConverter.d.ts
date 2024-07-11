@@ -2,7 +2,7 @@ import { Loaders } from "../Loaders";
 export declare class BMTConverter {
     readonly context: Loaders;
     constructor(context: Loaders);
-    convertIfcToBmt(arg1: string | File): Promise<{
+    convertIfcToBmt(data: ArrayBuffer): Promise<{
         data: Uint8Array[];
         props: string | undefined;
     }>;

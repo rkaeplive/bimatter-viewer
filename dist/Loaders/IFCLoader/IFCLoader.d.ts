@@ -22,4 +22,14 @@ export declare class IFCLoader {
         group: Group;
         modelID: number;
     }>;
+    getModelDataFromBuffer(file: ArrayBuffer): Promise<{
+        structure: {
+            id: number;
+            type: string;
+            children: never[];
+        };
+        propsData: PropsData;
+        group: Group<import("three").Object3DEventMap>;
+        modelID: number;
+    }>;
 }
