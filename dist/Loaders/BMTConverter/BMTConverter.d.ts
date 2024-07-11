@@ -2,7 +2,10 @@ import { Loaders } from "../Loaders";
 export declare class BMTConverter {
     readonly context: Loaders;
     constructor(context: Loaders);
-    convertIfcToBmt(arg1: string | File): Promise<void>;
+    convertIfcToBmt(arg1: string | File): Promise<{
+        data: Uint8Array[];
+        props: string | undefined;
+    }>;
     private jsonStringifySync;
     exportIfcModel(modelID: number, activeView?: boolean, minVersion?: boolean, fileName?: string): Promise<void>;
     private exportBMT;
