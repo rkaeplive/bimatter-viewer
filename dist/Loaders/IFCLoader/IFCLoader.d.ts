@@ -2,7 +2,7 @@ import { Model } from "../../Model/Model";
 import { PropsData, Structure } from "../../Model/Model.types";
 import { Loaders } from "../Loaders";
 import { Group } from "three";
-import { IfcAPI } from "./IFCParser/web-ifc-api-node";
+import { IfcAPI } from "./IFCParser/web-ifc-api";
 import { Settings, onLoadCallbackT } from "../Loaders.types";
 export declare class IFCLoader {
     readonly context: Loaders;
@@ -12,7 +12,7 @@ export declare class IFCLoader {
     private curModelId;
     constructor(context: Loaders, settings?: Settings);
     getPath(path: string, dir: string): string;
-    initParser(func?: any): void;
+    initParser(func?: any): Promise<void>;
     set wasmPath(path: string);
     get _parser(): IfcAPI;
     loadModel(path: string, fitToView?: boolean, onLoadCallback?: onLoadCallbackT): Promise<Model | undefined>;
