@@ -2,7 +2,7 @@ import { Model } from "../../Model/Model";
 import { PropsData, Structure } from "../../Model/Model.types";
 import { Loaders } from "../Loaders";
 import { Group } from "three";
-import { IfcAPI } from "./IFCParser/web-ifc-api";
+import { IfcAPI } from "./IFCParser/web-ifc-api-node";
 import { Settings, onLoadCallbackT } from "../Loaders.types";
 export declare class IFCLoader {
     readonly context: Loaders;
