@@ -12,7 +12,7 @@ export declare class IFCLoader {
     private curModelId;
     constructor(context: Loaders, settings?: Settings);
     getPath(path: string, dir: string): string;
-    initParser(func: any): void;
+    initParser(func?: any): void;
     set wasmPath(path: string);
     get _parser(): IfcAPI;
     loadModel(path: string, fitToView?: boolean, onLoadCallback?: onLoadCallbackT): Promise<Model | undefined>;
