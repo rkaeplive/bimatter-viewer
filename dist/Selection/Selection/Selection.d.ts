@@ -7,16 +7,17 @@ export declare class Selection {
     _useSelectBind: (e: MouseEvent) => void;
     _activeFace: number;
     _activeElement: number;
-    selectModels: {
-        [modelID: number]: BufferGeometry;
+    state: {
+        [modelID: number]: {
+            [matId: number]: BufferGeometry;
+        };
     };
     constructor(context: Selector);
-    _addToGroup: (geom: BufferGeometry) => void;
-    private addToGroup;
     get selectedMesh(): Group<import("three").Object3DEventMap>;
     get active(): boolean;
     set active(active: boolean);
     private useSelect;
+    readonly resetModelSelection: (modelID: number) => void;
     readonly resetSelect: (full?: boolean) => void;
     readonly selectAll: () => void;
     readonly selectByIds: (modelID: number, ids: number[], removePrevious?: boolean) => void;

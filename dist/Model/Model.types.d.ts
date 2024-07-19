@@ -32,9 +32,6 @@ export type DefaultState = {
             [matId: number]: number[];
         };
     };
-    selMap: {
-        [elemId: number]: number[];
-    };
 };
 export type PropsData = {
     [element: number]: PropData;

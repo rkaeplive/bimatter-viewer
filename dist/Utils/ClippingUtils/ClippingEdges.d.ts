@@ -1,10 +1,10 @@
-import { BufferGeometry, LineBasicMaterial, LineSegments, Material, Object3D, Plane } from "three";
+import { Group, LineBasicMaterial, Object3D, Plane } from "three";
 import { ClippingUtils } from "./ClippingUtils";
 export declare class ClippingEdges extends Object3D {
     readonly context: ClippingUtils;
     readonly plane: Plane;
     active: boolean;
-    lines: LineSegments | undefined;
+    private lines;
     private tempVector;
     private tempVector1;
     private tempVector2;
@@ -17,6 +17,6 @@ export declare class ClippingEdges extends Object3D {
     toggle(): void;
     private removeFromView;
     private addToView;
-    create(): LineSegments<BufferGeometry<import("three").NormalBufferAttributes>, Material | Material[], import("three").Object3DEventMap>;
+    create(): Group<import("three").Object3DEventMap>;
     update(): void;
 }

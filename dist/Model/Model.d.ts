@@ -16,6 +16,7 @@ export declare class Model {
     }, idsMap?: {
         [matId: number]: number[];
     }, start?: number);
+    private getBoundingBox;
     private getSelectionGeom;
     private getGeometryState;
     private getMaterialIndex;
