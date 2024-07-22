@@ -17,6 +17,7 @@ export declare class Model {
         [matId: number]: number[];
     }, start?: number);
     private getBoundingBox;
+    private cloneGeometry;
     private getSelectionGeom;
     private getGeometryState;
     private getMaterialIndex;

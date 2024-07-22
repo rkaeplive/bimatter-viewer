@@ -18,5 +18,6 @@ export declare class ClippingEdges extends Object3D {
     private removeFromView;
     private addToView;
     create(): Group<import("three").Object3DEventMap>;
+    createByModel(modelID: number, res?: Group): void;
     update(): void;
 }

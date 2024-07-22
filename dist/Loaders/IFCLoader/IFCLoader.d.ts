@@ -9,6 +9,7 @@ export declare class IFCLoader {
     private parser;
     private propertySerializer;
     private _wasmPath;
+    chunk: number;
     private curModelId;
     constructor(context: Loaders);
     getPath(path: string, dir: string): string;
