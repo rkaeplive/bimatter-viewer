@@ -15,6 +15,10 @@ export declare class Model {
         [matId: number]: number[];
     }, idsMap?: {
         [matId: number]: number[];
+    }, defIndMap?: {
+        [matId: number]: number[];
+    }, defIdsMap?: {
+        [matId: number]: number[];
     }, start?: number);
     private getBoundingBox;
     private cloneGeometry;
