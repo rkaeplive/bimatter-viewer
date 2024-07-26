@@ -13,6 +13,7 @@ export declare class PreSelection {
     private _activeElement;
     private _activeFace;
     private _activePoint;
+    private _activeModelID;
     private _intersectLength;
     private _intersectDistance;
     private _needUpdate;

@@ -5,6 +5,7 @@ import { saveAs } from "file-saver";
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("container");
     const viewer = new BimatterViewer({ container });
+
     viewer.utils.useStats = true;
     viewer.utils.propsUtils.initPropConteiner(document.getElementById("props"));
     window.addEventListener("keydown", onKeyDown);
@@ -15,6 +16,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const exportBmt = document.getElementById("export-bmt");
     const exportIsActiveView = document.getElementById("is-active-view");
 
+    const progressWrap = document.getElementById("progress-wrap");
+    const progress = document.getElementById("progress");
+    viewer.loaders.loadingProgressUtils.setContainer(progress);
     const color = document.getElementById("color");
     const colorize = document.getElementById("colorize");
     const infoBut = document.getElementById("infoBut");
@@ -40,13 +44,22 @@ document.addEventListener("DOMContentLoaded", () => {
     input.addEventListener(
         "change",
         (changed) => {
-            const file = changed.target.files[0];
-            viewer.loadModel(file, true).then((model) => {
-                console.log(model);
-                console.log(viewer);
-            });
+            const files = changed.target.files;
+
+            console.log(viewer);
+            for (const file of files) {
+                viewer
+                    .loadModel(file, true, (a) => {
+                        console.log(a.type, (a.current * 100) / a.total);
+                    })
+                    .then((model) => {
+                        console.log(model);
+                    });
+            }
+
             demoIfc.remove();
             demoBmt.remove();
+            progressWrap.remove();
             exportBmt.style.display = "block";
             exportIsActiveView.parentElement.style.display = "block";
             // input.parentNode.remove();
@@ -68,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log(a.type, (a.current * 100) / a.total);
             })
             .then((model) => {
+                progressWrap.remove();
                 console.log(model);
                 console.log(viewer);
             });
@@ -82,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
         viewer.loadModel("Models/model.bmt", true).then((model) => {
             console.log(model);
             console.log(viewer);
+            progressWrap.remove();
         });
         // viewer.loadModel("/model.bmt", true).then((model) => {
         //     console.log(model);

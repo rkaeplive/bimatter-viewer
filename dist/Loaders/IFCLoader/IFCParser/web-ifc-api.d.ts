@@ -1221,7 +1221,7 @@ declare var IfcAPI2: {
         GetLineIDsWithType(modelID: any, type: any, includeInherited?: boolean): any;
         GetAllLines(modelID: any): any;
         GetAllCrossSections2D(modelID: any): {
-            origin: string;
+            FlatCoordinationMatrix: any;
             curves: {
                 points: {
                     x: any;
@@ -1232,7 +1232,7 @@ declare var IfcAPI2: {
             expressID: any[];
         }[];
         GetAllCrossSections3D(modelID: any): {
-            origin: string;
+            FlatCoordinationMatrix: any;
             curves: {
                 points: {
                     x: any;
@@ -1243,7 +1243,7 @@ declare var IfcAPI2: {
             expressID: any[];
         }[];
         GetAllAlignments(modelID: any): {
-            origin: string;
+            FlatCoordinationMatrix: any;
             horizontal: {
                 points: {
                     x: any;
@@ -1272,6 +1272,7 @@ declare var IfcAPI2: {
         GetIndexArray(ptr: any, size: any): any;
         getSubArray(heap: any, startPtr: any, sizeBytes: any): any;
         CloseModel(modelID: any): void;
+        Dispose(): void;
         StreamMeshes(modelID: any, expressIDs: any, meshCallback: any): void;
         StreamAllMeshes(modelID: any, meshCallback: any): void;
         StreamAllMeshesWithTypes(modelID: any, types: any, meshCallback: any): void;
