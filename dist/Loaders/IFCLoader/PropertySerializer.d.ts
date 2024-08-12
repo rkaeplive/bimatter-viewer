@@ -1,9 +1,16 @@
+import { IfcAPI } from "./IFCParser/web-ifc-api-node";
 import { IFCLoader } from "./IFCLoader";
 import { onLoadCallbackT } from "../Loaders.types";
 export declare class PropertySerializer {
-    readonly context: IFCLoader;
+    readonly context: IFCLoader | {
+        _parser: IfcAPI;
+        context: undefined;
+    };
     private PropsNames;
-    constructor(context: IFCLoader);
+    constructor(context: IFCLoader | {
+        _parser: IfcAPI;
+        context: undefined;
+    });
     serializeAllProperties(modelID: number, ids: Set<number>, onLoadCallback?: onLoadCallbackT): Promise<any>;
     getPropertiesAsBlobs(modelID: number, ids: Set<number>, onLoadCallback?: onLoadCallbackT): Promise<any>;
     getItemProperty(modelID: number, id: number, flatten?: boolean): Promise<any>;
