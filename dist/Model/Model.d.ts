@@ -1,15 +1,15 @@
 import { DefaultState, PropsData, State, Structure } from "./Model.types";
 import BimatterViewer from "..";
 import { Properties } from "./Properties/Properties";
-import { Box3, Group } from "three";
+import { Box3, Group, Mesh } from "three";
 export declare class Model {
     readonly context: BimatterViewer;
     readonly modelID: number;
     readonly threeGeometry: Group;
-    readonly boundingBox: Box3;
-    readonly properties: Properties;
-    readonly state: State;
-    readonly defaultState: DefaultState;
+    boundingBox: Box3;
+    properties: Properties;
+    state: State;
+    defaultState: DefaultState;
     activeElements: Set<number>;
     constructor(context: BimatterViewer, modelID: number, fitToView: boolean | undefined, threeGeometry: Group, propsData: PropsData, structure: Structure, indMap?: {
         [matId: number]: number[];
@@ -23,8 +23,9 @@ export declare class Model {
     private getBoundingBox;
     private cloneGeometry;
     private getSelectionGeom;
+    setState(state: State, defaultState: State): void;
     private getGeometryState;
-    private getMaterialIndex;
     private updateBox;
-    fitToView(): Promise<void>;
+    fitToView(enableTransition?: boolean): Promise<void>;
+    addMeshToModel(mesh: Mesh, selectGroup: Group, preselectGroup: Group, fitToView?: boolean): void;
 }
