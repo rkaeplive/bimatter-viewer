@@ -111,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (data.data.structure) {
                     model.properties.setStructure(data.data.structure);
                 }
+                console.log(model);
                 progressWrap.remove();
                 test.terminate();
             } else if (data.data.process) {
@@ -160,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // console.log(data);
         };
         // test.postMessage("./Models/model.ifc");
-        test.postMessage("./Models/model.bmt");
+        test.postMessage("./Models/Clinic_HVAC.bmt");
     });
     demoIfc.addEventListener("click", () => {
         viewer
