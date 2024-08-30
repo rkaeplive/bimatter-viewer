@@ -90,6 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 type: "module",
             }
         );
+        viewer.bvhManager.useWorker = true;
         const model = viewer.addEmptyModel(0);
 
         const selectGroup = new Group();
@@ -173,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // console.log(data);
         };
         // worker.postMessage("./Models/model.ifc");
-        worker.postMessage({ type: "load", data: "./Models/model.bmt" });
+        worker.postMessage({ type: "load", data: "./Models/Clinic_HVAC.bmt" });
     });
     demoIfc.addEventListener("click", () => {
         viewer
