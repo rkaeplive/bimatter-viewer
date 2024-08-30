@@ -23,7 +23,7 @@ export declare class Model {
     private getBoundingBox;
     private cloneGeometry;
     private getSelectionGeom;
-    setState(state: State, defaultState: State): void;
+    setState(state: State, defaultState: State, activeElements?: Set<number>): void;
     private getGeometryState;
     private updateBox;
     fitToView(enableTransition?: boolean): Promise<void>;

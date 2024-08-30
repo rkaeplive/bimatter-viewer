@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
         false
     );
     demoWorker.addEventListener("click", () => {
-        const test = new Worker(
+        const worker = new Worker(
             new URL("./Worker/bmtLoaderWorker.js", import.meta.url),
             {
                 type: "module",
@@ -94,9 +94,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const selectGroup = new Group();
         const preselectGroup = new Group();
-        test.onmessage = (data) => {
+        worker.onmessage = (data) => {
             if (data.data.ready) {
-                console.log(data.data);
                 viewer.selector.selectorModels[model.modelID] =
                     model.threeGeometry.children;
                 viewer.selector.selection._selectedMesh.add(selectGroup);
@@ -113,7 +112,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 console.log(model);
                 progressWrap.remove();
-                test.terminate();
+                worker.postMessage({
+                    type: "state",
+                    data: model.threeGeometry.children.map((child) => ({
+                        index: child.geometry.index.array,
+                        ids: child.geometry.attributes.ids.array,
+                        matInd: child.name,
+                    })),
+                });
+            } else if (data.data.state) {
+                model.setState(
+                    data.data.state,
+                    data.data.defaultState,
+                    data.data.activeElements
+                );
+                worker.terminate();
             } else if (data.data.process) {
                 const process = data.data.process;
                 const persent = Math.round(
@@ -124,7 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     : `${process.type} ${persent}%`;
             } else {
                 progressWrap.style.backgroundColor = "transparent";
-
                 const geomData = data.data.geom;
                 const geom = new BufferGeometry();
                 geom.setAttribute(
@@ -160,8 +172,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             // console.log(data);
         };
-        // test.postMessage("./Models/model.ifc");
-        test.postMessage("./Models/Clinic_HVAC.bmt");
+        // worker.postMessage("./Models/model.ifc");
+        worker.postMessage({ type: "load", data: "./Models/model.bmt" });
     });
     demoIfc.addEventListener("click", () => {
         viewer
