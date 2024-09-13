@@ -2,12 +2,21 @@ import * as THREE from "three";
 import { Context } from "../Context";
 import CameraControls from "camera-controls";
 import { DragControls } from "./DragControls.js";
+export declare const modeEnum: {
+    Orthographic: number;
+    Perspective: number;
+    "1stPerson": number;
+    "3rdPerson": number;
+};
 export declare class Controls {
     readonly context: Context;
     readonly cameraControl: CameraControls;
     readonly raycaster: THREE.Raycaster;
     private _moving;
     private _position;
+    private _activeMode;
+    get activeMode(): keyof typeof modeEnum;
+    set activeMode(mode: keyof typeof modeEnum);
     constructor(context: Context);
     get moving(): boolean;
     set moving(moving: boolean);

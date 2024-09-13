@@ -13,6 +13,12 @@ import { saveAs } from "file-saver";
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("container");
     const viewer = new BimatterViewer({ container });
+    viewer.bvhManager.useWorker = new Worker(
+        new URL("./Worker/bvhWorker.js", import.meta.url),
+        {
+            type: "module",
+        }
+    );
     viewer.utils.useStats = true;
     viewer.utils.propsUtils.initPropConteiner(document.getElementById("props"));
     window.addEventListener("keydown", onKeyDown);
@@ -53,7 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "change",
         (changed) => {
             const files = changed.target.files;
-
             console.log(viewer);
             for (const file of files) {
                 viewer
@@ -90,7 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 type: "module",
             }
         );
-        viewer.bvhManager.useWorker = true;
         const model = viewer.addEmptyModel(0);
 
         const selectGroup = new Group();
@@ -163,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 geom.computeVertexNormals();
                 geom.computeBoundingBox();
                 geom.computeBoundingSphere();
-                mesh.name = data.data.name;
+                mesh.name = data.data.name.toString();
                 model.addMeshToModel(
                     mesh,
                     selectGroup,
@@ -174,7 +178,10 @@ document.addEventListener("DOMContentLoaded", () => {
             // console.log(data);
         };
         // worker.postMessage("./Models/model.ifc");
-        worker.postMessage({ type: "load", data: "./Models/Clinic_HVAC.bmt" });
+        worker.postMessage({
+            type: "load",
+            data: "./Models/Clinic_HVAC.bmt",
+        });
     });
     demoIfc.addEventListener("click", () => {
         viewer
@@ -246,6 +253,9 @@ function onKeyDown(event) {
         // ViewerSelect.ViewerRemoveSelect(viewer, models, dispatch);
     }
     if (event.code === "KeyS") {
+        if (viewer.context.controls.activeMode === "1stPerson") {
+            return;
+        }
         const screenshot = viewer.context.renderer.newScreenshot();
         saveAs(screenshot, "screenshot.png");
     }
@@ -267,6 +277,12 @@ function onKeyDown(event) {
     if (event.code === "KeyH") {
         if (!viewer.selector.isSelected) return;
         viewer.utils.geometryUtils.hideSelectedElements();
+    }
+    if (event.code === "Digit1") {
+        if (viewer.context.controls.activeMode !== "1stPerson") {
+            viewer.context.controls.activeMode = "1stPerson";
+        } else {
+        }
     }
     if (event.code === "KeyI") {
         if (!viewer.selector.isSelected) return;

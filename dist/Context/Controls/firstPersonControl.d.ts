@@ -1,0 +1,324 @@
+export class AnimationController {
+    constructor(mesh: any, animations: any);
+    _targetRotY: any;
+    mesh: any;
+    motion: {};
+    mixer: AnimationMixer;
+    currentMotionName: string;
+    play(name: any): void;
+    turn(rad: any, immediate: any): void;
+    update(deltaTime: any): void;
+}
+declare const CharacterController_base: {
+    new (): {
+        _listeners: {};
+        addEventListener(type: any, listener: any): void;
+        hasEventListener(type: any, listener: any): boolean;
+        removeEventListener(type: any, listener: any): void;
+        dispatchEvent(event: any): void;
+    };
+};
+export class CharacterController extends CharacterController_base {
+    constructor(object3d: any, radius: any);
+    isCharacterController: boolean;
+    position: Vector3;
+    groundCheckDepth: number;
+    maxSlopeGradient: number;
+    isGrounded: boolean;
+    isOnSlope: boolean;
+    isIdling: boolean;
+    isRunning: boolean;
+    isJumping: boolean;
+    direction: number;
+    movementSpeed: number;
+    velocity: Vector3;
+    currentJumpPower: number;
+    jumpStartTime: number;
+    groundHeight: number;
+    groundNormal: Vector3;
+    nearTriangles: any[];
+    contactInfo: any[];
+    object: any;
+    radius: any;
+    _events: () => void;
+    setNearTriangles(nearTriangles: any): void;
+    update(deltaTime: any): void;
+    _updateVelocity(): void;
+    _checkGround(): void;
+    _updatePosition(deltaTime: any): void;
+    _collisionDetection(): void;
+    _solvePosition(): void;
+    setDirection(): void;
+    jump(): void;
+    _updateJumping(): void;
+    teleport(x: any, y: any, z: any): void;
+}
+declare const KeyInputControl_base: {
+    new (): {
+        _listeners: {};
+        addEventListener(type: any, listener: any): void;
+        hasEventListener(type: any, listener: any): boolean;
+        removeEventListener(type: any, listener: any): void;
+        dispatchEvent(event: any): void;
+    };
+};
+export class KeyInputControl extends KeyInputControl_base {
+    isDisabled: boolean;
+    isUp: boolean;
+    isDown: boolean;
+    isLeft: boolean;
+    isRight: boolean;
+    isMoveKeyHolding: boolean;
+    frontAngle: number;
+    _keydownListener: (event: any) => void;
+    _keyupListener: (event: any) => void;
+    _blurListener: () => void;
+    jump(): void;
+    updateAngle(): void;
+    dispose(): void;
+}
+export class Octree {
+    constructor(box?: Box3);
+    bounds: Box3;
+    triangles: any[];
+    subTrees: any[];
+    box: Box3;
+    addTriangle(triangle: any): void;
+    calcBox(): this;
+    split(level: any): void;
+    build(): this;
+    getLineTriangles(line: any, result: any): any;
+    getRayTriangles(ray: any, result: any): any;
+    getSphereTriangles(sphere: any, result: any): any;
+    getCapsuleTriangles(capsule: any, result: any): void;
+    lineIntersect(line: any): false | {
+        distance: number;
+        triangle: any;
+        position: Vector3;
+    };
+    rayIntersect(ray: any): false | {
+        distance: number;
+        triangle: any;
+        position: any;
+    } | undefined;
+    addGraphNode(object: any): void;
+}
+export class TPSCameraControls extends CameraControls {
+    constructor(camera: any, trackObject: any, world: any, domElement: any);
+    world: any;
+    colliderMeshes: Object3D<import("three").Object3DEventMap>[];
+    update: (delta: any) => boolean;
+    get frontAngle(): any;
+}
+export class World {
+    constructor({ fps, stepsPerFrame }?: {
+        fps?: number | undefined;
+        stepsPerFrame?: number | undefined;
+    });
+    colliderPool: any[];
+    characterPool: any[];
+    _fps: number;
+    _stepsPerFrame: number;
+    add(object: any): void;
+    remove(object: any): void;
+    fixedUpdate(): void;
+    step(stepDeltaTime: any): void;
+}
+import { AnimationMixer } from "three";
+import { Vector3 } from "three";
+import { Box3 } from "three";
+declare class CameraControls extends EventDispatcher {
+    static install(libs: any): void;
+    static get ACTION(): Readonly<{
+        NONE: 0;
+        ROTATE: 1;
+        TRUCK: 2;
+        OFFSET: 4;
+        DOLLY: 8;
+        ZOOM: 16;
+        TOUCH_ROTATE: 32;
+        TOUCH_TRUCK: 64;
+        TOUCH_OFFSET: 128;
+        TOUCH_DOLLY: 256;
+        TOUCH_ZOOM: 512;
+        TOUCH_DOLLY_TRUCK: 1024;
+        TOUCH_DOLLY_OFFSET: 2048;
+        TOUCH_DOLLY_ROTATE: 4096;
+        TOUCH_ZOOM_TRUCK: 8192;
+        TOUCH_ZOOM_OFFSET: 16384;
+        TOUCH_ZOOM_ROTATE: 32768;
+    }>;
+    static createBoundingSphere(object3d: any, out?: any): any;
+    constructor(camera: any, domElement: any);
+    minPolarAngle: number;
+    maxPolarAngle: number;
+    minAzimuthAngle: number;
+    maxAzimuthAngle: number;
+    minDistance: number;
+    maxDistance: number;
+    infinityDolly: boolean;
+    minZoom: number;
+    maxZoom: number;
+    smoothTime: number;
+    draggingSmoothTime: number;
+    maxSpeed: number;
+    azimuthRotateSpeed: number;
+    polarRotateSpeed: number;
+    dollySpeed: number;
+    dollyDragInverted: boolean;
+    truckSpeed: number;
+    dollyToCursor: boolean;
+    dragToOffset: boolean;
+    verticalDragToForward: boolean;
+    boundaryFriction: number;
+    restThreshold: number;
+    colliderMeshes: any[];
+    cancel: () => void;
+    _enabled: boolean;
+    _state: 0;
+    _viewport: any;
+    _dollyControlAmount: number;
+    _hasRested: boolean;
+    _boundaryEnclosesCamera: boolean;
+    _needsUpdate: boolean;
+    _updatedLastTime: boolean;
+    _elementRect: DOMRect;
+    _activePointers: any[];
+    _isUserControllingRotate: boolean;
+    _isUserControllingDolly: boolean;
+    _isUserControllingTruck: boolean;
+    _isUserControllingOffset: boolean;
+    _isUserControllingZoom: boolean;
+    _thetaVelocity: {
+        value: number;
+    };
+    _phiVelocity: {
+        value: number;
+    };
+    _radiusVelocity: {
+        value: number;
+    };
+    _targetVelocity: any;
+    _focalOffsetVelocity: any;
+    _zoomVelocity: {
+        value: number;
+    };
+    _truckInternal: (deltaX: any, deltaY: any, dragToOffset: any) => void;
+    _rotateInternal: (deltaX: any, deltaY: any) => void;
+    _dollyInternal: (delta: any, x: any, y: any) => void;
+    _zoomInternal: (delta: any, x: any, y: any) => void;
+    _camera: any;
+    _yAxisUpSpace: any;
+    _yAxisUpSpaceInverse: any;
+    _target: any;
+    _targetEnd: any;
+    _focalOffset: any;
+    _focalOffsetEnd: any;
+    _spherical: any;
+    _sphericalEnd: any;
+    _zoom: any;
+    _zoomEnd: any;
+    _nearPlaneCorners: any[];
+    _boundary: any;
+    _cameraUp0: any;
+    _target0: any;
+    _position0: any;
+    _zoom0: any;
+    _focalOffset0: any;
+    _dollyControlCoord: any;
+    mouseButtons: {
+        left: 1;
+        middle: 8;
+        right: 2;
+        wheel: 0 | 8 | 16;
+    };
+    touches: {
+        one: 32;
+        two: 0 | 1024 | 8192;
+        three: 64;
+    };
+    _addAllEventListeners(_domElement: any): void;
+    _domElement: any;
+    _removeAllEventListeners(): void;
+    set camera(arg: any);
+    get camera(): any;
+    set enabled(arg: boolean);
+    get enabled(): boolean;
+    get active(): boolean;
+    get currentAction(): 0;
+    set distance(arg: any);
+    get distance(): any;
+    set azimuthAngle(arg: any);
+    get azimuthAngle(): any;
+    set polarAngle(arg: any);
+    get polarAngle(): any;
+    set boundaryEnclosesCamera(arg: boolean);
+    get boundaryEnclosesCamera(): boolean;
+    rotate(azimuthAngle: any, polarAngle: any, enableTransition?: boolean): Promise<any>;
+    rotateAzimuthTo(azimuthAngle: any, enableTransition?: boolean): Promise<any>;
+    rotatePolarTo(polarAngle: any, enableTransition?: boolean): Promise<any>;
+    rotateTo(azimuthAngle: any, polarAngle: any, enableTransition?: boolean): Promise<any>;
+    dolly(distance: any, enableTransition?: boolean): Promise<any>;
+    dollyTo(distance: any, enableTransition?: boolean): Promise<any>;
+    zoom(zoomStep: any, enableTransition?: boolean): Promise<any>;
+    zoomTo(zoom: any, enableTransition?: boolean): Promise<any>;
+    pan(x: any, y: any, enableTransition?: boolean): Promise<any>;
+    truck(x: any, y: any, enableTransition?: boolean): Promise<any>;
+    forward(distance: any, enableTransition?: boolean): Promise<any>;
+    elevate(height: any, enableTransition?: boolean): Promise<any>;
+    moveTo(x: any, y: any, z: any, enableTransition?: boolean): Promise<any>;
+    lookInDirectionOf(x: any, y: any, z: any, enableTransition?: boolean): Promise<any>;
+    fitToBox(box3OrObject: any, enableTransition: any, { cover, paddingLeft, paddingRight, paddingBottom, paddingTop, }?: {
+        cover?: boolean | undefined;
+        paddingLeft?: number | undefined;
+        paddingRight?: number | undefined;
+        paddingBottom?: number | undefined;
+        paddingTop?: number | undefined;
+    }): Promise<any[]>;
+    fitToSphere(sphereOrMesh: any, enableTransition: any): Promise<any[]>;
+    setLookAt(positionX: any, positionY: any, positionZ: any, targetX: any, targetY: any, targetZ: any, enableTransition?: boolean): Promise<any>;
+    lerpLookAt(positionAX: any, positionAY: any, positionAZ: any, targetAX: any, targetAY: any, targetAZ: any, positionBX: any, positionBY: any, positionBZ: any, targetBX: any, targetBY: any, targetBZ: any, t: any, enableTransition?: boolean): Promise<any>;
+    setPosition(positionX: any, positionY: any, positionZ: any, enableTransition?: boolean): Promise<any>;
+    setTarget(targetX: any, targetY: any, targetZ: any, enableTransition?: boolean): Promise<any>;
+    setFocalOffset(x: any, y: any, z: any, enableTransition?: boolean): Promise<any>;
+    setOrbitPoint(targetX: any, targetY: any, targetZ: any): void;
+    setBoundary(box3: any): void;
+    setViewport(viewportOrX: any, y: any, width: any, height: any): void;
+    getDistanceToFitBox(width: any, height: any, depth: any, cover?: boolean): any;
+    getDistanceToFitSphere(radius: any): any;
+    getTarget(out: any): any;
+    getPosition(out: any): any;
+    getFocalOffset(out: any): any;
+    normalizeRotations(): void;
+    reset(enableTransition?: boolean): Promise<any[]>;
+    saveState(): void;
+    updateCameraUp(): void;
+    applyCameraUp(): void;
+    update(delta: any): boolean;
+    toJSON(): string;
+    fromJSON(json: any, enableTransition?: boolean): void;
+    connect(domElement: any): void;
+    disconnect(): void;
+    dispose(): void;
+    _findPointerById(pointerId: any): any;
+    _findPointerByMouseButton(mouseButton: any): any;
+    _encloseToBoundary(position: any, offset: any, friction: any): any;
+    _updateNearPlaneCorners(): void;
+    _collisionTest(): number;
+    _getClientRect(target: any): any;
+    _createOnRestPromise(resolveImmediately: any): Promise<any>;
+    set dampingFactor(arg: number);
+    get dampingFactor(): number;
+    set draggingDampingFactor(arg: number);
+    get draggingDampingFactor(): number;
+}
+import { Object3D } from "three";
+declare class EventDispatcher {
+    _listeners: {};
+    addEventListener(type: any, listener: any): void;
+    hasEventListener(type: any, listener: any): boolean;
+    removeEventListener(type: any, listener: any): void;
+    removeAllEventListeners(type: any): void;
+    dispatchEvent(event: any): void;
+}
+export {};

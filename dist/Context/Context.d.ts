@@ -1,4 +1,4 @@
-import { TextureLoader, Vector2 } from "three";
+import { Clock, TextureLoader, Vector2 } from "three";
 import BimatterViewer from "..";
 import { Camera } from "./Camera/Camera";
 import { Controls } from "./Controls/Controls";
@@ -23,6 +23,7 @@ export declare class Context {
         position: Vector2;
         cords: Vector2;
     };
+    readonly clock: Clock;
     readonly mouseMoveHandleBind: (event: MouseEvent) => void;
     constructor(context: BimatterViewer, settings: ViewerSettings);
     private mouseMoveHandle;
