@@ -15,6 +15,11 @@ export declare class Controls {
     private _moving;
     private _position;
     private _activeMode;
+    settings: {
+        speed: number;
+        rotateSpeed: number;
+        upSpeed: number;
+    };
     get activeMode(): keyof typeof modeEnum;
     set activeMode(mode: keyof typeof modeEnum);
     constructor(context: Context);
