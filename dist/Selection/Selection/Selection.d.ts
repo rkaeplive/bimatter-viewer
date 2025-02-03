@@ -7,12 +7,15 @@ export declare class Selection {
     _useSelectBind: (e: MouseEvent) => void;
     _activeFace: number;
     _activeElement: number;
+    _selectionCallback: ((arg?: any) => any) | null;
     state: {
         [modelID: number]: {
             [matId: number]: BufferGeometry;
         };
     };
     constructor(context: Selector);
+    get selectionCallback(): (() => any) | null;
+    set selectionCallback(func: (() => any) | null);
     get selectedMesh(): Group<import("three").Object3DEventMap>;
     get active(): boolean;
     set active(active: boolean);
