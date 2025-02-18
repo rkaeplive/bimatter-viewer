@@ -13,12 +13,12 @@ import { saveAs } from "file-saver";
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("container");
     const viewer = new BimatterViewer({ container });
-    viewer.bvhManager.useWorker = new Worker(
-        new URL("./Worker/bvhWorker.js", import.meta.url),
-        {
-            type: "module",
-        }
-    );
+    // viewer.bvhManager.useWorker = new Worker(
+    //     new URL("./Worker/bvhWorker.js", import.meta.url),
+    //     {
+    //         type: "module",
+    //     }
+    // );
     viewer.utils.useStats = true;
     viewer.utils.propsUtils.initPropConteiner(document.getElementById("props"));
     window.addEventListener("keydown", onKeyDown);
@@ -180,12 +180,12 @@ document.addEventListener("DOMContentLoaded", () => {
         // worker.postMessage("./Models/model.ifc");
         worker.postMessage({
             type: "load",
-            data: "./Models/Clinic_HVAC.bmt",
+            data: "./Models/model.bmt",
         });
     });
     demoIfc.addEventListener("click", () => {
         viewer
-            .loadModel("Models/model.ifc", true, (a) => {
+            .loadModel("Models/Clinic_Architectural.ifc", true, (a) => {
                 console.log(a.type, (a.current * 100) / a.total);
             })
             .then((model) => {
