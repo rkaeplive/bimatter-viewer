@@ -15,10 +15,15 @@ export declare class Controls {
     private _moving;
     private _position;
     private _activeMode;
+    private _activeModeKeyUpEvents;
+    private _activeModeKeyDownEvents;
+    private _activeModeRendererEvent;
     settings: {
         speed: number;
         rotateSpeed: number;
         upSpeed: number;
+        polarRotateSpeed: number;
+        azimuthRotateSpeed: number;
     };
     get activeMode(): keyof typeof modeEnum;
     set activeMode(mode: keyof typeof modeEnum);

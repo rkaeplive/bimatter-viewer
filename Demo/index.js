@@ -282,6 +282,7 @@ function onKeyDown(event) {
         if (viewer.context.controls.activeMode !== "1stPerson") {
             viewer.context.controls.activeMode = "1stPerson";
         } else {
+            viewer.context.controls.activeMode = "Orthographic";
         }
     }
     if (event.code === "KeyI") {
