@@ -9,6 +9,7 @@ import { TDecoder } from "./Utils.types";
 import { DimensionsUtils } from "./DimentionsUtils/DimentionsUtils";
 import { OsUtils } from "./OsUtils";
 import { KeysUtils } from "./KeysUtils/KeysUtils";
+import GUI from "lil-gui";
 export declare class Utils {
     readonly context: BimatterViewer;
     readonly propsUtils: PropsUtils;
@@ -19,6 +20,7 @@ export declare class Utils {
     readonly decoder: TDecoder;
     readonly osUtils: OsUtils;
     readonly keysUtils: KeysUtils;
+    readonly gui: GUI;
     stats: Stats | undefined;
     constructor(context: BimatterViewer);
     set useStats(useStats: boolean);
