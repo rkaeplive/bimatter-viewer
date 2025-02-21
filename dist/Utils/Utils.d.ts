@@ -9,7 +9,7 @@ import { TDecoder } from "./Utils.types";
 import { DimensionsUtils } from "./DimentionsUtils/DimentionsUtils";
 import { OsUtils } from "./OsUtils";
 import { KeysUtils } from "./KeysUtils/KeysUtils";
-import GUI from "lil-gui";
+import GUI from "./lil-gui/dist/lil-gui.esm";
 export declare class Utils {
     readonly context: BimatterViewer;
     readonly propsUtils: PropsUtils;

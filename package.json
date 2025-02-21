@@ -23,7 +23,6 @@
     "dependencies": {
         "@types/pako": "^2.0.3",
         "camera-controls": "^2.7.1",
-        "lil-gui": "^0.20.0",
         "three": "^0.163.0"
     },
     "devDependencies": {
