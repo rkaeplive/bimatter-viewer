@@ -7,6 +7,6 @@ export declare class BMTConverter {
         props: string | undefined;
     }>;
     private jsonStringifySync;
-    exportIfcModel(modelID: number, activeView?: boolean, minVersion?: boolean, fileName?: string): Promise<void>;
+    exportIfcModel(modelID: number, activeView?: boolean, minVersion?: boolean, fileName?: string, grids?: any): Promise<void>;
     private exportBMT;
 }

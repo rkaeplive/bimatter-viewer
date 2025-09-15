@@ -1,23 +1,27 @@
-import { BufferGeometry, Mesh, Vector3 } from "three";
+import { BufferGeometry, Group, Vector3 } from "three";
 import { Selector } from "../Selector";
+export interface PreselectState {
+    [modelID: number]: {
+        [matId: number]: BufferGeometry;
+    };
+}
 export declare class PreSelection {
     readonly context: Selector;
     private _active;
     private _usePreSelectBind;
-    _preSelectMesh: Mesh;
+    _preSelectMesh: Group;
     private _activeElement;
     private _activeFace;
     private _activePoint;
+    private _activeModelID;
     private _intersectLength;
     private _intersectDistance;
     private _needUpdate;
-    preselectModels: {
-        [modelID: number]: BufferGeometry;
-    };
     private deep;
+    state: PreselectState;
     constructor(context: Selector);
     get preSelectElement(): {
-        mesh: Mesh<BufferGeometry<import("three").NormalBufferAttributes>, import("three").Material | import("three").Material[], import("three").Object3DEventMap>;
+        mesh: Group<import("three").Object3DEventMap>;
         elementID: number;
         modelID: number;
         point: Vector3;

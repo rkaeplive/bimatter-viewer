@@ -2,13 +2,16 @@ import { Model } from "../../Model/Model";
 import { PropsData, Structure } from "../../Model/Model.types";
 import { Loaders } from "../Loaders";
 import { Group } from "three";
-import { IfcAPI } from "./IFCParser/web-ifc-api-node";
+import { IfcAPI } from "./IFCParser/web-ifc-api";
 import { onLoadCallbackT } from "../Loaders.types";
+import { LoadingProgressUtils } from "../LoadingProgressUtils/LoadingProgressUtils";
+import { GridData } from "./IfcGrid";
 export declare class IFCLoader {
     readonly context: Loaders;
     private parser;
     private propertySerializer;
     private _wasmPath;
+    chunk: number;
     private curModelId;
     constructor(context: Loaders);
     getPath(path: string, dir: string): string;
@@ -22,6 +25,9 @@ export declare class IFCLoader {
         propsData: PropsData;
         group: Group;
         modelID: number;
+        grids: {
+            [key: string]: GridData;
+        };
     }>;
     getModelDataFromBuffer(file: ArrayBuffer): Promise<{
         structure: {
@@ -32,5 +38,21 @@ export declare class IFCLoader {
         propsData: PropsData;
         group: Group<import("three").Object3DEventMap>;
         modelID: number;
+        grids: {
+            [key: number]: GridData;
+        };
     }>;
+}
+export declare class IfcParser {
+    private parser;
+    private ifcModelID;
+    readonly progressUtils: LoadingProgressUtils | undefined;
+    private materials;
+    constructor(parser: IfcAPI, ifcModelID: number, progressUtils: LoadingProgressUtils | undefined);
+    parseData(allIds: Set<number>): Group<import("three").Object3DEventMap>;
+    private getPlacedGeometry;
+    private getBufferGeometry;
+    private getMeshMaterial;
+    private getMeshMatrix;
+    private ifcGeometryToBuffer;
 }

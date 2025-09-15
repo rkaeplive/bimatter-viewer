@@ -1,4 +1,4 @@
-export type onLoadCallbackT = (arg: LoadingState) => void;
+export type onLoadCallbackT = (arg: LoadingState) => Promise<void>;
 export interface LoadingState {
     type: string;
     total: number;

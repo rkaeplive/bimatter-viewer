@@ -2,7 +2,7 @@ import { Selection } from "./Selection/Selection";
 import { PreSelection } from "./PreSelection/PreSelection";
 import BimatterViewer from "..";
 import { SelectionBox } from "./SelectionBox";
-import { Mesh, MeshLambertMaterial } from "three";
+import { MeshLambertMaterial, Object3D, Object3DEventMap } from "three";
 export declare class Selector {
     readonly context: BimatterViewer;
     readonly selMaterial: MeshLambertMaterial;
@@ -12,7 +12,7 @@ export declare class Selector {
     };
     isSelected: boolean;
     readonly selectorModels: {
-        [modelID: number]: Mesh;
+        [modelID: number]: Object3D<Object3DEventMap>[];
     };
     private _usePreSelection;
     private _selection;

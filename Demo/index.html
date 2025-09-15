@@ -13,6 +13,22 @@
             id="container"
         ></div>
         <div
+            id="progress-wrap"
+            style="
+                display: flex;
+                position: absolute;
+                top: 0px;
+                left: 660px;
+                height: 40px;
+                width: 400px;
+                justify-content: start;
+                align-items: center;
+                background-color: transparent;
+            "
+        >
+            <div id="progress"></div>
+        </div>
+        <div
             style="
                 position: absolute;
                 top: 10px;
@@ -22,7 +38,12 @@
             "
         >
             Загрузить файл
-            <input type="file" id="file-input" accept=".bmt,.ifc" />
+            <input
+                type="file"
+                multiple="true"
+                id="file-input"
+                accept=".bmt,.ifc"
+            />
         </div>
 
         <div
@@ -49,6 +70,12 @@
             style="position: absolute; top: 10px; left: 400px"
         >
             load demo bmt
+        </button>
+        <button
+            id="demo-worker"
+            style="position: absolute; top: 10px; left: 510px"
+        >
+            worker load demo ifc
         </button>
         <button
             id="export-bmt"
