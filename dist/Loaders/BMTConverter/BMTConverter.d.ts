@@ -5,7 +5,7 @@ export declare class BMTConverter {
     convertIfcToBmt(data: ArrayBuffer, useMinVersion?: boolean): Promise<{
         data: Uint8Array[];
         props: string | undefined;
-    }>;
+    } | undefined>;
     private jsonStringifySync;
     exportIfcModel(modelID: number, activeView?: boolean, minVersion?: boolean, fileName?: string, grids?: any): Promise<void>;
     private exportBMT;

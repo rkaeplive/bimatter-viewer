@@ -84,7 +84,11 @@ document.addEventListener("DOMContentLoaded", () => {
         "change",
         (changed) => {
             const file = changed.target.files[0];
-            viewer.loaders.bmtConverter.convertIfcToBmt(file);
+            file.arrayBuffer().then((buffer) => {
+                viewer.loaders.bmtConverter
+                    .convertIfcToBmt(buffer)
+                    .then((res) => console.log(res));
+            });
         },
         false
     );
@@ -219,10 +223,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     exportBmt.addEventListener("click", (e) => {
         if (viewer && viewer.models[0]) {
-            viewer.loaders.bmtConverter.exportBMT({
-                modelID: 0,
-                activeView: exportIsActiveView.checked,
-            });
+            viewer.loaders.bmtConverter
+                .exportIfcModel(0, exportIsActiveView.checked)
+                .then((res) => {
+                    console.log(res);
+                });
         }
     });
     window.viewer = viewer;
