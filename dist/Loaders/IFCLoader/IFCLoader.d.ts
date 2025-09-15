@@ -29,7 +29,7 @@ export declare class IFCLoader {
             [key: string]: GridData;
         };
     }>;
-    getModelDataFromBuffer(file: ArrayBuffer): Promise<{
+    getModelDataFromBuffer(file: ArrayBuffer): Promise<false | {
         structure: {
             id: number;
             type: string;
