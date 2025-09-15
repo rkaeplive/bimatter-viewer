@@ -2,9 +2,10 @@ import { Model } from "../../Model/Model";
 import { PropsData, Structure } from "../../Model/Model.types";
 import { Loaders } from "../Loaders";
 import { Group } from "three";
-import { IfcAPI } from "./IFCParser/web-ifc-api-node";
+import { IfcAPI } from "./IFCParser/web-ifc-api";
 import { onLoadCallbackT } from "../Loaders.types";
 import { LoadingProgressUtils } from "../LoadingProgressUtils/LoadingProgressUtils";
+import { GridData } from "./IfcGrid";
 export declare class IFCLoader {
     readonly context: Loaders;
     private parser;
@@ -24,6 +25,9 @@ export declare class IFCLoader {
         propsData: PropsData;
         group: Group;
         modelID: number;
+        grids: {
+            [key: string]: GridData;
+        };
     }>;
     getModelDataFromBuffer(file: ArrayBuffer): Promise<{
         structure: {
@@ -34,6 +38,9 @@ export declare class IFCLoader {
         propsData: PropsData;
         group: Group<import("three").Object3DEventMap>;
         modelID: number;
+        grids: {
+            [key: number]: GridData;
+        };
     }>;
 }
 export declare class IfcParser {
