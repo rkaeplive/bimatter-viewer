@@ -12,7 +12,7 @@ import { saveAs } from "file-saver";
 
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("container");
-    const viewer = new BimatterViewer({ container });
+    const viewer = new BimatterViewer({ container, useDefaultTexture: false });
     // viewer.bvhManager.useWorker = new Worker(
     //     new URL("./Worker/bvhWorker.js", import.meta.url),
     //     {
@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     exportBmt.addEventListener("click", (e) => {
         if (viewer && viewer.models[0]) {
-            viewer.loaders.bmtConverter
+            viewer.loaders.s
                 .exportIfcModel(0, exportIsActiveView.checked)
                 .then((res) => {
                     console.log(res);

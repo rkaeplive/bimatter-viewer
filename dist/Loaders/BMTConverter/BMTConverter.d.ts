@@ -7,7 +7,10 @@ export declare class BMTConverter {
         props: string | undefined;
     } | undefined>;
     private jsonStringifySync;
-    exportIfcModel(modelID: number, activeView?: boolean, minVersion?: boolean, fileName?: string, grids?: any): Promise<void>;
+    exportIfcModel(modelID: number, activeView?: boolean, minVersion?: boolean, fileName?: string, grids?: any): Promise<{
+        data: Uint8Array[];
+        props: string | undefined;
+    }>;
     private addPropertiesDataToBlob;
     private exportBMT;
 }
