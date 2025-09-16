@@ -86,8 +86,21 @@ document.addEventListener("DOMContentLoaded", () => {
             const file = changed.target.files[0];
             file.arrayBuffer().then((buffer) => {
                 viewer.loaders.bmtConverter
-                    .convertIfcToBmt(buffer)
-                    .then((res) => console.log(res));
+                    .convertIfcToBmt(buffer, true)
+                    .then((res) => {
+                        const blob = new Blob(res.data);
+                        const url = URL.createObjectURL(blob);
+                        // создаём <a> и кликаем по нему
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = "example.min.bmt";
+                        document.body.appendChild(a);
+                        a.click();
+
+                        // чистим
+                        a.remove();
+                        URL.revokeObjectURL(url);
+                    });
             });
         },
         false

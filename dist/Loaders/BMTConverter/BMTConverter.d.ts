@@ -8,5 +8,6 @@ export declare class BMTConverter {
     } | undefined>;
     private jsonStringifySync;
     exportIfcModel(modelID: number, activeView?: boolean, minVersion?: boolean, fileName?: string, grids?: any): Promise<void>;
+    private addPropertiesDataToBlob;
     private exportBMT;
 }
