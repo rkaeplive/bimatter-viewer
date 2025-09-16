@@ -28,6 +28,7 @@ export declare class ModelGrids {
         g: number;
         b: number;
     };
-    rgb2hsl(hex: any): number[];
-    changeColor(hex: any): "#000000" | "#FFFFFF";
+    hex2hsl(hex: any): number[];
+    rgb2hsl(r: number, g: number, b: number): number[];
+    changeColor(color: any): "#000000" | "#FFFFFF";
 }
