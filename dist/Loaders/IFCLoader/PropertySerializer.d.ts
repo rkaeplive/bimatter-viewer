@@ -14,6 +14,10 @@ export declare class PropertySerializer {
     serializeAllProperties(modelID: number, ids: Set<number>, onLoadCallback?: onLoadCallbackT): Promise<any>;
     getPropertiesAsBlobs(modelID: number, ids: Set<number>, onLoadCallback?: onLoadCallbackT): Promise<any>;
     getItemProperty(modelID: number, id: number, flatten?: boolean): Promise<any>;
+    getElementsAssembly(modelID: number): Promise<{
+        dict: any;
+        ids: number[];
+    }>;
     private formatItemProperties;
     private getAllRelDefinesByProps;
     getSpatialStructure(modelID: number, includeProperties?: boolean): Promise<{

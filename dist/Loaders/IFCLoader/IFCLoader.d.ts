@@ -8,6 +8,7 @@ import { LoadingProgressUtils } from "../LoadingProgressUtils/LoadingProgressUti
 import { GridData } from "./IfcGrid";
 export declare class IFCLoader {
     readonly context: Loaders;
+    useIfcElemetAssembly: boolean;
     private parser;
     private propertySerializer;
     private _wasmPath;
@@ -48,8 +49,15 @@ export declare class IfcParser {
     private ifcModelID;
     readonly progressUtils: LoadingProgressUtils | undefined;
     private materials;
+    elementsAssembly: {
+        dict: any;
+        ids: number[];
+    } | null;
     constructor(parser: IfcAPI, ifcModelID: number, progressUtils: LoadingProgressUtils | undefined);
-    parseData(allIds: Set<number>): Group<import("three").Object3DEventMap>;
+    parseData(allIds: Set<number>, elementsAssembly: {
+        dict: any;
+        ids: number[];
+    } | null): Group<import("three").Object3DEventMap>;
     private getPlacedGeometry;
     private getBufferGeometry;
     private getMeshMaterial;
