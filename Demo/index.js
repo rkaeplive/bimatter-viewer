@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     demoWorker.addEventListener("click", () => {
         const worker = new Worker(
-            new URL("./Worker/bmtLoaderWorker.js", import.meta.url),
+            new URL("./Worker/ifcLoaderWorker.js", import.meta.url),
             {
                 type: "module",
             }
@@ -117,6 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const selectGroup = new Group();
         const preselectGroup = new Group();
         worker.onmessage = (data) => {
+            console.log(data.data);
             if (data.data.ready) {
                 viewer.selector.selectorModels[model.modelID] =
                     model.threeGeometry.children;
@@ -197,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // worker.postMessage("./Models/model.ifc");
         worker.postMessage({
             type: "load",
-            data: "./Models/model.bmt",
+            data: "./Models/worker.ifc",
         });
     });
     demoIfc.addEventListener("click", () => {

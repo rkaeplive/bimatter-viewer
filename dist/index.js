@@ -4350,11 +4350,14 @@ class BMTConverter {
     constructor(context) {
         this.context = context;
     }
-    convertIfcToBmt(data, useMinVersion) {
+    convertIfcToBmt(data, useMinVersion, wasmPath) {
         return __awaiter(this, void 0, void 0, function* () {
             const start = Date.now();
             console.log("start converting");
             function getPath(path, dir) {
+                if (wasmPath) {
+                    return wasmPath;
+                }
                 return "ifc-parser-node.wasm";
             }
             yield this.context.ifcLoader.initParser(getPath);
@@ -4778,6 +4781,8 @@ const IfcGrid_1 = __webpack_require__(7314);
 class IFCLoader {
     constructor(context) {
         this.context = context;
+        this.useIfcElemetAssembly = false;
+        this.useIfcColors = false;
         this._wasmPath = "./";
         this.chunk = 1000;
         this.curModelId = -1;
@@ -4867,7 +4872,10 @@ class IFCLoader {
             const schema = this.parser.GetModelSchema(ifcModelID);
             console.log("Parsing", schema, "model");
             const allIds = new Set();
-            const group = ifcParser.parseData(allIds);
+            let elementsAssembly = this.useIfcElemetAssembly
+                ? yield this.propertySerializer.getElementsAssembly(ifcModelID)
+                : null;
+            const group = ifcParser.parseData(allIds, elementsAssembly);
             const grids = this.parser.GetLineIDsWithType(ifcModelID, web_ifc_api_1.IFCGRID);
             const gridsProps = {};
             if (grids && grids.size()) {
@@ -4900,9 +4908,11 @@ class IfcParser {
         this.ifcModelID = ifcModelID;
         this.progressUtils = progressUtils;
         this.materials = {};
+        this.elementsAssembly = null;
     }
-    parseData(allIds) {
+    parseData(allIds, elementsAssembly) {
         var _a, _b, _c, _d;
+        this.elementsAssembly = elementsAssembly;
         const matMap = new Map();
         const group = new three_1.Group();
         const shapes = this.parser.GetLineIDsWithType(this.ifcModelID, web_ifc_api_1.IFCPRODUCTDEFINITIONSHAPE);
@@ -4917,7 +4927,13 @@ class IfcParser {
                 const placedGeometry = placedGeometries.get(i);
                 const [placedMesh, material] = this.getPlacedGeometry(placedGeometry, mesh.expressID);
                 let geometry = placedMesh.geometry.applyMatrix4(placedMesh.matrix);
-                allIds.add(mesh.expressID);
+                if (elementsAssembly) {
+                    let curId = elementsAssembly.dict[mesh.expressID];
+                    allIds.add(curId ? curId : mesh.expressID);
+                }
+                else {
+                    allIds.add(mesh.expressID);
+                }
                 if (matMap.has(material.name)) {
                     matMap.get(material.name).push(geometry);
                 }
@@ -5049,6 +5065,13 @@ class IfcParser {
         const posFloats = new Float32Array(vertexData.length / 2);
         const normFloats = new Float32Array(vertexData.length / 2);
         const idAttribute = new Uint32Array(vertexData.length / 6);
+        let curID = id;
+        if (this.elementsAssembly) {
+            curID = this.elementsAssembly.dict[id];
+            if (curID === undefined) {
+                curID = id;
+            }
+        }
         for (let i = 0; i < vertexData.length; i += 6) {
             let posx = vertexData[i];
             let posy = vertexData[i + 1];
@@ -5062,7 +5085,7 @@ class IfcParser {
             normFloats[i / 2] = normx ? normx : 0;
             normFloats[i / 2 + 1] = normy ? normy : 0;
             normFloats[i / 2 + 2] = normz ? normz : 0;
-            idAttribute[i / 6] = id;
+            idAttribute[i / 6] = curID;
         }
         geometry.setAttribute("position", new three_1.BufferAttribute(posFloats, 3));
         geometry.setAttribute("normal", new three_1.BufferAttribute(normFloats, 3));
@@ -5442,6 +5465,29 @@ class PropertySerializer {
                 console.log(`There was a problem getting the properties of the item with ID ${id}, ${e}`);
                 return null;
             }
+        });
+    }
+    getElementsAssembly(modelID) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const chunks = yield this.getSpatialTreeChunks(modelID);
+            const allLines = yield this.context._parser.GetLineIDsWithType(modelID, web_ifc_api_node_1.IFCELEMENTASSEMBLY);
+            const dict = {};
+            const ids = [];
+            for (let i = 0; i < allLines.size(); i++) {
+                const element_id = allLines.get(i);
+                ids.push(element_id);
+                const assembly = this.newIfcProject(element_id);
+                yield this.getSpatialNode(modelID, assembly, chunks, false);
+                assembly.children.forEach((e) => {
+                    const curId = e.expressID !== undefined ? e.expressID : e.id;
+                    if (e.type === "IfcMechanicalFastener") {
+                        dict[curId] = curId;
+                        return;
+                    }
+                    dict[curId] = element_id;
+                });
+            }
+            return { dict, ids };
         });
     }
     formatItemProperties(props) {
