@@ -9,6 +9,7 @@ import { GridData } from "./IfcGrid";
 export declare class IFCLoader {
     readonly context: Loaders;
     useIfcElemetAssembly: boolean;
+    useIfcColors: boolean;
     private parser;
     private propertySerializer;
     private _wasmPath;

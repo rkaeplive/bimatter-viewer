@@ -4350,11 +4350,14 @@ class BMTConverter {
     constructor(context) {
         this.context = context;
     }
-    convertIfcToBmt(data, useMinVersion) {
+    convertIfcToBmt(data, useMinVersion, wasmPath) {
         return __awaiter(this, void 0, void 0, function* () {
             const start = Date.now();
             console.log("start converting");
             function getPath(path, dir) {
+                if (wasmPath) {
+                    return wasmPath;
+                }
                 return "ifc-parser-node.wasm";
             }
             yield this.context.ifcLoader.initParser(getPath);
@@ -4779,6 +4782,7 @@ class IFCLoader {
     constructor(context) {
         this.context = context;
         this.useIfcElemetAssembly = false;
+        this.useIfcColors = false;
         this._wasmPath = "./";
         this.chunk = 1000;
         this.curModelId = -1;
