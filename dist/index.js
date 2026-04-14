@@ -4328,7 +4328,7 @@ exports.Scene = Scene;
 
 /***/ }),
 
-/***/ 2828:
+/***/ 3232:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -4506,15 +4506,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BMTLoader = void 0;
+exports.BMTLoader = exports.ChunkType = void 0;
 const three_1 = __webpack_require__(5232);
 const Model_1 = __webpack_require__(6118);
 const decoder_1 = __webpack_require__(730);
 const __1 = __webpack_require__(713);
+const BinaryReader_1 = __webpack_require__(5373);
+var ChunkType;
+(function (ChunkType) {
+    ChunkType[ChunkType["PROP"] = 1] = "PROP";
+    ChunkType[ChunkType["MESH"] = 2] = "MESH";
+    ChunkType[ChunkType["STRUCTURE"] = 3] = "STRUCTURE";
+    ChunkType[ChunkType["GRIDS"] = 4] = "GRIDS";
+    ChunkType[ChunkType["MATRIX"] = 5] = "MATRIX";
+})(ChunkType || (exports.ChunkType = ChunkType = {}));
 class BMTLoader {
     constructor(context) {
         this.context = context;
         this.curMatrix = new three_1.Matrix4();
+        this.textDecoder = new TextDecoder("utf-8");
     }
     streamToBlob(data, start) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -4544,21 +4554,20 @@ class BMTLoader {
             console.log("Parsing BMT model");
             try {
                 const buffer = yield data.arrayBuffer();
-                let data2 = new Uint8Array(buffer);
-                if (!data2)
-                    throw new Error("wrong input data");
-                if (typeof data2 === "string")
-                    throw new Error(data2);
                 const modelIds = Object.keys(this.context.context.models).map((p) => Number(p));
                 const modelID = modelIds.length ? Math.max(...modelIds) + 1 : 0;
                 if (this.context.context.utils.stats) {
                     console.log("decoding:", Date.now() - start, "ms");
                 }
-                let modelData = yield this.parseBinaryFile(data2, start);
+                const group = new three_1.Group();
+                const idsState = {};
+                const indState = {};
+                const defIdsState = {};
+                const defIndState = {};
+                let modelData = yield this.parseBinaryFile(buffer, group, idsState, indState, defIdsState, defIndState, start);
                 if (this.context.context.utils.stats) {
                     console.log("parsing file:", Date.now() - start, "ms");
                 }
-                const [group, idsState, indState, defIdsState, defIndState] = this.parseModelData(modelData[1]);
                 if (this.context.context.utils.stats) {
                     console.log("parsing geometry:", Date.now() - start, "ms");
                 }
@@ -4575,179 +4584,185 @@ class BMTLoader {
             }
         });
     }
-    parseBinaryFile(data, start) {
+    decodeBuffer(buffer) {
+        return this.textDecoder.decode(decoder_1.default.inflate(buffer));
+    }
+    parseMesh(data) {
+        const view = new DataView(data.buffer, data.byteOffset);
+        let offset = 0;
+        const readChunk = () => {
+            const len = view.getUint32(offset, true);
+            offset += 4;
+            const arr = new Uint8Array(data.buffer, data.byteOffset + offset, len);
+            offset += len;
+            return arr;
+        };
+        const pos = readChunk();
+        const ids = readChunk();
+        const ind = readChunk();
+        const colorId = readChunk();
+        return { pos, ids, ind, colorId };
+    }
+    parseBinaryFile(data, group, idsState, indState, defIdsState, defIndState, start) {
         return __awaiter(this, void 0, void 0, function* () {
-            let flag = false;
-            let i = 0;
-            let j = 0;
-            let m = 0;
             let gridsData;
-            const textDecoder = new TextDecoder("utf-8");
-            const settingsStart = data.indexOf(123);
-            const settingsEnd = data.indexOf(125);
-            const settingsPart = data.subarray(settingsStart, settingsEnd + 1);
-            const settings = JSON.parse(textDecoder.decode(settingsPart));
-            const propsCount = settings["props"];
-            delete settings["props"];
-            const matrix = settings["matrix"];
-            if (matrix) {
-                delete settings["matrix"];
-                const matrixArr = JSON.parse(matrix);
-                this.curMatrix = new three_1.Matrix4().fromArray(matrixArr).invert();
-                if (!this.context.coordinationMatrix) {
-                    this.context.coordinationMatrix = this.curMatrix
-                        .clone()
-                        .invert();
-                }
+            const reader = new BinaryReader_1.default(data);
+            const magic = new TextDecoder().decode(reader.readBytes(3));
+            if (magic !== "BMT") {
+                throw new Error("Invalid file");
             }
-            let curStart = settingsEnd + 1;
+            const version = reader.readUint8();
             const propsData = {};
-            let offset = 0;
-            const propStart = curStart;
-            while (curStart < propStart + propsCount) {
-                const curCount = Array.from(new Uint32Array(new Uint8Array(data.subarray(curStart, curStart + 4)).buffer))[0];
-                const curPropData = decoder_1.default.ungzip(data.subarray(curStart + 4, curStart + 4 + curCount));
-                const prop = JSON.parse(textDecoder.decode(curPropData));
-                if (prop.isGridsData) {
-                    gridsData = prop.data;
-                }
-                else {
-                    propsData[prop.id] = prop;
-                }
-                curStart += 4 + curCount;
-            }
             const posData = {};
-            for (const matId of Object.keys(settings)) {
-                const [posCount, idsCount, indCount] = settings[matId];
-                const posStart = curStart;
-                const posEnd = posStart + posCount;
-                const idsStart = posEnd;
-                const idsEnd = idsStart + idsCount;
-                const indStart = idsEnd;
-                const indEnd = indStart + indCount;
-                const subPos = data.subarray(posStart, posEnd);
-                const subIds = data.subarray(idsStart, idsEnd);
-                const subInd = data.subarray(indStart, indEnd);
-                const posArr = new Float32Array(new Uint8Array(decoder_1.default.ungzip(subPos)).buffer);
-                const idsArr = new Uint32Array(new Uint8Array(decoder_1.default.ungzip(subIds)).buffer);
-                const indArr = Array.from(new Uint32Array(new Uint8Array(decoder_1.default.ungzip(subInd)).buffer));
-                const curData = [posArr, idsArr];
-                posData[matId] = curData;
-                if (indArr && indArr.length) {
-                    curData.push(indArr);
-                }
-                curStart = indEnd;
-            }
-            const endPart = data.subarray(curStart);
             let structure = { id: 1, type: "none", children: [] };
-            if (endPart.length) {
-                const curStructureData = decoder_1.default.ungzip(endPart);
-                structure = JSON.parse(textDecoder.decode(curStructureData));
+            const materialState = {};
+            const inflate = (data) => this.context.context.utils.decoder.inflate(data);
+            let materialId = 0;
+            while (!reader.eof()) {
+                const type = reader.readUint8();
+                const length = reader.readUint32();
+                const data = reader.readBytes(length);
+                switch (type) {
+                    case ChunkType.MESH:
+                        let meshData = this.parseMesh(data);
+                        let pos = inflate(meshData.pos);
+                        let ids = inflate(meshData.ids);
+                        let ind = inflate(meshData.ind);
+                        const colorId = this.decodeBuffer(meshData.colorId);
+                        let matData;
+                        let opacity;
+                        let chunkName;
+                        try {
+                            matData = JSON.parse(colorId);
+                            if (colorId.includes(".")) {
+                                opacity = matData[3];
+                                chunkName = matData[4];
+                            }
+                            else {
+                                opacity = matData[4]
+                                    ? `${matData[3]}.${matData[4]}`
+                                    : matData[3];
+                            }
+                        }
+                        catch (_a) {
+                            const splited = colorId
+                                .substring(1, colorId.length - 1)
+                                .split(",");
+                            if (splited.length === 5) {
+                                matData = [
+                                    Number(splited[0]),
+                                    Number(splited[1]),
+                                    Number(splited[2]),
+                                    Number(splited[3]),
+                                    Number(splited[4]),
+                                ];
+                            }
+                            else {
+                                matData = [125, 125, 125, 1, 0];
+                            }
+                            opacity = matData[4]
+                                ? `${matData[3]}.${matData[4]}`
+                                : matData[3];
+                        }
+                        if (!materialState[colorId]) {
+                            materialId++;
+                            materialState[colorId] = {
+                                id: materialId.toString(),
+                                material: new three_1.MeshLambertMaterial({
+                                    color: new three_1.Color(matData[0] / 255, matData[1] / 255, matData[2] / 255),
+                                    transparent: Number(opacity) < 1,
+                                    opacity: Number(opacity),
+                                    premultipliedAlpha: true,
+                                    name: chunkName ? chunkName : materialId,
+                                    side: three_1.DoubleSide,
+                                }),
+                            };
+                        }
+                        const curMaterial = materialState[colorId];
+                        if (!chunkName) {
+                            chunkName = curMaterial.id;
+                        }
+                        const geom = new three_1.BufferGeometry();
+                        geom.setAttribute("position", new three_1.BufferAttribute(new Float32Array(pos.buffer), 3));
+                        geom.setAttribute("ids", new three_1.BufferAttribute(new Uint32Array(ids.buffer), 1));
+                        let indexArr;
+                        if (ind && ind.length) {
+                            indexArr = ind.buffer;
+                        }
+                        else {
+                            indexArr = Array.from(Array(pos.length).keys());
+                        }
+                        const indexBuffer = new Uint32Array(indexArr);
+                        indState[chunkName] = indexBuffer;
+                        defIndState[chunkName] = indexBuffer;
+                        geom.setIndex(Array.from(indexBuffer));
+                        geom.computeVertexNormals();
+                        geom.computeBoundingBox();
+                        const idsAttr = geom.attributes.ids;
+                        const indAttr = geom.index;
+                        for (let i = 0; i < (indAttr ? indAttr.count : idsAttr.count); i++) {
+                            const index = indAttr ? indAttr.getX(i) : i;
+                            const element = idsAttr.getX(index);
+                            const elData = idsState[element];
+                            if (elData) {
+                                const elMatData = elData[chunkName];
+                                if (elMatData) {
+                                    elMatData.push(index);
+                                    defIdsState[element][chunkName].push(index);
+                                }
+                                else {
+                                    elData[chunkName] = [index];
+                                    defIdsState[element][chunkName] = [index];
+                                }
+                            }
+                            else {
+                                idsState[element] = { [chunkName]: [index] };
+                                defIdsState[element] = { [chunkName]: [index] };
+                            }
+                        }
+                        if (this.context.context instanceof __1.default &&
+                            Object.keys(this.context.context.models).length &&
+                            this.context.coordinationMatrix) {
+                            geom.applyMatrix4(this.curMatrix);
+                            geom.applyMatrix4(this.context.coordinationMatrix);
+                        }
+                        const mesh = new three_1.Mesh(geom, curMaterial.material);
+                        mesh.name = chunkName.toString();
+                        group.add(mesh);
+                        meshData = null;
+                        pos = null;
+                        ind = null;
+                        ids = null;
+                        break;
+                    case ChunkType.PROP:
+                        const prop = JSON.parse(this.decodeBuffer(data));
+                        propsData[prop.id] = prop;
+                        break;
+                    case ChunkType.STRUCTURE:
+                        structure = JSON.parse(this.decodeBuffer(data));
+                        break;
+                    case ChunkType.GRIDS:
+                        gridsData = JSON.parse(this.decodeBuffer(data));
+                        break;
+                    case ChunkType.MATRIX:
+                        if (length) {
+                            const matrixArr = JSON.parse(this.decodeBuffer(data));
+                            this.curMatrix = new three_1.Matrix4()
+                                .fromArray(matrixArr)
+                                .invert();
+                            if (!this.context.coordinationMatrix) {
+                                this.context.coordinationMatrix = this.curMatrix
+                                    .clone()
+                                    .invert();
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
             return [propsData, posData, structure, gridsData];
         });
-    }
-    parseModelData(modelData) {
-        const group = new three_1.Group();
-        const idsState = {};
-        const indState = {};
-        const defIdsState = {};
-        const defIndState = {};
-        let matId = 0;
-        for (const matData_str of Object.keys(modelData)) {
-            let matData;
-            let chunkName = matId.toString();
-            let opacity;
-            try {
-                matData = JSON.parse(matData_str);
-                if (matData_str.includes(".")) {
-                    opacity = matData[3];
-                    chunkName = matData[4];
-                }
-                else {
-                    opacity = matData[4]
-                        ? `${matData[3]}.${matData[4]}`
-                        : matData[3];
-                }
-            }
-            catch (_a) {
-                const splited = matData_str
-                    .substring(1, matData_str.length - 1)
-                    .split(",");
-                if (splited.length === 5) {
-                    matData = [
-                        Number(splited[0]),
-                        Number(splited[1]),
-                        Number(splited[2]),
-                        Number(splited[3]),
-                        Number(splited[4]),
-                    ];
-                }
-                else {
-                    matData = [125, 125, 125, 1, 0];
-                }
-                opacity = matData[4]
-                    ? `${matData[3]}.${matData[4]}`
-                    : matData[3];
-            }
-            const chunkData = modelData[matData_str];
-            const curMaterial = new three_1.MeshLambertMaterial({
-                color: new three_1.Color(matData[0] / 255, matData[1] / 255, matData[2] / 255),
-                transparent: Number(opacity) < 1,
-                opacity: Number(opacity),
-                premultipliedAlpha: true,
-                name: chunkName,
-                side: three_1.DoubleSide,
-            });
-            const geom = new three_1.BufferGeometry();
-            geom.setAttribute("position", new three_1.BufferAttribute(chunkData[0], 3));
-            geom.setAttribute("ids", new three_1.BufferAttribute(chunkData[1], 1));
-            let indexArr;
-            if (chunkData[2]) {
-                indexArr = chunkData[2];
-            }
-            else {
-                indexArr = Array.from(Array(chunkData[1].length).keys());
-            }
-            indState[chunkName] = new Uint32Array(indexArr);
-            defIndState[chunkName] = new Uint32Array(indexArr);
-            geom.setIndex(indexArr);
-            geom.computeVertexNormals();
-            geom.computeBoundingBox();
-            const idsAttr = geom.attributes.ids;
-            const indAttr = geom.index;
-            for (let i = 0; i < (indAttr ? indAttr.count : idsAttr.count); i++) {
-                const index = indAttr ? indAttr.getX(i) : i;
-                const element = idsAttr.getX(index);
-                const elData = idsState[element];
-                if (elData) {
-                    const elMatData = elData[chunkName];
-                    if (elMatData) {
-                        elMatData.push(index);
-                        defIdsState[element][chunkName].push(index);
-                    }
-                    else {
-                        elData[chunkName] = [index];
-                        defIdsState[element][chunkName] = [index];
-                    }
-                }
-                else {
-                    idsState[element] = { [chunkName]: [index] };
-                    defIdsState[element] = { [chunkName]: [index] };
-                }
-            }
-            if (this.context.context instanceof __1.default &&
-                Object.keys(this.context.context.models).length &&
-                this.context.coordinationMatrix) {
-                geom.applyMatrix4(this.curMatrix);
-                geom.applyMatrix4(this.context.coordinationMatrix);
-            }
-            const mesh = new three_1.Mesh(geom, curMaterial);
-            mesh.name = chunkName.toString();
-            group.add(mesh);
-            matId++;
-        }
-        return [group, idsState, indState, defIdsState, defIndState];
     }
 }
 exports.BMTLoader = BMTLoader;
@@ -5635,16 +5650,16 @@ exports.PropertySerializer = PropertySerializer;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Loaders = void 0;
-const BMTConverter_1 = __webpack_require__(2828);
-const BMTLoader_1 = __webpack_require__(8744);
 const IFCLoader_1 = __webpack_require__(4686);
 const LoadingProgressUtils_1 = __webpack_require__(2386);
+const BMTLoader_1 = __webpack_require__(8744);
+const BMTConverter_ex_1 = __webpack_require__(3232);
 class Loaders {
     constructor(context) {
         this.context = context;
         this.bmtLoader = new BMTLoader_1.BMTLoader(this);
         this.ifcLoader = new IFCLoader_1.IFCLoader(this);
-        this.bmtConverter = new BMTConverter_1.BMTConverter(this);
+        this.bmtConverter = new BMTConverter_ex_1.BMTConverter(this);
         this.loadingProgressUtils = new LoadingProgressUtils_1.LoadingProgressUtils(this);
     }
 }
@@ -7295,6 +7310,39 @@ class Selector {
     }
 }
 exports.Selector = Selector;
+
+
+/***/ }),
+
+/***/ 5373:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+class BinaryReader {
+    constructor(buffer) {
+        this.offset = 0;
+        this.view = new DataView(buffer);
+    }
+    readUint8() {
+        return this.view.getUint8(this.offset++);
+    }
+    readUint32() {
+        const v = this.view.getUint32(this.offset, true);
+        this.offset += 4;
+        return v;
+    }
+    readBytes(length) {
+        const bytes = new Uint8Array(this.view.buffer, this.offset, length);
+        this.offset += length;
+        return bytes;
+    }
+    eof() {
+        return this.offset >= this.view.byteLength;
+    }
+}
+exports["default"] = BinaryReader;
 
 
 /***/ }),
