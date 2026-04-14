@@ -3,7 +3,7 @@ import BimatterViewer, { BimatterConverter } from "..";
 import { IFCLoader } from "./IFCLoader/IFCLoader";
 import { LoadingProgressUtils } from "./LoadingProgressUtils/LoadingProgressUtils";
 import { BMTLoader } from "./BMTLoader/BMTLoader";
-import { BMTConverter } from "./BMTConverter/BMTConverter_ex";
+import { BMTConverter } from "./BMTConverter/BMTConverter";
 export declare class Loaders {
     readonly context: BimatterViewer | BimatterConverter;
     readonly bmtLoader: BMTLoader;

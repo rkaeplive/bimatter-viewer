@@ -4328,7 +4328,7 @@ exports.Scene = Scene;
 
 /***/ }),
 
-/***/ 3232:
+/***/ 2828:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -4346,6 +4346,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.BMTConverter = void 0;
 const Model_1 = __webpack_require__(6118);
 const __1 = __webpack_require__(713);
+const BMTLoader_1 = __webpack_require__(8744);
 class BMTConverter {
     constructor(context) {
         this.context = context;
@@ -4394,22 +4395,21 @@ class BMTConverter {
             });
         });
     }
-    addPropertiesDataToBlob(data, enc, blobArr) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const data_str = yield this.jsonStringifySync(data);
-            const encData = this.context.context.utils.decoder.deflate(enc.encode(data_str));
-            blobArr.push(new Uint8Array(new Uint32Array([encData.length]).buffer));
-            blobArr.push(encData);
-            return encData.length + 4;
-        });
+    writeUint32(value) {
+        const buf = new Uint8Array(4);
+        new DataView(buf.buffer).setUint32(0, value, true);
+        return buf;
+    }
+    writeChunk(type, data) {
+        const header = new Uint8Array(5);
+        header[0] = type;
+        new DataView(header.buffer).setUint32(1, data.length, true);
+        return [header, data];
     }
     exportBMT(config) {
         return __awaiter(this, void 0, void 0, function* () {
-            const minVersion = config.minVersion;
-            const activeView = config.activeView;
-            if (!config.fileName) {
-                config.fileName = "file";
-            }
+            const enc = new TextEncoder();
+            const deflate = (d) => this.context.context.utils.decoder.deflate(d);
             const model = config.modelID !== undefined &&
                 this.context.context instanceof __1.default
                 ? this.context.context.models[config.modelID]
@@ -4420,69 +4420,101 @@ class BMTConverter {
                     },
                     threeGeometry: config.group,
                 };
-            const blobArr = [];
-            var enc = new TextEncoder();
-            const settingsData = {};
-            let propsCouter = 0;
-            if (!minVersion) {
+            const parts = [];
+            const write = (chunk) => {
+                parts.push(chunk);
+            };
+            write(enc.encode("BMT"));
+            write(new Uint8Array([1]));
+            const writeChunkDirect = (type, data) => {
+                const [header, body] = this.writeChunk(type, data);
+                write(header);
+                write(body);
+            };
+            const matrix = this.context.context.loaders.coordinationMatrix
+                ? this.context.context.loaders.coordinationMatrix.toArray()
+                : null;
+            const matrixBin = deflate(enc.encode(JSON.stringify(matrix)));
+            writeChunkDirect(BMTLoader_1.ChunkType.MATRIX, matrixBin);
+            if (!config.minVersion) {
                 const elementIds = Object.keys(model.properties.data);
-                for (const key of elementIds) {
-                    const data = model.properties.data[Number(key)];
-                    propsCouter += yield this.addPropertiesDataToBlob(data, enc, blobArr);
+                for (let i = 0; i < elementIds.length; i++) {
+                    let data = model.properties.data[Number(elementIds[i])];
+                    const str = yield this.jsonStringifySync(data);
+                    const compressed = deflate(enc.encode(str));
+                    writeChunkDirect(BMTLoader_1.ChunkType.PROP, compressed);
+                    data = null;
+                    if (i % 500 === 0) {
+                        yield new Promise((r) => setTimeout(r, 0));
+                    }
                 }
             }
             if (config.grids) {
-                propsCouter += yield this.addPropertiesDataToBlob({
-                    data: config.grids,
-                    isGridsData: true,
-                }, enc, blobArr);
-            }
-            settingsData["props"] = propsCouter;
-            if (this.context.context.loaders.coordinationMatrix) {
-                settingsData["matrix"] = JSON.stringify(this.context.context.loaders.coordinationMatrix.toArray());
+                const str = yield this.jsonStringifySync(config.grids);
+                const compressed = deflate(enc.encode(str));
+                writeChunkDirect(BMTLoader_1.ChunkType.GRIDS, compressed);
             }
             const state = model instanceof Model_1.Model ? model.defaultState : undefined;
-            const decodedPos = [];
             for (const child of model.threeGeometry.children) {
                 const mesh = child;
-                const posArr = mesh.geometry.attributes.position;
-                const idsArr = mesh.geometry.attributes.ids;
-                const posArrDec = this.context.context.utils.decoder.deflate(new Uint8Array(posArr.array.buffer));
-                const idsPosDec = this.context.context.utils.decoder.deflate(new Uint8Array(idsArr.array.buffer));
-                const ind = activeView || !state
+                const pos = mesh.geometry.attributes.position.array;
+                const ids = mesh.geometry.attributes.ids.array;
+                const ind = config.activeView || !state
                     ? mesh.geometry.index.array
                     : state.indMap[Number(mesh.name)];
-                const indPosDec = this.context.context.utils.decoder.deflate(new Uint8Array(new Uint32Array(ind).buffer));
-                decodedPos.push(posArrDec, idsPosDec, indPosDec);
+                let posDef = deflate(new Uint8Array(pos.buffer));
+                let idsDef = deflate(new Uint8Array(ids.buffer));
+                let indDef = deflate(new Uint8Array(new Uint32Array(ind).buffer));
                 const color = mesh.material.color;
                 const opasity = mesh.material.opacity;
                 const colorId = `[${Math.round(color.r * 255)},${Math.round(color.g * 255)},${Math.round(color.b * 255)},${opasity},${mesh.name}]`;
-                settingsData[colorId] = [
-                    posArrDec.length,
-                    idsPosDec.length,
-                    indPosDec.length,
-                ];
+                const deflatedColorId = deflate(enc.encode(colorId));
+                const totalSize = 4 +
+                    posDef.length +
+                    4 +
+                    idsDef.length +
+                    4 +
+                    indDef.length +
+                    4 +
+                    deflatedColorId.length;
+                const buffer = new Uint8Array(totalSize);
+                const view = new DataView(buffer.buffer);
+                let offset = 0;
+                view.setUint32(offset, posDef.length, true);
+                offset += 4;
+                buffer.set(posDef, offset);
+                offset += posDef.length;
+                view.setUint32(offset, idsDef.length, true);
+                offset += 4;
+                buffer.set(idsDef, offset);
+                offset += idsDef.length;
+                view.setUint32(offset, indDef.length, true);
+                offset += 4;
+                buffer.set(indDef, offset);
+                offset += indDef.length;
+                view.setUint32(offset, deflatedColorId.length, true);
+                offset += 4;
+                buffer.set(deflatedColorId, offset);
+                writeChunkDirect(BMTLoader_1.ChunkType.MESH, buffer);
+                posDef = idsDef = indDef = null;
+                yield new Promise((r) => setTimeout(r, 0));
             }
-            const settingsData_str = JSON.stringify(settingsData);
-            blobArr.unshift(enc.encode(settingsData_str));
-            for (const posArr of decodedPos) {
-                blobArr.push(posArr);
-            }
-            if (!minVersion) {
-                const structure = model.properties.structure;
-                const structure_str = yield this.jsonStringifySync(structure);
-                const encStructureData = this.context.context.utils.decoder.deflate(enc.encode(structure_str));
-                blobArr.push(encStructureData);
+            if (!config.minVersion) {
+                const structureStr = yield this.jsonStringifySync(model.properties.structure);
+                const structureBin = deflate(enc.encode(structureStr));
+                writeChunkDirect(BMTLoader_1.ChunkType.STRUCTURE, structureBin);
             }
             let json;
-            if (minVersion) {
+            if (config.minVersion) {
                 json = yield this.jsonStringifySync({
                     props: model.properties.data,
                     structure: model.properties.structure,
                 });
             }
-            console.log("optimizing: ", Date.now() - config.start);
-            return { data: blobArr, props: json };
+            return {
+                data: new Blob(parts, { type: "application/octet-stream" }),
+                props: json,
+            };
         });
     }
 }
@@ -5653,13 +5685,13 @@ exports.Loaders = void 0;
 const IFCLoader_1 = __webpack_require__(4686);
 const LoadingProgressUtils_1 = __webpack_require__(2386);
 const BMTLoader_1 = __webpack_require__(8744);
-const BMTConverter_ex_1 = __webpack_require__(3232);
+const BMTConverter_1 = __webpack_require__(2828);
 class Loaders {
     constructor(context) {
         this.context = context;
         this.bmtLoader = new BMTLoader_1.BMTLoader(this);
         this.ifcLoader = new IFCLoader_1.IFCLoader(this);
-        this.bmtConverter = new BMTConverter_ex_1.BMTConverter(this);
+        this.bmtConverter = new BMTConverter_1.BMTConverter(this);
         this.loadingProgressUtils = new LoadingProgressUtils_1.LoadingProgressUtils(this);
     }
 }

@@ -15,7 +15,7 @@ interface ExportBmtProps {
         [key: string]: GridData;
     };
 }
-export declare class BMTConverter_v2 {
+export declare class BMTConverter {
     readonly context: Loaders;
     constructor(context: Loaders);
     convertIfcToBmt(data: ArrayBuffer, useMinVersion?: boolean, wasmPath?: string): Promise<{
