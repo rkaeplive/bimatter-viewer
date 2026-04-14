@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // input.parentNode.remove();
             inputConvert.parentNode.remove();
         },
-        false
+        false,
     );
     inputConvert.addEventListener(
         "change",
@@ -88,8 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 viewer.loaders.bmtConverter
                     .convertIfcToBmt(buffer, true)
                     .then((res) => {
-                        const blob = new Blob(res.data);
-                        const url = URL.createObjectURL(blob);
+                        const url = URL.createObjectURL(res.data);
                         // создаём <a> и кликаем по нему
                         const a = document.createElement("a");
                         a.href = url;
@@ -103,14 +102,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
             });
         },
-        false
+        false,
     );
     demoWorker.addEventListener("click", () => {
         const worker = new Worker(
             new URL("./Worker/ifcLoaderWorker.js", import.meta.url),
             {
                 type: "module",
-            }
+            },
         );
         const model = viewer.addEmptyModel(0);
 
@@ -147,13 +146,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 model.setState(
                     data.data.state,
                     data.data.defaultState,
-                    data.data.activeElements
+                    data.data.activeElements,
                 );
                 worker.terminate();
             } else if (data.data.process) {
                 const process = data.data.process;
                 const persent = Math.round(
-                    (process.current * 100) / process.total
+                    (process.current * 100) / process.total,
                 );
                 progress.innerHTML = !process.total
                     ? process.type
@@ -164,11 +163,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 const geom = new BufferGeometry();
                 geom.setAttribute(
                     "position",
-                    new BufferAttribute(geomData.pos, 3)
+                    new BufferAttribute(geomData.pos, 3),
                 );
                 geom.setAttribute("ids", new BufferAttribute(geomData.ids, 1));
                 geom.setIndex(
-                    new BufferAttribute(new Uint32Array(geomData.ind), 1)
+                    new BufferAttribute(new Uint32Array(geomData.ind), 1),
                 );
                 const a = data.data.material.a;
                 const color = data.data.material.color;
@@ -176,11 +175,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     geom,
                     new MeshLambertMaterial({
                         color: new Color(
-                            ...(color instanceof Array ? color : [color])
+                            ...(color instanceof Array ? color : [color]),
                         ),
                         opacity: a,
                         transparent: a !== 1,
-                    })
+                    }),
                 );
                 geom.computeVertexNormals();
                 geom.computeBoundingBox();
@@ -190,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     mesh,
                     selectGroup,
                     preselectGroup,
-                    model.threeGeometry.children.length === 1
+                    model.threeGeometry.children.length === 1,
                 );
             }
             // console.log(data);
@@ -237,7 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     exportBmt.addEventListener("click", (e) => {
         if (viewer && viewer.models[0]) {
-            viewer.loaders.s
+            viewer.loaders.bmtConverter_v2
                 .exportIfcModel(0, exportIsActiveView.checked)
                 .then((res) => {
                     console.log(res);

@@ -1,9 +1,9 @@
 import { Matrix4 } from "three";
 import BimatterViewer, { BimatterConverter } from "..";
-import { BMTConverter } from "./BMTConverter/BMTConverter";
-import { BMTLoader } from "./BMTLoader/BMTLoader";
 import { IFCLoader } from "./IFCLoader/IFCLoader";
 import { LoadingProgressUtils } from "./LoadingProgressUtils/LoadingProgressUtils";
+import { BMTLoader } from "./BMTLoader/BMTLoader";
+import { BMTConverter } from "./BMTConverter/BMTConverter_ex";
 export declare class Loaders {
     readonly context: BimatterViewer | BimatterConverter;
     readonly bmtLoader: BMTLoader;
