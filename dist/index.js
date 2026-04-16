@@ -4403,7 +4403,7 @@ class BMTConverter {
     writeChunk(type, data) {
         const header = new Uint8Array(5);
         header[0] = type;
-        new DataView(header.buffer).setUint32(1, data.length, true);
+        new DataView(header.buffer).setUint32(1, data.byteLength, true);
         return [header, data];
     }
     exportBMT(config) {
@@ -4464,37 +4464,42 @@ class BMTConverter {
                     : state.indMap[Number(mesh.name)];
                 let posDef = deflate(new Uint8Array(pos.buffer));
                 let idsDef = deflate(new Uint8Array(ids.buffer));
-                let indDef = deflate(new Uint8Array(new Uint32Array(ind).buffer));
+                const indBytes = new Uint8Array(ind.buffer, ind.byteOffset, ind.byteLength);
+                let indDef = deflate(indBytes);
+                const indexType = ind instanceof Uint32Array ? 1 : 0;
                 const color = mesh.material.color;
-                const opasity = mesh.material.opacity;
-                const colorId = `[${Math.round(color.r * 255)},${Math.round(color.g * 255)},${Math.round(color.b * 255)},${opasity},${mesh.name}]`;
-                const deflatedColorId = deflate(enc.encode(colorId));
+                const opacity = mesh.material.opacity;
                 const totalSize = 4 +
-                    posDef.length +
+                    posDef.byteLength +
                     4 +
-                    idsDef.length +
+                    idsDef.byteLength +
+                    8 +
+                    indDef.byteLength +
                     4 +
-                    indDef.length +
-                    4 +
-                    deflatedColorId.length;
+                    4;
                 const buffer = new Uint8Array(totalSize);
                 const view = new DataView(buffer.buffer);
                 let offset = 0;
-                view.setUint32(offset, posDef.length, true);
+                view.setUint32(offset, posDef.byteLength, true);
                 offset += 4;
                 buffer.set(posDef, offset);
-                offset += posDef.length;
-                view.setUint32(offset, idsDef.length, true);
+                offset += posDef.byteLength;
+                view.setUint32(offset, idsDef.byteLength, true);
                 offset += 4;
                 buffer.set(idsDef, offset);
-                offset += idsDef.length;
-                view.setUint32(offset, indDef.length, true);
+                offset += idsDef.byteLength;
+                view.setUint32(offset, indDef.byteLength, true);
+                offset += 4;
+                view.setUint32(offset, indexType, true);
                 offset += 4;
                 buffer.set(indDef, offset);
-                offset += indDef.length;
-                view.setUint32(offset, deflatedColorId.length, true);
+                offset += indDef.byteLength;
+                view.setUint8(offset++, Math.round(color.r * 255));
+                view.setUint8(offset++, Math.round(color.g * 255));
+                view.setUint8(offset++, Math.round(color.b * 255));
+                view.setUint8(offset++, Math.round(opacity * 255));
+                view.setUint32(offset, Number(mesh.name), true);
                 offset += 4;
-                buffer.set(deflatedColorId, offset);
                 writeChunkDirect(BMTLoader_1.ChunkType.MESH, buffer);
                 posDef = idsDef = indDef = null;
                 yield new Promise((r) => setTimeout(r, 0));
@@ -4629,13 +4634,42 @@ class BMTLoader {
             offset += len;
             return arr;
         };
+        const readChunkIndex = () => {
+            const len = view.getUint32(offset, true);
+            offset += 4;
+            const type = view.getUint32(offset, true);
+            offset += 4;
+            const arr = new Uint8Array(data.buffer, data.byteOffset + offset, len);
+            offset += len;
+            return {
+                data: arr,
+                type,
+            };
+        };
+        const readChunkColor = () => {
+            const r = view.getUint8(offset++) / 255;
+            const g = view.getUint8(offset++) / 255;
+            const b = view.getUint8(offset++) / 255;
+            const opacity = view.getUint8(offset++) / 255;
+            const name = view.getUint32(offset, true);
+            offset += 4;
+            return {
+                r,
+                g,
+                b,
+                opacity,
+                name,
+            };
+        };
         const pos = readChunk();
         const ids = readChunk();
-        const ind = readChunk();
-        const colorId = readChunk();
+        const ind = readChunkIndex();
+        const colorId = readChunkColor();
+        console.log(colorId);
         return { pos, ids, ind, colorId };
     }
     parseBinaryFile(data, group, idsState, indState, defIdsState, defIndState, start) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let gridsData;
             const reader = new BinaryReader_1.default(data);
@@ -4659,53 +4693,22 @@ class BMTLoader {
                         let meshData = this.parseMesh(data);
                         let pos = inflate(meshData.pos);
                         let ids = inflate(meshData.ids);
-                        let ind = inflate(meshData.ind);
-                        const colorId = this.decodeBuffer(meshData.colorId);
-                        let matData;
-                        let opacity;
-                        let chunkName;
-                        try {
-                            matData = JSON.parse(colorId);
-                            if (colorId.includes(".")) {
-                                opacity = matData[3];
-                                chunkName = matData[4];
-                            }
-                            else {
-                                opacity = matData[4]
-                                    ? `${matData[3]}.${matData[4]}`
-                                    : matData[3];
-                            }
-                        }
-                        catch (_a) {
-                            const splited = colorId
-                                .substring(1, colorId.length - 1)
-                                .split(",");
-                            if (splited.length === 5) {
-                                matData = [
-                                    Number(splited[0]),
-                                    Number(splited[1]),
-                                    Number(splited[2]),
-                                    Number(splited[3]),
-                                    Number(splited[4]),
-                                ];
-                            }
-                            else {
-                                matData = [125, 125, 125, 1, 0];
-                            }
-                            opacity = matData[4]
-                                ? `${matData[3]}.${matData[4]}`
-                                : matData[3];
-                        }
+                        let ind = inflate(meshData.ind.data);
+                        const opacity = meshData.colorId.opacity;
+                        let chunkName = (_a = meshData.colorId.name) === null || _a === void 0 ? void 0 : _a.toString();
+                        const colorId = `${meshData.colorId.r},${meshData.colorId.g},${meshData.colorId.b},${opacity}`;
                         if (!materialState[colorId]) {
                             materialId++;
                             materialState[colorId] = {
                                 id: materialId.toString(),
                                 material: new three_1.MeshLambertMaterial({
-                                    color: new three_1.Color(matData[0] / 255, matData[1] / 255, matData[2] / 255),
+                                    color: new three_1.Color(meshData.colorId.r, meshData.colorId.g, meshData.colorId.b),
                                     transparent: Number(opacity) < 1,
                                     opacity: Number(opacity),
                                     premultipliedAlpha: true,
-                                    name: chunkName ? chunkName : materialId,
+                                    name: chunkName
+                                        ? chunkName
+                                        : materialId.toString(),
                                     side: three_1.DoubleSide,
                                 }),
                             };
@@ -4719,15 +4722,18 @@ class BMTLoader {
                         geom.setAttribute("ids", new three_1.BufferAttribute(new Uint32Array(ids.buffer), 1));
                         let indexArr;
                         if (ind && ind.length) {
-                            indexArr = ind.buffer;
+                            indexArr =
+                                meshData.ind.type === 0
+                                    ? new Uint16Array(ind.buffer, ind.byteOffset, ind.byteLength / 2)
+                                    : new Uint32Array(ind.buffer, ind.byteOffset, ind.byteLength / 4);
                         }
                         else {
-                            indexArr = Array.from(Array(pos.length).keys());
+                            indexArr = new Uint32Array(Array.from(Array(pos.length).keys()));
                         }
-                        const indexBuffer = new Uint32Array(indexArr);
-                        indState[chunkName] = indexBuffer;
-                        defIndState[chunkName] = indexBuffer;
-                        geom.setIndex(Array.from(indexBuffer));
+                        const uint32 = new Uint32Array(indexArr);
+                        indState[chunkName] = uint32;
+                        defIndState[chunkName] = uint32;
+                        geom.setIndex(new three_1.BufferAttribute(uint32, 1));
                         geom.computeVertexNormals();
                         geom.computeBoundingBox();
                         const idsAttr = geom.attributes.ids;
@@ -5070,7 +5076,11 @@ class IfcParser {
     }
     getPlacedGeometry(placedGeometry, elementId) {
         const geometry = this.getBufferGeometry(placedGeometry, elementId);
-        const material = this.getMeshMaterial(placedGeometry.color);
+        let color = placedGeometry.color;
+        if (color.w === 1 && color.x === 0 && color.y === 0 && color.z === 0) {
+            color = { x: 178 / 255, y: 178 / 255, z: 178 / 255, w: 1 };
+        }
+        const material = this.getMeshMaterial(color);
         const mesh = new three_1.Mesh(geometry);
         mesh.matrix = this.getMeshMatrix(placedGeometry.flatTransformation);
         mesh.matrixAutoUpdate = false;
@@ -6819,8 +6829,8 @@ class SelectionBox {
                     this.helper.classList.add("selectBox_blue");
                 }
             }
-            const ex = this.context.context.context.mouse.cords.x;
-            const ey = this.context.context.context.mouse.cords.y;
+            const ex = this.context.context.context.mouse.position.x;
+            const ey = this.context.context.context.mouse.position.y;
             const nx = this.context.context.context.mouse.position.x;
             const ny = this.context.context.context.mouse.position.y;
             if (this.params.toolMode === "box") {
@@ -6996,7 +7006,7 @@ class SelectionBox {
                             v.x = x === 0 ? min.x : max.x;
                             v.y = y === 0 ? min.y : max.y;
                             v.z = z === 0 ? min.z : max.z;
-                            v.applyMatrix4(this.toScreenSpaceMatrix);
+                            v.project(camera);
                             index++;
                             if (v.y < minY)
                                 minY = v.y;
@@ -7108,8 +7118,8 @@ class SelectionBox {
                     }
                     const vertices = [tri.a, tri.b, tri.c];
                     for (let j = 0; j < 3; j++) {
-                        const v = vertices[j];
-                        v.applyMatrix4(this.toScreenSpaceMatrix);
+                        const v = new three_1.Vector3();
+                        v.copy(vertices[j]).applyMatrix4(this.toScreenSpaceMatrix);
                         const crossings = this.pointRayCrossesSegments(v, segmentsToCheck);
                         if (crossings % 2 === 1) {
                             addId(a);
@@ -7235,7 +7245,8 @@ class SelectionBox {
         const ex = end.x;
         if (px > sx && px > ex)
             return false;
-        if (px < sx && px < ex) {
+        const EPS = 1e-6;
+        if (Math.abs(py - sy) < EPS) {
             if (py === sy && prevDirection !== thisDirection) {
                 return false;
             }
