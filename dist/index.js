@@ -4665,7 +4665,6 @@ class BMTLoader {
         const ids = readChunk();
         const ind = readChunkIndex();
         const colorId = readChunkColor();
-        console.log(colorId);
         return { pos, ids, ind, colorId };
     }
     parseBinaryFile(data, group, idsState, indState, defIdsState, defIndState, start) {
