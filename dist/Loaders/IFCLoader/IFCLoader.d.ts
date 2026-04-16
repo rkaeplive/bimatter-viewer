@@ -33,8 +33,9 @@ export declare class IFCLoader {
     }>;
     getModelDataFromBuffer(file: ArrayBuffer): Promise<false | {
         structure: {
-            id: number;
+            id: any;
             type: string;
+            name: any;
             children: never[];
         };
         propsData: PropsData;

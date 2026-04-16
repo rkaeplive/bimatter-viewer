@@ -5577,7 +5577,8 @@ class PropertySerializer {
             const chunks = yield this.getSpatialTreeChunks(modelID);
             const allLines = yield this.context._parser.GetLineIDsWithType(modelID, web_ifc_api_node_1.IFCPROJECT);
             const projectID = allLines.get(0);
-            const project = this.newIfcProject(projectID);
+            const projectData = yield this.context._parser.GetLine(modelID, projectID);
+            const project = this.newIfcProject(projectData);
             yield this.getSpatialNode(modelID, project, chunks, includeProperties);
             return project;
         });
@@ -5620,10 +5621,14 @@ class PropertySerializer {
             }
         });
     }
-    newIfcProject(id) {
+    getValue(value) {
+        return value && value.value !== undefined ? value.value : value;
+    }
+    newIfcProject(data) {
         return {
-            id,
+            id: data.expressID,
             type: "IFCPROJECT",
+            name: this.getValue(data.Name),
             children: [],
         };
     }
@@ -5642,7 +5647,7 @@ class PropertySerializer {
             const nodes = [];
             for (let i = 0; i < children.length; i++) {
                 const child = children[i];
-                let node2 = this.newNode(child, this.context._parser.GetLineType(modelID, child));
+                let node2 = this.newNode(child, this.context._parser.GetLine(modelID, child));
                 if (includeProperties) {
                     const properties = yield this.getItemProperty(modelID, node2.id);
                     node2 = Object.assign(Object.assign({}, properties), node2);
@@ -5653,10 +5658,11 @@ class PropertySerializer {
             node[prop] = nodes;
         });
     }
-    newNode(id, type) {
+    newNode(id, data) {
         return {
             id,
-            type: this.context._parser.GetNameFromTypeCode(type),
+            type: this.context._parser.GetNameFromTypeCode(data.type),
+            name: this.getValue(data.Name),
             children: [],
         };
     }

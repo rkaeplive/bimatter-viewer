@@ -21,22 +21,26 @@ export declare class PropertySerializer {
     private formatItemProperties;
     private getAllRelDefinesByProps;
     getSpatialStructure(modelID: number, includeProperties?: boolean): Promise<{
-        id: number;
+        id: any;
         type: string;
+        name: any;
         children: never[];
     }>;
     getRelatedProperties(modelID: number, elementID: number, propsName: any, recursive?: boolean): Promise<any[]>;
     getChunks(modelID: number, chunks: any, propNames: any): Promise<void>;
-    newIfcProject(id: number): {
-        id: number;
+    getValue(value: any): any;
+    newIfcProject(data: any): {
+        id: any;
         type: string;
+        name: any;
         children: never[];
     };
     getSpatialNode(modelID: number, node: any, treeChunks: any, includeProperties: boolean): Promise<void>;
     getChildren(modelID: number, node: any, treeChunks: any, propNames: any, includeProperties: boolean): Promise<void>;
-    newNode(id: number, type: any): {
+    newNode(id: number, data: any): {
         id: number;
         type: string;
+        name: any;
         children: never[];
     };
     getSpatialTreeChunks(modelID: number): Promise<{}>;
