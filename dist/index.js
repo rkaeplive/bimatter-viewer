@@ -5625,6 +5625,7 @@ class PropertySerializer {
         return value && value.value !== undefined ? value.value : value;
     }
     newIfcProject(data) {
+        console.log(data);
         return {
             id: data.expressID,
             type: "IFCPROJECT",
@@ -5920,7 +5921,6 @@ class Model {
     }
     getGeometryState(indMap, idsMap, defInsMap, defIdsMap) {
         const state = {
-            indMap: indMap ? indMap : {},
             idsMap: idsMap ? idsMap : {},
             needsUpdate: new Set(),
         };
@@ -5933,7 +5933,6 @@ class Model {
             const matInd = Number(child.name);
             if (!indMap) {
                 if (mesh.geometry.index) {
-                    state.indMap[matInd] = mesh.geometry.index.array;
                     defaultState.indMap[matInd] = mesh.geometry.index.array;
                 }
             }
@@ -5983,17 +5982,19 @@ class Model {
         })
             .flat();
         const box = new three_1.Box3();
+        const context = this.context.context;
         box.setFromPoints(points);
         this.boundingBox = box;
-        this.context.context.environment.lights.updateLightPosition(box);
-        const camera = this.context.context.camera.threeCamera;
+        context.environment.lights.updateLightPosition(box);
+        const camera = context.camera.threeCamera;
         camera.far = box.max.distanceTo(box.min) * 3;
         camera.updateProjectionMatrix();
-        this.context.context.sizes.modelSize = box;
+        context.sizes.modelSize = box;
     }
     fitToView(enableTransition = false) {
         return __awaiter(this, void 0, void 0, function* () {
-            const box = this.context.context.sizes.modelSize;
+            const context = this.context.context;
+            const box = context.sizes.modelSize;
             const sceneSize = new three_1.Vector3();
             box.getSize(sceneSize);
             const sceneCenter = new three_1.Vector3();
@@ -6002,7 +6003,7 @@ class Model {
             const radius = Math.max(sceneSize.x, sceneSize.y, sceneSize.z) * nearFactor;
             if (radius !== Infinity) {
                 const sphere = new three_1.Sphere(sceneCenter, radius);
-                yield this.context.context.controls.cameraControl.fitToSphere(sphere, enableTransition);
+                yield context.controls.cameraControl.fitToSphere(sphere, enableTransition);
             }
         });
     }
@@ -6323,13 +6324,14 @@ class PreSelection {
             this._intersectDistance = 0;
             this.deep = 0;
         };
+        const _context = this.context.context.context;
         if (this._active) {
-            this.context.context.context.renderer.addCallback(this._usePreSelectBind);
+            _context.renderer.addCallback(this._usePreSelectBind);
         }
         this._preSelectMesh = new three_1.Group();
         this._preSelectMesh.frustumCulled = false;
         this._preSelectMesh.renderOrder = 1;
-        this.context.context.context.scene.threeScene.add(this._preSelectMesh);
+        _context.scene.threeScene.add(this._preSelectMesh);
     }
     get preSelectElement() {
         if (this._activeElement > 0) {
@@ -6348,11 +6350,13 @@ class PreSelection {
         return this.deep;
     }
     usePreSelect() {
-        if (this.context.context.context.controls.moving) {
+        const _context = this.context.context;
+        const _control = _context.context.controls;
+        if (_control.moving) {
             this.resetPreselect();
             return;
         }
-        const intersects = this.context.context.context.controls.getIntersects();
+        const intersects = _control.getIntersects();
         let curElementId;
         let curModel;
         let ind;
@@ -6363,7 +6367,7 @@ class PreSelection {
         for (const intersect of intersects) {
             curModelMesh = intersect.object;
             const modelID = Number(curModelMesh.parent.name);
-            curModel = this.context.context.models[modelID];
+            curModel = _context.models[modelID];
             ind = intersect.faceIndex * 3;
             point = intersect.point;
             distance = intersect.distance;
@@ -6420,12 +6424,13 @@ class PreSelection {
     }
     set active(active) {
         if (this._active !== active) {
+            const _renderer = this.context.context.context.renderer;
             this._active = active;
             if (active) {
-                this.context.context.context.renderer.addCallback(this._usePreSelectBind);
+                _renderer.addCallback(this._usePreSelectBind);
             }
             else {
-                this.context.context.context.renderer.removeCallback(this._usePreSelectBind);
+                _renderer.removeCallback(this._usePreSelectBind);
                 this.resetPreselect();
             }
         }
@@ -6468,9 +6473,10 @@ class Selection {
             }
             this._activeFace = -1;
             this._activeElement = -1;
-            this.context.context.utils.propsUtils.getPropertiesById();
-            if (this.context.context.utils.propsUtils.propConteiner) {
-                this.context.context.utils.propsUtils.propConteiner.replaceChildren();
+            const _propsUtils = this.context.context.utils.propsUtils;
+            _propsUtils.getPropertiesById();
+            if (_propsUtils.propConteiner) {
+                _propsUtils.propConteiner.replaceChildren();
             }
             if (this._selectionCallback) {
                 this._selectionCallback();
@@ -6482,9 +6488,10 @@ class Selection {
             console.log("selection time:", Date.now() - start, "ms");
         };
         this.selectByIds = (modelID, ids, removePrevious = true) => {
-            this.context.context.context.renderer.needUpdate = false;
+            const _context = this.context.context;
+            _context.context.renderer.needUpdate = false;
             const start = Date.now();
-            const curModel = this.context.context.models[modelID];
+            const curModel = _context.models[modelID];
             const curState = this.state[modelID];
             if (!curState) {
                 console.warn("wrong model id");
@@ -6497,14 +6504,14 @@ class Selection {
                 Object.values(this.context.selectedElements).forEach((set) => (count += set.size));
                 this.context.selectedElements[modelID] = new Set();
                 if (count === 1) {
-                    this.context.context.utils.propsUtils.getPropertiesById(modelID, ids[0]);
+                    _context.utils.propsUtils.getPropertiesById(modelID, ids[0]);
                 }
                 else {
-                    this.context.context.utils.propsUtils.getPropertiesById();
+                    _context.utils.propsUtils.getPropertiesById();
                 }
             }
             else {
-                this.context.context.utils.propsUtils.getPropertiesById();
+                _context.utils.propsUtils.getPropertiesById();
             }
             for (const id of ids) {
                 if (!curModel.activeElements.has(id)) {
@@ -6524,8 +6531,8 @@ class Selection {
                 }
             }
             this.context.isSelected = true;
-            this.context.context.context.renderer.needUpdate = true;
-            this.context.context.context.renderer.render();
+            _context.context.renderer.needUpdate = true;
+            _context.context.renderer.render();
             if (this._selectionCallback) {
                 this._selectionCallback();
             }
@@ -6565,19 +6572,21 @@ class Selection {
     set active(active) {
         if (this._active !== active) {
             this._active = active;
+            const _domElement = this.context.context.context.domElement;
             if (active) {
-                this.context.context.context.domElement.addEventListener("click", this._useSelectBind);
+                _domElement.addEventListener("click", this._useSelectBind);
             }
             else {
-                this.context.context.context.domElement.removeEventListener("click", this._useSelectBind);
+                _domElement.removeEventListener("click", this._useSelectBind);
                 this.resetSelect();
             }
         }
     }
     useSelect(e) {
-        const isRemoveSelect = this.context.context.utils.keysUtils.isRemoveSelectionKey(e);
-        const isMultySelect = this.context.context.utils.keysUtils.isMultySelect(e);
-        if (this.context.context.context.controls.moving ||
+        const _context = this.context.context;
+        const isRemoveSelect = _context.utils.keysUtils.isRemoveSelectionKey(e);
+        const isMultySelect = _context.utils.keysUtils.isMultySelect(e);
+        if (_context.context.controls.moving ||
             this.context.selectionBox.dragging) {
             return;
         }
@@ -6603,14 +6612,14 @@ class Selection {
             }
             this._activeElement =
                 this.context.preSelection.preSelectElement.elementID;
-            this.context.context.utils.propsUtils.getPropertiesById(modelID, this._activeElement);
+            _context.utils.propsUtils.getPropertiesById(modelID, this._activeElement);
             this.context.selectedElements[modelID] = new Set([
                 this._activeElement,
             ]);
             this.context.isSelected = true;
         }
         else {
-            const intersects = this.context.context.context.controls.getIntersects();
+            const intersects = _context.context.controls.getIntersects();
             if (!intersects)
                 return;
             let curElementId;
@@ -6627,7 +6636,7 @@ class Selection {
                 const indexes = curModelMesh.geometry.index;
                 const curInd = indexes ? indexes.getX(ind) : ind;
                 curElementId = allIds.getX(curInd);
-                if (this.context.context.models[modelID].activeElements.has(curElementId)) {
+                if (_context.models[modelID].activeElements.has(curElementId)) {
                     break;
                 }
                 curElementId = undefined;
@@ -6651,8 +6660,8 @@ class Selection {
                 for (const keyModelID of Object.keys(this.state)) {
                     if (modelID === Number(keyModelID)) {
                         selectedElements[modelID] = new Set([curElementId]);
-                        const inds = this.context.context.models[Number(modelID)]
-                            .defaultState.idsMap[curElementId];
+                        const inds = _context.models[Number(modelID)].defaultState
+                            .idsMap[curElementId];
                         for (const matId of Object.keys(inds)) {
                             this.state[Number(modelID)][Number(matId)].setIndex(inds[Number(matId)]);
                         }
@@ -6717,11 +6726,12 @@ class SelectionBox {
         this.renderSelectionBind = this.renderSelection.bind(this);
         this.usePreselectionState = this.context.usePreSelection;
         this.selectionShape = new three_1.Line(new three_1.BufferGeometry(), new three_1.LineBasicMaterial({ linewidth: 3 }));
+        const _context = this.context.context.context;
         this.selectionShape.material.color.set(0xff9800).convertSRGBToLinear();
         this.selectionShape.renderOrder = 1;
         this.selectionShape.position.z = -0.2;
         this.selectionShape.scale.setScalar(10);
-        this.context.context.context.camera.threeCamera.add(this.selectionShape);
+        _context.camera.threeCamera.add(this.selectionShape);
         this.helper = document.createElement("div");
         this.helper.style.pointerEvents = "none";
         if (cssClassName) {
@@ -6740,9 +6750,9 @@ class SelectionBox {
         const tempVec0 = new three_1.Vector2();
         const tempVec1 = new three_1.Vector2();
         const tempVec2 = new three_1.Vector2();
-        const renderer = this.context.context.context.renderer.threeRenderer;
+        const renderer = _context.renderer.threeRenderer;
         renderer.domElement.parentElement.appendChild(this.helper);
-        this.context.context.context.renderer.addCallback(this.renderSelectionBind);
+        _context.renderer.addCallback(this.renderSelectionBind);
         window.addEventListener("keydown", (e) => {
             const isRemoveSelect = this.context.context.utils.keysUtils.isRemoveSelectionKey(e);
             const isBoxSelect = this.context.context.utils.keysUtils.isBoxSelect(e);
@@ -6758,14 +6768,14 @@ class SelectionBox {
             const isBoxSelect = this.context.context.utils.keysUtils.isBoxSelect(e);
             if (!isBoxSelect && !isRemoveSelect)
                 return;
-            prevX = this.context.context.context.mouse.cords.x;
-            prevY = this.context.context.context.mouse.cords.y;
-            helperStartX = this.context.context.context.mouse.cords.x;
-            helperStartY = this.context.context.context.mouse.cords.y;
-            startX = this.context.context.context.mouse.position.x;
-            startY = this.context.context.context.mouse.position.y;
+            prevX = _context.mouse.cords.x;
+            prevY = _context.mouse.cords.y;
+            helperStartX = _context.mouse.cords.x;
+            helperStartY = _context.mouse.cords.y;
+            startX = _context.mouse.position.x;
+            startY = _context.mouse.position.y;
             this.selectionPoints.length = 0;
-            this.context.context.context.controls.cameraControl.enabled = false;
+            _context.controls.cameraControl.enabled = false;
             this.usePreselectionState = this.context.usePreSelection;
             this.context.usePreSelection = false;
             this.helper.hidden = true;
@@ -6792,8 +6802,9 @@ class SelectionBox {
             this.helper.hidden = true;
         });
         renderer.domElement.addEventListener("pointermove", (e) => {
-            const isRemoveSelect = this.context.context.utils.keysUtils.isRemoveSelectionKey(e);
-            const isBoxSelect = this.context.context.utils.keysUtils.isBoxSelect(e);
+            const _utils = this.context.context.utils;
+            const isRemoveSelect = _utils === null || _utils === void 0 ? void 0 : _utils.keysUtils.isRemoveSelectionKey(e);
+            const isBoxSelect = _utils.keysUtils.isBoxSelect(e);
             if ((1 & e.buttons) === 0) {
                 return;
             }
@@ -6834,10 +6845,11 @@ class SelectionBox {
                     this.helper.classList.add("selectBox_blue");
                 }
             }
-            const ex = this.context.context.context.mouse.position.x;
-            const ey = this.context.context.context.mouse.position.y;
-            const nx = this.context.context.context.mouse.position.x;
-            const ny = this.context.context.context.mouse.position.y;
+            const mouse = this.context.context.context.mouse;
+            const ex = mouse.position.x;
+            const ey = mouse.position.y;
+            const nx = mouse.position.x;
+            const ny = mouse.position.y;
             if (this.params.toolMode === "box") {
                 this.selectionPoints.length = 3 * 5;
                 this.selectionPoints[0] = startX;
@@ -6924,7 +6936,8 @@ class SelectionBox {
         }
     }
     renderSelection() {
-        const camera = this.context.context.context.camera.threeCamera;
+        const _context = this.context.context;
+        const camera = _context.context.camera.threeCamera;
         if (this.selectionShapeNeedsUpdate) {
             if (this.params.toolMode === "lasso") {
                 const ogLength = this.selectionPoints.length;
@@ -6942,8 +6955,8 @@ class SelectionBox {
         if (this.selectionNeedsUpdate) {
             this.selectionNeedsUpdate = false;
             if (this.selectionPoints.length > 0) {
-                const selectorModels = this.context.context.selector.selectorModels;
-                const models = this.context.context.models;
+                const selectorModels = _context.selector.selectorModels;
+                const models = _context.models;
                 for (let modelID = 0; modelID < Object.keys(selectorModels).length; modelID++) {
                     const mesh = selectorModels[modelID];
                     const selectedIds = new Set();
@@ -8629,9 +8642,10 @@ class GeometryUtils {
             }
         };
         this.hideElementsByIds = (modelID, ids) => {
+            const _context = this.context.context;
             const start = Date.now();
-            this.context.context.context.renderer.needUpdate = false;
-            const curModel = this.context.context.models[modelID];
+            _context.context.renderer.needUpdate = false;
+            const curModel = _context.models[modelID];
             if (!curModel)
                 return;
             const needsUpdate = new Set();
@@ -8682,21 +8696,22 @@ class GeometryUtils {
                         });
                         mesh.geometry.setIndex(newArr);
                     }
-                    this.context.context.bvhManager.update(mesh);
+                    _context.bvhManager.update(mesh);
                 }
             });
             if (this.context.clippingUtils.active) {
                 this.context.clippingUtils.updateEdges();
             }
             this.update(modelID, ids, true);
-            if (this.context.context.utils.stats) {
+            if (_context.utils.stats) {
                 console.log("hidding: ", Date.now() - start);
             }
         };
         this.isolateElementsByIds = (modelID, ids) => {
             const start = Date.now();
-            this.context.context.context.renderer.needUpdate = false;
-            const curModel = this.context.context.models[modelID];
+            const _context = this.context.context;
+            _context.context.renderer.needUpdate = false;
+            const curModel = _context.models[modelID];
             if (!curModel)
                 return;
             const map = new Map();
@@ -8733,27 +8748,28 @@ class GeometryUtils {
                     mesh.geometry.setIndex([]);
                 }
                 curModel.state.needsUpdate.add(Number(mesh.name));
-                this.context.context.bvhManager.update(mesh);
+                _context.bvhManager.update(mesh);
             });
             curModel.activeElements = new Set(ids);
             this.update(modelID, ids);
-            if (this.context.context.utils.stats) {
+            if (_context.utils.stats) {
                 console.log("isolating: ", Date.now() - start);
             }
         };
         this.showAll = () => {
             const start = Date.now();
-            this.context.context.context.renderer.needUpdate = false;
-            for (const modelID of Object.keys(this.context.context.models)) {
-                const curModel = this.context.context.models[Number(modelID)];
+            const _context = this.context.context;
+            _context.context.renderer.needUpdate = false;
+            for (const modelID of Object.keys(_context.models)) {
+                const curModel = _context.models[Number(modelID)];
                 this.resetModelVisibility(curModel);
                 curModel.state.needsUpdate = new Set();
             }
             if (this.context.clippingUtils.active) {
                 this.context.clippingUtils.updateEdges();
             }
-            this.context.context.context.renderer.needUpdate = true;
-            if (this.context.context.utils.stats) {
+            _context.context.renderer.needUpdate = true;
+            if (_context.utils.stats) {
                 console.log("showAll: ", Date.now() - start);
             }
         };
@@ -8777,14 +8793,14 @@ class GeometryUtils {
             }
             const removePrevious = config.removePrevious;
             const modelID = config.modelID;
-            const model = this.context.context.models[modelID];
+            const _context = this.context.context;
+            const model = _context.models[modelID];
             if (!model) {
                 return new Error("unknown modelID");
             }
             const modelData = model.state;
             const chunkID = model.threeGeometry.children.length;
             const modelDataIds = modelData.idsMap;
-            const modelDataInd = modelData.indMap;
             const dataToRemove = {};
             for (const id of ids) {
                 const idData = modelDataIds[id];
@@ -8876,35 +8892,34 @@ class GeometryUtils {
                             offset += arr.length;
                         });
                     }
-                    modelDataInd[Number(mesh.name)] = new Uint32Array(newIndexes);
                     mesh.geometry.setIndex(new three_1.BufferAttribute(newIndexes, 1));
-                    this.context.context.bvhManager.update(mesh);
+                    _context.bvhManager.update(mesh);
                 }
             });
-            modelDataInd[chunkID] = new Uint32Array(allIndexOfChunk);
             const geom = new three_1.BufferGeometry();
             geom.setAttribute("position", new three_1.BufferAttribute(new Float32Array(newPosAttr), 3));
             geom.setAttribute("ids", new three_1.BufferAttribute(new Uint32Array(newIdsAttr), 1));
             geom.computeVertexNormals();
             geom.setIndex(allIndexOfChunk);
-            this.context.context.bvhManager.applyThreeMeshBVH(geom);
+            _context.bvhManager.applyThreeMeshBVH(geom);
             const mesh = new three_1.Mesh(geom, material);
             model.threeGeometry.add(mesh);
             mesh.name = chunkID.toString();
             if (model.activeElements.size !== Object.keys(modelDataIds).length) {
                 this.isolateElementsByIds(modelID, Array.from(model.activeElements));
             }
-            if (this.context.context.utils.stats) {
+            if (_context.utils.stats) {
                 console.log("create Chunk: ", Date.now() - start);
             }
         };
     }
     update(modelID, ids, remove) {
-        if (this.context.context.selector.isSelected && remove) {
-            this.context.context.selector.selection.removeSelectByIds(modelID, ids);
+        const _context = this.context.context;
+        if (_context.selector.isSelected && remove) {
+            _context.selector.selection.removeSelectByIds(modelID, ids);
         }
-        this.context.context.selector.preSelection.resetPreselect();
-        this.context.context.context.renderer.needUpdate = true;
+        _context.selector.preSelection.resetPreselect();
+        _context.context.renderer.needUpdate = true;
     }
     resetModelVisibility(model) {
         for (const child of model.threeGeometry.children) {
@@ -8912,7 +8927,7 @@ class GeometryUtils {
             if (!model.state.needsUpdate.has(Number(mesh.name))) {
                 continue;
             }
-            let indexArr = model.state.indMap[Number(mesh.name)];
+            let indexArr = model.defaultState.indMap[Number(mesh.name)];
             if (!indexArr) {
                 indexArr = null;
             }
@@ -8928,12 +8943,12 @@ class GeometryUtils {
     }
     resetModelChunks(modelID) {
         const start = Date.now();
-        this.context.context.context.renderer.needUpdate = false;
-        const model = this.context.context.models[modelID];
+        const _context = this.context.context;
+        _context.context.renderer.needUpdate = false;
+        const model = _context.models[modelID];
         const modelState = model.state;
         const modelDefState = model.defaultState;
         modelState.idsMap = structuredClone(modelDefState.idsMap);
-        modelState.indMap = structuredClone(modelDefState.indMap);
         modelState.needsUpdate = new Set();
         const toRemove = [];
         for (const child of model.threeGeometry.children) {
@@ -8948,8 +8963,8 @@ class GeometryUtils {
         toRemove.forEach((m) => m.removeFromParent());
         this.resetModelVisibility(model);
         model.state.needsUpdate = new Set();
-        this.context.context.context.renderer.needUpdate = true;
-        if (this.context.context.utils.stats) {
+        _context.context.renderer.needUpdate = true;
+        if (_context.utils.stats) {
             console.log("resetModelChunks: ", Date.now() - start);
         }
     }
@@ -10182,7 +10197,6 @@ class BimatterViewer {
             ch.geometry.dispose();
         });
         model.state.idsMap = {};
-        model.state.indMap = {};
         model.defaultState.idsMap = {};
         model.defaultState.indMap = {};
         model.threeGeometry.removeFromParent();

@@ -13,9 +13,6 @@ export interface IModelData {
     };
 }
 export type State = {
-    indMap: {
-        [matId: number]: TypedArray;
-    };
     idsMap: {
         [elemId: number]: {
             [matId: number]: number[];
