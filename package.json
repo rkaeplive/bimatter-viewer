@@ -1,6 +1,6 @@
 {
     "name": "bimatter-viewer",
-    "version": "4.1.0",
+    "version": "4.1.1",
     "description": "",
     "private": false,
     "main": "./dist/index.js",
