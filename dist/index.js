@@ -6500,10 +6500,8 @@ class Selection {
             if (removePrevious) {
                 this.resetSelect(false);
                 this.resetModelSelection(modelID);
-                let count = 0;
-                Object.values(this.context.selectedElements).forEach((set) => (count += set.size));
                 this.context.selectedElements[modelID] = new Set();
-                if (count === 1) {
+                if (ids.length === 1) {
                     _context.utils.propsUtils.getPropertiesById(modelID, ids[0]);
                 }
                 else {
