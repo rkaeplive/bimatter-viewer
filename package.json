@@ -18,6 +18,7 @@
         "path": false,
         "stream": false
     },
+    "sideEffects": false,
     "author": "",
     "license": "ISC",
     "dependencies": {},

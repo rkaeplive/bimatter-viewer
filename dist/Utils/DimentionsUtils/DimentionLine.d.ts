@@ -26,7 +26,7 @@ export declare class DimensionLine {
     constructor(context: DimensionsUtils, start: Vector3, end: Vector3, lineMaterial: LineDashedMaterial, endpointMaterial: MeshBasicMaterial, endpoint: ConeGeometry, className: string, endpointScale: Vector3);
     dispose(): void;
     get boundingBox(): Mesh<BufferGeometry<import("three").NormalBufferAttributes>, import("three").Material | import("three").Material[], import("three").Object3DEventMap> | null;
-    get text(): CSS2DObject | null;
+    get text(): any;
     set dimensionColor(dimensionColor: Color);
     set visibility(visible: boolean);
     set endpointGeometry(geometry: ConeGeometry);
@@ -38,7 +38,7 @@ export declare class DimensionLine {
     rescaleMesh(mesh: Mesh, scalefactor?: number, x?: boolean, y?: boolean, z?: boolean): void;
     addEndpointMeshes(): void;
     newEndpointMesh(position: Vector3, direction: Vector3): void;
-    newText(): CSS2DObject;
+    newText(): any;
     getTextContent(): string;
     newBoundingBox(): Mesh<BoxGeometry, import("three").Material | import("three").Material[], import("three").Object3DEventMap>;
     setupBoundingBox(end: Vector3): void;

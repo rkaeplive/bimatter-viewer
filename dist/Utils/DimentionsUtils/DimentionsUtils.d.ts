@@ -34,7 +34,7 @@ export declare class DimensionsUtils {
     private setPreviewElement;
     get active(): boolean;
     get previewActive(): boolean;
-    get previewObject(): CSS2DObject | null;
+    get previewObject(): any;
     set previewActive(state: boolean);
     set active(state: boolean);
     set dimensionsColor(color: Color);
