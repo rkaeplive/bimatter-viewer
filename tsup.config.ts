@@ -11,5 +11,4 @@ export default defineConfig({
     treeshake: true,
     external: ["three", "camera-controls", "web-ifc"],
     target: "es2020",
-    metafile: true,
 });
