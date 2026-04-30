@@ -8,6 +8,7 @@ import {
 } from "three";
 import BimatterViewer, { Model } from "../src/Viewer";
 import { saveAs } from "file-saver";
+import "../dist/index.css";
 // import * as THREE from "three";
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -1,44 +1,15 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-var THREE2 = require('three');
-var threeMeshBvh = require('three-mesh-bvh');
-var CameraControls2 = require('camera-controls');
-var CSS2DRenderer_js = require('three/examples/jsm/renderers/CSS2DRenderer.js');
-var CSS3DRenderer_js = require('three/examples/jsm/renderers/CSS3DRenderer.js');
-var CSS2DRenderer = require('three/examples/jsm/renderers/CSS2DRenderer');
-var BufferGeometryUtils = require('three/examples/jsm/utils/BufferGeometryUtils');
-var webIfc = require('web-ifc');
-var decoder = require('pako');
-var Stats = require('three/examples/jsm/libs/stats.module.js');
-var GUI = require('lil-gui');
-
-function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
-
-function _interopNamespace(e) {
-  if (e && e.__esModule) return e;
-  var n = Object.create(null);
-  if (e) {
-    Object.keys(e).forEach(function (k) {
-      if (k !== 'default') {
-        var d = Object.getOwnPropertyDescriptor(e, k);
-        Object.defineProperty(n, k, d.get ? d : {
-          enumerable: true,
-          get: function () { return e[k]; }
-        });
-      }
-    });
-  }
-  n.default = e;
-  return Object.freeze(n);
-}
-
-var THREE2__namespace = /*#__PURE__*/_interopNamespace(THREE2);
-var CameraControls2__default = /*#__PURE__*/_interopDefault(CameraControls2);
-var decoder__default = /*#__PURE__*/_interopDefault(decoder);
-var Stats__default = /*#__PURE__*/_interopDefault(Stats);
-var GUI__default = /*#__PURE__*/_interopDefault(GUI);
+import * as THREE2 from 'three';
+import { Plane, Raycaster, Vector2, Vector3, Matrix4, Sphere, Line3, Box3, Spherical, Quaternion, Vector4, Ray, Group, TextureLoader, Clock, MeshLambertMaterial, DoubleSide, Color, FrontSide, BufferGeometry, Mesh, BufferAttribute, PerspectiveCamera, WebGLRenderer, SRGBColorSpace, Line, LineBasicMaterial, Float32BufferAttribute, MathUtils, LineDashedMaterial, MeshBasicMaterial, ConeGeometry, Texture, EventDispatcher, Object3D, AmbientLight, DirectionalLight, DynamicDrawUsage, LineSegments, PlaneGeometry, CylinderGeometry, BoxGeometry, Triangle, OrthographicCamera } from 'three';
+import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast, MeshBVH, NOT_INTERSECTED, INTERSECTED, CONTAINED } from 'three-mesh-bvh';
+import CameraControls2 from 'camera-controls';
+import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import { CSS3DRenderer } from 'three/examples/jsm/renderers/CSS3DRenderer.js';
+import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
+import { IfcAPI, IFCGRID, IFCRELDEFINESBYTYPE, IFCRELASSOCIATESMATERIAL, IFCRELDEFINESBYPROPERTIES, IFCRELCONTAINEDINSPATIALSTRUCTURE, IFCRELAGGREGATES, IFCPROJECT, IFCELEMENTASSEMBLY, IFCPRODUCTDEFINITIONSHAPE } from 'web-ifc';
+import decoder from 'pako';
+import Stats from 'three/examples/jsm/libs/stats.module.js';
+import GUI from 'lil-gui';
 
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
@@ -47,9 +18,9 @@ var BvhManager = class {
   constructor(context) {
     this.context = context;
     this._worker = null;
-    this.computeBoundsTree = threeMeshBvh.computeBoundsTree;
-    this.disposeBoundsTree = threeMeshBvh.disposeBoundsTree;
-    this.acceleratedRaycast = threeMeshBvh.acceleratedRaycast;
+    this.computeBoundsTree = computeBoundsTree;
+    this.disposeBoundsTree = disposeBoundsTree;
+    this.acceleratedRaycast = acceleratedRaycast;
     this.setupThreeMeshBVH();
   }
   set useWorker(worker) {
@@ -104,7 +75,7 @@ var BvhManager = class {
         } else if (data.serialized) {
           const { serialized } = data;
           try {
-            const bvh = threeMeshBvh.MeshBVH.deserialize(serialized, geometry, {
+            const bvh = MeshBVH.deserialize(serialized, geometry, {
               setIndex: true
             });
             resolve(bvh);
@@ -158,9 +129,9 @@ var BvhManager = class {
       console.log("Error while loading three-mesh-bvh");
       return;
     }
-    THREE2.BufferGeometry.prototype.computeBoundsTree = this.computeBoundsTree;
-    THREE2.BufferGeometry.prototype.disposeBoundsTree = this.disposeBoundsTree;
-    THREE2.Mesh.prototype.raycast = this.acceleratedRaycast;
+    BufferGeometry.prototype.computeBoundsTree = this.computeBoundsTree;
+    BufferGeometry.prototype.disposeBoundsTree = this.disposeBoundsTree;
+    Mesh.prototype.raycast = this.acceleratedRaycast;
   }
 };
 var Camera = class {
@@ -177,7 +148,7 @@ var Camera = class {
       this.threeCamera.updateMatrixWorld();
     };
     const sizes = this.context.sizes;
-    this.threeCamera = new THREE2.PerspectiveCamera(
+    this.threeCamera = new PerspectiveCamera(
       fov,
       sizes.width / sizes.height,
       near,
@@ -188,14 +159,14 @@ var Camera = class {
     this.threeCamera.updateMatrixWorld();
   }
 };
-var _plane = new THREE2.Plane();
-var _raycaster = new THREE2.Raycaster();
-var _pointer = new THREE2.Vector2();
-var _offset = new THREE2.Vector3();
-var _intersection = new THREE2.Vector3();
-var _worldPosition = new THREE2.Vector3();
-new THREE2.Matrix4();
-var DragControls = class extends THREE2.EventDispatcher {
+var _plane = new Plane();
+var _raycaster = new Raycaster();
+var _pointer = new Vector2();
+var _offset = new Vector3();
+var _intersection = new Vector3();
+var _worldPosition = new Vector3();
+new Matrix4();
+var DragControls = class extends EventDispatcher {
   constructor(_objects, _camera, _domElement) {
     super();
     __publicField(this, "defaultActive", true);
@@ -232,7 +203,7 @@ var DragControls = class extends THREE2.EventDispatcher {
       if (_selected) {
         let _vec;
         if (_raycaster.ray.intersectPlane(_plane, _intersection)) {
-          _vec = new THREE2.Vector3().copy(_intersection);
+          _vec = new Vector3().copy(_intersection);
           if (scope.defaultActive) {
             _selected.position.copy(_vec);
           }
@@ -328,11 +299,11 @@ var DragControls = class extends THREE2.EventDispatcher {
     this.getRaycaster = getRaycaster;
   }
 };
-var vec3$1 = new THREE2.Vector3();
-var ComputedTriangle = class extends THREE2.Triangle {
+var vec3$1 = new Vector3();
+var ComputedTriangle = class extends Triangle {
   constructor(a, b, c) {
     super(a, b, c);
-    this.normal = this.getNormal(new THREE2.Vector3());
+    this.normal = this.getNormal(new Vector3());
   }
   computeBoundingSphere() {
     this.boundingSphere = makeTriangleBoundingSphere(this, this.normal);
@@ -369,14 +340,14 @@ function getIncenter(triangle, out) {
   );
   return out;
 }
-var v = new THREE2.Vector3();
-var v0 = new THREE2.Vector3();
-var v1 = new THREE2.Vector3();
-var e0 = new THREE2.Vector3();
-var e1 = new THREE2.Vector3();
-var triangleNormal = new THREE2.Vector3();
+var v = new Vector3();
+var v0 = new Vector3();
+var v1 = new Vector3();
+var e0 = new Vector3();
+var e1 = new Vector3();
+var triangleNormal = new Vector3();
 function makeTriangleBoundingSphere(triangle, normal) {
-  const bs = new THREE2.Sphere();
+  const bs = new Sphere();
   v0.subVectors(triangle.b, triangle.a);
   v1.subVectors(triangle.c, triangle.a);
   if (v0.dot(v1) <= 0) {
@@ -416,15 +387,15 @@ function makeTriangleBoundingSphere(triangle, normal) {
   bs.radius = v.subVectors(bs.center, triangle.a).length();
   return bs;
 }
-var vec3 = new THREE2.Vector3();
-var vec3_0 = new THREE2.Vector3();
-var vec3_1 = new THREE2.Vector3();
-new THREE2.Sphere();
-new THREE2.Line3();
+var vec3 = new Vector3();
+var vec3_0 = new Vector3();
+var vec3_1 = new Vector3();
+new Sphere();
+new Line3();
 var Intersection = class {
   constructor() {
-    this.point = new THREE2.Vector3();
-    this.normal = new THREE2.Vector3();
+    this.point = new Vector3();
+    this.normal = new Vector3();
     this.depth = 0;
   }
   set(point, normal, depth) {
@@ -504,38 +475,38 @@ function inBox(hit, box, axis) {
     return true;
   return false;
 }
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Plane();
-var A = new THREE2.Vector3();
-var B = new THREE2.Vector3();
-var C = new THREE2.Vector3();
-var V = new THREE2.Vector3();
-var AB = new THREE2.Vector3();
-var BC = new THREE2.Vector3();
-var CA = new THREE2.Vector3();
-var Q1 = new THREE2.Vector3();
-var Q2 = new THREE2.Vector3();
-var Q3 = new THREE2.Vector3();
-var QC = new THREE2.Vector3();
-var QA = new THREE2.Vector3();
-var QB = new THREE2.Vector3();
-var negatedNormal = new THREE2.Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Plane();
+var A = new Vector3();
+var B = new Vector3();
+var C = new Vector3();
+var V = new Vector3();
+var AB = new Vector3();
+var BC = new Vector3();
+var CA = new Vector3();
+var Q1 = new Vector3();
+var Q2 = new Vector3();
+var Q3 = new Vector3();
+var QC = new Vector3();
+var QA = new Vector3();
+var QB = new Vector3();
+var negatedNormal = new Vector3();
 function isIntersectionSphereTriangle(sphere2, a, b, c, normal, out) {
   A.subVectors(a, sphere2.center);
   B.subVectors(b, sphere2.center);
@@ -580,15 +551,15 @@ function isIntersectionSphereTriangle(sphere2, a, b, c, normal, out) {
   out.set(contactPoint, normal, distance);
   return true;
 }
-var ab = new THREE2.Vector3();
-var ac = new THREE2.Vector3();
-var qp = new THREE2.Vector3();
-var n = new THREE2.Vector3();
-var ap = new THREE2.Vector3();
-var e = new THREE2.Vector3();
-var au = new THREE2.Vector3();
-var bv = new THREE2.Vector3();
-var cw = new THREE2.Vector3();
+var ab = new Vector3();
+var ac = new Vector3();
+var qp = new Vector3();
+var n = new Vector3();
+var ap = new Vector3();
+var e = new Vector3();
+var au = new Vector3();
+var bv = new Vector3();
+var cw = new Vector3();
 function testLineTriangle(p, q, a, b, c, hit) {
   ab.subVectors(b, a);
   ac.subVectors(c, a);
@@ -616,21 +587,21 @@ function testLineTriangle(p, q, a, b, c, hit) {
   hit.copy(au).add(bv).add(cw);
   return true;
 }
-new THREE2.Vector3();
-new THREE2.Plane();
-new THREE2.Line3();
-new THREE2.Line3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-new THREE2.Vector3();
-var _v1 = new THREE2.Vector3();
-var _v2$1 = new THREE2.Vector3();
+new Vector3();
+new Plane();
+new Line3();
+new Line3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+new Vector3();
+var _v1 = new Vector3();
+var _v2$1 = new Vector3();
 var Octree = class _Octree {
-  constructor(box = new THREE2.Box3()) {
-    this.bounds = new THREE2.Box3();
+  constructor(box = new Box3()) {
+    this.bounds = new Box3();
     this.triangles = [];
     this.subTrees = [];
     this.box = box;
@@ -687,7 +658,7 @@ var Octree = class _Octree {
     for (let x = 0; x < 2; x++) {
       for (let y = 0; y < 2; y++) {
         for (let z = 0; z < 2; z++) {
-          const box = new THREE2.Box3();
+          const box = new Box3();
           const v2 = _v1.set(x, y, z);
           box.min.copy(this.box.min).add(v2.multiply(halfSize));
           box.max.copy(box.min).add(halfSize);
@@ -778,7 +749,7 @@ var Octree = class _Octree {
     }
   }
   lineIntersect(line) {
-    const position = new THREE2.Vector3();
+    const position = new Vector3();
     const triangles = [];
     let distanceSquared = Infinity;
     let triangle = null;
@@ -851,9 +822,9 @@ var Octree = class _Octree {
           const a = indices[ii];
           const b = indices[ii + 1];
           const c = indices[ii + 2];
-          const vA = new THREE2.Vector3().fromArray(positions, a * 3);
-          const vB = new THREE2.Vector3().fromArray(positions, b * 3);
-          const vC = new THREE2.Vector3().fromArray(positions, c * 3);
+          const vA = new Vector3().fromArray(positions, a * 3);
+          const vB = new Vector3().fromArray(positions, b * 3);
+          const vC = new Vector3().fromArray(positions, c * 3);
           const triangle = new ComputedTriangle(vA, vB, vC);
           triangle.extend(1e-10);
           triangle.computeBoundingSphere();
@@ -925,23 +896,23 @@ var FALL_VELOCITY = -20;
 var JUMP_DURATION = 1e3;
 var PI_HALF$1 = Math.PI * 0.5;
 var PI_ONE_HALF = Math.PI * 1.5;
-var direction2D = new THREE2.Vector2();
-var wallNormal2D = new THREE2.Vector2();
-var groundingHead = new THREE2.Vector3();
-var groundingTo = new THREE2.Vector3();
-var groundContactPointTmp = new THREE2.Vector3();
-var groundContactPoint = new THREE2.Vector3();
-var translate = new THREE2.Vector3();
-var sphereCenter = new THREE2.Vector3();
-var sphere$1 = new THREE2.Sphere();
+var direction2D = new Vector2();
+var wallNormal2D = new Vector2();
+var groundingHead = new Vector3();
+var groundingTo = new Vector3();
+var groundContactPointTmp = new Vector3();
+var groundContactPoint = new Vector3();
+var translate = new Vector3();
+var sphereCenter = new Vector3();
+var sphere$1 = new Sphere();
 var intersection = new Intersection();
 var CharacterController = class extends EventDispatcher$1 {
   constructor(object3d, radius) {
     super();
     this.isCharacterController = true;
-    this.position = new THREE2.Vector3();
+    this.position = new Vector3();
     this.groundCheckDepth = 0.2;
-    this.maxSlopeGradient = Math.cos(50 * THREE2.MathUtils.DEG2RAD);
+    this.maxSlopeGradient = Math.cos(50 * MathUtils.DEG2RAD);
     this.isGrounded = false;
     this.isOnSlope = false;
     this.isIdling = false;
@@ -949,11 +920,11 @@ var CharacterController = class extends EventDispatcher$1 {
     this.isJumping = false;
     this.direction = 0;
     this.movementSpeed = 10;
-    this.velocity = new THREE2.Vector3(0, -9.8, 0);
+    this.velocity = new Vector3(0, -9.8, 0);
     this.currentJumpPower = 0;
     this.jumpStartTime = 0;
     this.groundHeight = 0;
-    this.groundNormal = new THREE2.Vector3();
+    this.groundNormal = new Vector3();
     this.nearTriangles = [];
     this.contactInfo = [];
     this.object = object3d;
@@ -1190,7 +1161,7 @@ var CharacterController = class extends EventDispatcher$1 {
     this.object.position.copy(this.position);
   }
 };
-var sphere = new THREE2.Sphere();
+var sphere = new Sphere();
 var World = class {
   constructor({ fps = 60, stepsPerFrame = 4 } = {}) {
     this.colliderPool = [];
@@ -3801,23 +3772,23 @@ var CameraControls = class _CameraControls extends EventDispatcher3 {
   }
 };
 var subsetOfTHREE = {
-  Vector2: THREE2.Vector2,
-  Vector3: THREE2.Vector3,
-  Vector4: THREE2.Vector4,
-  Quaternion: THREE2.Quaternion,
-  Matrix4: THREE2.Matrix4,
-  Spherical: THREE2.Spherical,
-  Box3: THREE2.Box3,
-  Sphere: THREE2.Sphere,
-  Raycaster: THREE2.Raycaster
+  Vector2: Vector2,
+  Vector3: Vector3,
+  Vector4,
+  Quaternion,
+  Matrix4: Matrix4,
+  Spherical,
+  Box3,
+  Sphere,
+  Raycaster: Raycaster
 };
 CameraControls.install({ THREE: subsetOfTHREE });
-var _ORIGIN = new THREE2.Vector3(0, 0, 0);
-var _v3A = new THREE2.Vector3();
-var _v3B = new THREE2.Vector3();
-var _v3C = new THREE2.Vector3();
-var _ray = new THREE2.Ray();
-var _rotationMatrix = new THREE2.Matrix4();
+var _ORIGIN = new Vector3(0, 0, 0);
+var _v3A = new Vector3();
+var _v3B = new Vector3();
+var _v3C = new Vector3();
+var _ray = new Ray();
+var _rotationMatrix = new Matrix4();
 var TPSCameraControls = class extends CameraControls {
   constructor(camera, trackObject, world, domElement) {
     super(camera, domElement);
@@ -3825,16 +3796,16 @@ var TPSCameraControls = class extends CameraControls {
     this.maxDistance = 30;
     this.azimuthRotateSpeed = 0.3;
     this.polarRotateSpeed = -0.2;
-    this.minPolarAngle = 30 * THREE2.MathUtils.DEG2RAD;
-    this.maxPolarAngle = 120 * THREE2.MathUtils.DEG2RAD;
+    this.minPolarAngle = 30 * MathUtils.DEG2RAD;
+    this.maxPolarAngle = 120 * MathUtils.DEG2RAD;
     this.draggingSmoothTime = 1e-10;
     this.mouseButtons.right = CameraControls.ACTION.NONE;
     this.mouseButtons.middle = CameraControls.ACTION.NONE;
     this.touches.two = CameraControls.ACTION.TOUCH_DOLLY;
     this.touches.three = CameraControls.ACTION.TOUCH_DOLLY;
     this.world = world;
-    this.colliderMeshes = [new THREE2.Object3D()];
-    const offset = new THREE2.Vector3(0, 2, 0);
+    this.colliderMeshes = [new Object3D()];
+    const offset = new Vector3(0, 2, 0);
     this.update = (delta) => {
       const x = trackObject.position.x + offset.x;
       const y = trackObject.position.y + offset.y;
@@ -3869,12 +3840,12 @@ var TPSCameraControls = class extends CameraControls {
 };
 
 // src/Viewer/Context/Controls/Controls.ts
-CameraControls2__default.default.install({ THREE: THREE2__namespace });
+CameraControls2.install({ THREE: THREE2 });
 var Controls = class {
   constructor(context) {
     this.context = context;
     this._moving = false;
-    this._position = new THREE2__namespace.Vector3();
+    this._position = new THREE2.Vector3();
     this.settings = {
       speed: 0.05,
       rotateSpeed: 1e-3,
@@ -3900,7 +3871,7 @@ var Controls = class {
     };
     this.onControl = this._onControl.bind(this);
     this._activeMode = "Orthographic";
-    this.cameraControl = new CameraControls2__default.default(
+    this.cameraControl = new CameraControls2(
       this.context.camera.threeCamera,
       this.context.domElement
     );
@@ -3912,7 +3883,7 @@ var Controls = class {
     this.cameraControl.dollyToCursor = true;
     this.cameraControl.infinityDolly = true;
     this.cameraControl.minDistance = 3;
-    this.raycaster = new THREE2__namespace.Raycaster();
+    this.raycaster = new THREE2.Raycaster();
     this.addEvents();
   }
   get activeMode() {
@@ -4087,9 +4058,9 @@ var Controls = class {
             octree.addGraphNode(mesh);
           }
         }
-        const ground = new THREE2__namespace.Mesh(
-          new THREE2__namespace.PlaneGeometry(50, 50, 10, 10),
-          new THREE2__namespace.MeshBasicMaterial({
+        const ground = new THREE2.Mesh(
+          new THREE2.PlaneGeometry(50, 50, 10, 10),
+          new THREE2.MeshBasicMaterial({
             color: "red"
           })
         );
@@ -4104,13 +4075,13 @@ var Controls = class {
           bb.min.y,
           (bb.max.z + bb.min.z) / 2
         );
-        ground.rotation.x = -90 * THREE2__namespace.MathUtils.DEG2RAD;
+        ground.rotation.x = -90 * THREE2.MathUtils.DEG2RAD;
         world.add(octree);
-        const playerObjectHolder = new THREE2__namespace.Object3D();
+        const playerObjectHolder = new THREE2.Object3D();
         this.context.scene.threeScene.add(playerObjectHolder);
-        const sphere2 = new THREE2__namespace.Mesh(
-          new THREE2__namespace.SphereGeometry(0.75, 16, 16),
-          new THREE2__namespace.MeshBasicMaterial({
+        const sphere2 = new THREE2.Mesh(
+          new THREE2.SphereGeometry(0.75, 16, 16),
+          new THREE2.MeshBasicMaterial({
             color: 16711680,
             wireframe: true
           })
@@ -4220,7 +4191,7 @@ var Controls = class {
         //@ts-ignore
         mesh.geometry.boundsTree.raycast(
           this.context.context.context.controls.raycaster.ray,
-          this.context.context.selector.useDoubleSideMaterial ? THREE2__namespace.DoubleSide : THREE2__namespace.FrontSide
+          this.context.context.selector.useDoubleSideMaterial ? THREE2.DoubleSide : THREE2.FrontSide
         )
       );
       return intersect.map((p) => {
@@ -4262,7 +4233,7 @@ var Controls = class {
   }
   _onControl() {
     if (!this._moving) {
-      const pos = new THREE2__namespace.Vector3();
+      const pos = new THREE2.Vector3();
       this.cameraControl.getPosition(pos);
       if (pos.distanceTo(this._position) > 0.1) {
         this._moving = true;
@@ -4286,7 +4257,7 @@ var Controls = class {
 var Sizes = class {
   constructor(context) {
     this.context = context;
-    this.modelSize = new THREE2.Box3();
+    this.modelSize = new Box3();
     this.width = context.context.container.offsetWidth;
     this.height = context.context.container.offsetHeight;
     window.addEventListener("resize", this.resize.bind(this));
@@ -4306,10 +4277,10 @@ var Environment = class {
 var Lights = class {
   constructor(context) {
     this.context = context;
-    this.ambientLight = new THREE2.AmbientLight(16777215, 1.2);
-    this.directionalLight1 = new THREE2.DirectionalLight(16777215, 2);
-    this.directionalLight2 = new THREE2.DirectionalLight(16777215, 2);
-    const target = new THREE2.Vector3();
+    this.ambientLight = new AmbientLight(16777215, 1.2);
+    this.directionalLight1 = new DirectionalLight(16777215, 2);
+    this.directionalLight2 = new DirectionalLight(16777215, 2);
+    const target = new Vector3();
     this.context.context.controls.cameraControl.getTarget(target);
     this.directionalLight1.lookAt(target);
     this.directionalLight2.lookAt(target);
@@ -4330,7 +4301,7 @@ var Lights = class {
       max.y + 10,
       min.z * 1.3
     );
-    const sceneCenter = new THREE2.Vector3();
+    const sceneCenter = new Vector3();
     box.getCenter(sceneCenter);
     this.directionalLight1.lookAt(sceneCenter);
     this.directionalLight2.lookAt(sceneCenter);
@@ -4354,7 +4325,7 @@ var Postproduction = class {
         });
         points.push(model.boundingBox.max, model.boundingBox.min);
       }
-      const fullBox = new THREE2.Box3();
+      const fullBox = new Box3();
       fullBox.setFromPoints(points);
       const L = fullBox.min.distanceTo(fullBox.max) / 2 + 10;
       this.context.environment.lights.directionalLight1.shadow.mapSize.set(
@@ -4378,20 +4349,20 @@ var Renderer = class {
   constructor(context) {
     this.context = context;
     this.animationCallbackList = [];
-    this.clock = new THREE2.Clock();
+    this.clock = new Clock();
     this.needUpdate = true;
-    this.threeRenderer = new THREE2.WebGLRenderer({
+    this.threeRenderer = new WebGLRenderer({
       powerPreference: "high-performance",
       logarithmicDepthBuffer: true,
       antialias: true,
       alpha: true
     });
-    this.threeRenderer2D = new CSS2DRenderer_js.CSS2DRenderer();
+    this.threeRenderer2D = new CSS2DRenderer();
     this.threeRenderer2D.domElement.style.position = "absolute";
     this.threeRenderer2D.domElement.style.top = "0px";
     this.threeRenderer2D.domElement.style.pointerEvents = "none";
     context.context.container.appendChild(this.threeRenderer2D.domElement);
-    this.threeRenderer3D = new CSS3DRenderer_js.CSS3DRenderer();
+    this.threeRenderer3D = new CSS3DRenderer();
     this.threeRenderer3D.domElement.style.position = "absolute";
     this.threeRenderer3D.domElement.style.top = "0px";
     this.threeRenderer3D.domElement.style.pointerEvents = "none";
@@ -4399,13 +4370,13 @@ var Renderer = class {
     this.resize();
     this.animation();
     this.threeRenderer.setPixelRatio(window.devicePixelRatio);
-    this.threeRenderer.outputColorSpace = THREE2.SRGBColorSpace;
+    this.threeRenderer.outputColorSpace = SRGBColorSpace;
     this.threeRenderer.setClearColor(0, 0);
   }
   newScreenshot(camera) {
     const domElement = this.context.domElement;
     const tempCanvas = domElement.cloneNode(true);
-    const tempRenderer = new THREE2.WebGLRenderer({
+    const tempRenderer = new WebGLRenderer({
       canvas: tempCanvas,
       logarithmicDepthBuffer: true,
       antialias: true,
@@ -4432,7 +4403,7 @@ var Renderer = class {
       this.context.sizes.width,
       this.context.sizes.height
     );
-    if (this.context.camera.threeCamera instanceof THREE2.PerspectiveCamera) {
+    if (this.context.camera.threeCamera instanceof PerspectiveCamera) {
       this.context.camera.threeCamera.aspect = this.context.sizes.width / this.context.sizes.height;
     }
     this.threeRenderer.setPixelRatio(window.devicePixelRatio);
@@ -4491,7 +4462,7 @@ var Renderer = class {
 var Scene2 = class {
   constructor(context, useDefaultTexture = true) {
     this.context = context;
-    this.threeScene = new THREE2__namespace.Scene();
+    this.threeScene = new THREE2.Scene();
     if (useDefaultTexture) {
       this.context.textureLoader.load(
         "Resources/scene_bg.jpg",
@@ -4508,12 +4479,12 @@ var Context = class {
   constructor(context, settings) {
     this.context = context;
     this.mouse = {
-      position: new THREE2.Vector2(),
-      cords: new THREE2.Vector2()
+      position: new Vector2(),
+      cords: new Vector2()
     };
     this.mouseMoveHandleBind = this.mouseMoveHandle.bind(this);
     this.sizes = new Sizes(this);
-    this.textureLoader = new THREE2.TextureLoader();
+    this.textureLoader = new TextureLoader();
     this.scene = new Scene2(this, settings.useDefaultTexture);
     this.camera = new Camera(this, 45, 0.1, 1e3);
     this.scene.threeScene.add(this.camera.threeCamera);
@@ -4524,7 +4495,7 @@ var Context = class {
     this.postproduction = new Postproduction(this);
     context.container.appendChild(this.domElement);
     this.domElement.addEventListener("mousemove", this.mouseMoveHandleBind);
-    this.clock = new THREE2.Clock();
+    this.clock = new Clock();
   }
   mouseMoveHandle(event) {
     const bounds = this.context.container.getBoundingClientRect();
@@ -4568,15 +4539,15 @@ var ModelGrids = class {
     this.botTags = [];
     this.leftTags = [];
     this.rightTags = [];
-    this.mesh = new THREE2.Group();
+    this.mesh = new Group();
     this._active = true;
     this.grids = Object.values(grids);
-    if (context.context.context.scene.threeScene.background instanceof THREE2.Texture) {
+    if (context.context.context.scene.threeScene.background instanceof Texture) {
       this.color = "black";
     } else {
       let bgColor = context.context.context.scene.threeScene.background;
       if (!bgColor && context.context.container.style.background) {
-        bgColor = new THREE2.Color(context.context.container.style.background);
+        bgColor = new Color(context.context.container.style.background);
       }
       if (!bgColor) {
         this.color = "#000";
@@ -4584,15 +4555,15 @@ var ModelGrids = class {
         this.color = this.changeColor(bgColor);
       }
     }
-    this.material = new THREE2.LineBasicMaterial({
-      color: new THREE2.Color(this.color),
+    this.material = new LineBasicMaterial({
+      color: new Color(this.color),
       linewidth: 2
     });
     this.init();
   }
   async init() {
     const lowY = this.context.boundingBox.min;
-    const gridGroup = new THREE2.Group();
+    const gridGroup = new Group();
     this.mesh = gridGroup;
     for (const grid of this.grids) {
       const locCoordinates = grid.loc;
@@ -4612,17 +4583,17 @@ var ModelGrids = class {
       tag.className = "gridMark";
       tag.style.fontSize = "14px";
       tag.style.fontFamily = "Onest, Roboto";
-      const tagObj = new CSS2DRenderer.CSS2DObject(tag);
+      const tagObj = new CSS2DObject(tag);
       const curPoints = data[shortName];
       const point1 = curPoints[0];
       const point2 = curPoints[1];
       const linePoints = [
-        new THREE2.Vector3(
+        new Vector3(
           point1.x ? point1.x : 0,
           point1.y ? point1.y : 0,
           point1.z ? point1.z : 0
         ),
-        new THREE2.Vector3(
+        new Vector3(
           point2.x ? point2.x : 0,
           point2.y ? point2.y : 0,
           point2.z ? point2.z : 0
@@ -4639,8 +4610,8 @@ var ModelGrids = class {
         linePoints[1].y,
         linePoints[1].z
       );
-      const geometry = new THREE2.BufferGeometry().setFromPoints(linePoints);
-      const line = new THREE2.Line(geometry, this.material);
+      const geometry = new BufferGeometry().setFromPoints(linePoints);
+      const line = new Line(geometry, this.material);
       line.position.set(
         locCoordinates.x,
         locCoordinates.y,
@@ -4829,10 +4800,10 @@ var Model = class {
         mesh.geometry.boundingBox.min
       );
     }
-    return new THREE2.Box3().setFromPoints(points);
+    return new Box3().setFromPoints(points);
   }
   cloneGeometry(geometry) {
-    const preselGeom = new THREE2.BufferGeometry();
+    const preselGeom = new BufferGeometry();
     preselGeom.setAttribute("position", geometry.attributes.position);
     preselGeom.setAttribute("ids", geometry.attributes.ids);
     preselGeom.setAttribute("normal", geometry.attributes.normal);
@@ -4843,8 +4814,8 @@ var Model = class {
     if (!this.context.selector.selectorModels[this.modelID]) {
       this.context.selector.selectorModels[this.modelID] = [];
     }
-    const preselectGroup = new THREE2.Group();
-    const selectGroup = new THREE2.Group();
+    const preselectGroup = new Group();
+    const selectGroup = new Group();
     this.context.selector.preSelection.state[this.modelID] = {};
     this.context.selector.selection.state[this.modelID] = {};
     for (const ch of this.threeGeometry.children) {
@@ -4854,11 +4825,11 @@ var Model = class {
       const selGeom = this.cloneGeometry(mesh.geometry);
       preselGeom.setIndex([]);
       selGeom.setIndex([]);
-      const preselectMesh = new THREE2.Mesh(
+      const preselectMesh = new Mesh(
         preselGeom,
         this.context.selector.preSelMaterial
       );
-      const selectMesh = new THREE2.Mesh(
+      const selectMesh = new Mesh(
         selGeom,
         this.context.selector.selMaterial
       );
@@ -4943,7 +4914,7 @@ var Model = class {
       }
       return [];
     }).flat();
-    const box = new THREE2.Box3();
+    const box = new Box3();
     const context = this.context.context;
     box.setFromPoints(points);
     this.boundingBox = box;
@@ -4956,14 +4927,14 @@ var Model = class {
   async fitToView(enableTransition = false) {
     const context = this.context.context;
     const box = context.sizes.modelSize;
-    const sceneSize = new THREE2.Vector3();
+    const sceneSize = new Vector3();
     box.getSize(sceneSize);
-    const sceneCenter = new THREE2.Vector3();
+    const sceneCenter = new Vector3();
     box.getCenter(sceneCenter);
     const nearFactor = 0.5;
     const radius = Math.max(sceneSize.x, sceneSize.y, sceneSize.z) * nearFactor;
     if (radius !== Infinity) {
-      const sphere2 = new THREE2.Sphere(sceneCenter, radius);
+      const sphere2 = new Sphere(sceneCenter, radius);
       await context.controls.cameraControl.fitToSphere(
         sphere2,
         enableTransition
@@ -4977,11 +4948,11 @@ var Model = class {
     mesh.renderOrder = 0.5;
     preselGeom.setIndex([]);
     selGeom.setIndex([]);
-    const preselectMesh = new THREE2.Mesh(
+    const preselectMesh = new Mesh(
       preselGeom,
       this.context.selector.preSelMaterial
     );
-    const selectMesh = new THREE2.Mesh(selGeom, this.context.selector.selMaterial);
+    const selectMesh = new Mesh(selGeom, this.context.selector.selMaterial);
     preselectMesh.renderOrder = 1;
     selectMesh.renderOrder = 2;
     preselectGroup.add(preselectMesh);
@@ -5030,31 +5001,31 @@ var PropertySerializer = class {
     // ]);
     this.PropsNames = {
       aggregates: {
-        name: webIfc.IFCRELAGGREGATES,
+        name: IFCRELAGGREGATES,
         relating: "RelatingObject",
         related: "RelatedObjects",
         key: "children"
       },
       spatial: {
-        name: webIfc.IFCRELCONTAINEDINSPATIALSTRUCTURE,
+        name: IFCRELCONTAINEDINSPATIALSTRUCTURE,
         relating: "RelatingStructure",
         related: "RelatedElements",
         key: "children"
       },
       psets: {
-        name: webIfc.IFCRELDEFINESBYPROPERTIES,
+        name: IFCRELDEFINESBYPROPERTIES,
         relating: "RelatingPropertyDefinition",
         related: "RelatedObjects",
         key: "IsDefinedBy"
       },
       materials: {
-        name: webIfc.IFCRELASSOCIATESMATERIAL,
+        name: IFCRELASSOCIATESMATERIAL,
         relating: "RelatingMaterial",
         related: "RelatedObjects",
         key: "HasAssociations"
       },
       type: {
-        name: webIfc.IFCRELDEFINESBYTYPE,
+        name: IFCRELDEFINESBYTYPE,
         relating: "RelatingType",
         related: "RelatedObjects",
         key: "IsDefinedBy"
@@ -5073,7 +5044,7 @@ var PropertySerializer = class {
     let properties = {};
     const allLines = this.context._parser.GetLineIDsWithType(
       modelID,
-      webIfc.IFCPROJECT
+      IFCPROJECT
     );
     const projectID = allLines.get(0);
     const elementProps = await this.getItemProperty(modelID, projectID);
@@ -5245,7 +5216,7 @@ var PropertySerializer = class {
     const chunks = await this.getSpatialTreeChunks(modelID);
     const allLines = await this.context._parser.GetLineIDsWithType(
       modelID,
-      webIfc.IFCELEMENTASSEMBLY
+      IFCELEMENTASSEMBLY
     );
     const dict = {};
     const ids = [];
@@ -5322,7 +5293,7 @@ var PropertySerializer = class {
   async getAllRelDefinesByProps(modelID) {
     const relDefineByProps = await this.context._parser.GetLineIDsWithType(
       modelID,
-      webIfc.IFCRELDEFINESBYPROPERTIES
+      IFCRELDEFINESBYPROPERTIES
     );
     const relDefineByPropsSet = /* @__PURE__ */ new Set();
     const idsSize = relDefineByProps.size();
@@ -5335,7 +5306,7 @@ var PropertySerializer = class {
     const chunks = await this.getSpatialTreeChunks(modelID);
     const allLines = await this.context._parser.GetLineIDsWithType(
       modelID,
-      webIfc.IFCPROJECT
+      IFCPROJECT
     );
     const projectID = allLines.get(0);
     const projectData = await this.context._parser.GetLine(
@@ -5634,7 +5605,7 @@ var IFCLoader = class {
     this._wasmPath = "./";
     this.chunk = 1e3;
     this.curModelId = -1;
-    this.parser = new webIfc.IfcAPI();
+    this.parser = new IfcAPI();
     this.parser.SetWasmPath(this._wasmPath, false);
     this.propertySerializer = new PropertySerializer(this);
   }
@@ -5735,7 +5706,7 @@ var IFCLoader = class {
     const allIds = /* @__PURE__ */ new Set();
     let elementsAssembly = this.useIfcElemetAssembly ? await this.propertySerializer.getElementsAssembly(ifcModelID) : null;
     const group = ifcParser.parseData(allIds, elementsAssembly);
-    const grids = this.parser.GetLineIDsWithType(ifcModelID, webIfc.IFCGRID);
+    const grids = this.parser.GetLineIDsWithType(ifcModelID, IFCGRID);
     const gridsProps = {};
     if (grids && grids.size()) {
       for (let i = 0; i < grids.size(); i++) {
@@ -5759,7 +5730,7 @@ var IFCLoader = class {
     );
     if (!this.context.coordinationMatrix) {
       const matrixArr = this.parser.GetCoordinationMatrix(ifcModelID);
-      const matrix = new THREE2.Matrix4().fromArray(matrixArr);
+      const matrix = new Matrix4().fromArray(matrixArr);
       this.context.coordinationMatrix = matrix;
     }
     this.parser.CloseModel(ifcModelID);
@@ -5777,10 +5748,10 @@ var IfcParser = class {
   parseData(allIds, elementsAssembly) {
     this.elementsAssembly = elementsAssembly;
     const matMap = {};
-    const group = new THREE2.Group();
+    const group = new Group();
     const shapes = this.parser.GetLineIDsWithType(
       this.ifcModelID,
-      webIfc.IFCPRODUCTDEFINITIONSHAPE
+      IFCPRODUCTDEFINITIONSHAPE
     );
     this.progressUtils?.initializeLoadingState(
       "Parsing geometry",
@@ -5825,15 +5796,15 @@ var IfcParser = class {
       function addGeom(geom, material) {
         geom.computeBoundingBox();
         geom.computeBoundingSphere();
-        const mesh = new THREE2.Mesh(geom, material);
+        const mesh = new Mesh(geom, material);
         mesh.name = materialId.toString();
         group.add(mesh);
       }
       function mergeGeom(arr, material) {
-        const geom = BufferGeometryUtils.mergeGeometries(arr);
+        const geom = mergeGeometries(arr);
         geom.computeBoundingBox();
         geom.computeBoundingSphere();
-        const mesh = new THREE2.Mesh(geom, material);
+        const mesh = new Mesh(geom, material);
         mesh.name = materialId.toString();
         group.add(mesh);
       }
@@ -5907,7 +5878,7 @@ var IfcParser = class {
       color = { x: 178 / 255, y: 178 / 255, z: 178 / 255, w: 1 };
     }
     const material = this.getMeshMaterial(color);
-    const mesh = new THREE2.Mesh(geometry);
+    const mesh = new Mesh(geometry);
     mesh.matrix = this.getMeshMatrix(placedGeometry.flatTransformation);
     mesh.matrixAutoUpdate = false;
     return [mesh, material];
@@ -5938,16 +5909,16 @@ var IfcParser = class {
     return bufferGeometry;
   }
   getMeshMaterial(color) {
-    const col = new THREE2.Color(color.x, color.y, color.z);
+    const col = new Color(color.x, color.y, color.z);
     let colID = col.getHex().toString();
     if (this.materials[colID]) {
       return this.materials[colID];
     }
-    const material = new THREE2.MeshLambertMaterial({
+    const material = new MeshLambertMaterial({
       color: col,
       premultipliedAlpha: true,
       name: colID,
-      side: THREE2.DoubleSide
+      side: DoubleSide
     });
     material.transparent = color.w !== 1;
     if (material.transparent) material.opacity = color.w;
@@ -5955,12 +5926,12 @@ var IfcParser = class {
     return material;
   }
   getMeshMatrix(matrix) {
-    const mat = new THREE2.Matrix4();
+    const mat = new Matrix4();
     mat.fromArray(matrix);
     return mat;
   }
   ifcGeometryToBuffer(vertexData, id, indexData) {
-    const geometry = new THREE2.BufferGeometry();
+    const geometry = new BufferGeometry();
     const posFloats = new Float32Array(vertexData.length / 2);
     const normFloats = new Float32Array(vertexData.length / 2);
     const idAttribute = new Uint32Array(vertexData.length / 6);
@@ -5986,10 +5957,10 @@ var IfcParser = class {
       normFloats[i / 2 + 2] = normz ? normz : 0;
       idAttribute[i / 6] = curID;
     }
-    geometry.setAttribute("position", new THREE2.BufferAttribute(posFloats, 3));
-    geometry.setAttribute("normal", new THREE2.BufferAttribute(normFloats, 3));
-    geometry.setAttribute("ids", new THREE2.BufferAttribute(idAttribute, 1));
-    geometry.setIndex(new THREE2.BufferAttribute(indexData, 1));
+    geometry.setAttribute("position", new BufferAttribute(posFloats, 3));
+    geometry.setAttribute("normal", new BufferAttribute(normFloats, 3));
+    geometry.setAttribute("ids", new BufferAttribute(idAttribute, 1));
+    geometry.setIndex(new BufferAttribute(indexData, 1));
     return geometry;
   }
 };
@@ -6085,7 +6056,7 @@ var BinaryReader = class {
 var BMTLoader = class {
   constructor(context) {
     this.context = context;
-    this.curMatrix = new THREE2.Matrix4();
+    this.curMatrix = new Matrix4();
     this.textDecoder = new TextDecoder("utf-8");
   }
   async streamToBlob(data, start) {
@@ -6120,7 +6091,7 @@ var BMTLoader = class {
       if (this.context.context.utils.stats) {
         console.log("decoding:", Date.now() - start, "ms");
       }
-      const group = new THREE2.Group();
+      const group = new Group();
       const idsState = {};
       const indState = {};
       const defIdsState = {};
@@ -6164,7 +6135,7 @@ var BMTLoader = class {
     }
   }
   decodeBuffer(buffer) {
-    return this.textDecoder.decode(decoder__default.default.inflate(buffer));
+    return this.textDecoder.decode(decoder.inflate(buffer));
   }
   parseMesh(data) {
     const view = new DataView(data.buffer, data.byteOffset);
@@ -6248,8 +6219,8 @@ var BMTLoader = class {
             materialId++;
             materialState[colorId] = {
               id: materialId.toString(),
-              material: new THREE2.MeshLambertMaterial({
-                color: new THREE2.Color(
+              material: new MeshLambertMaterial({
+                color: new Color(
                   meshData.colorId.r,
                   meshData.colorId.g,
                   meshData.colorId.b
@@ -6259,7 +6230,7 @@ var BMTLoader = class {
                 premultipliedAlpha: true,
                 name: chunkName ? chunkName : materialId.toString(),
                 // vertexColors: true,
-                side: THREE2.DoubleSide
+                side: DoubleSide
               })
             };
           }
@@ -6267,14 +6238,14 @@ var BMTLoader = class {
           if (!chunkName) {
             chunkName = curMaterial.id;
           }
-          const geom = new THREE2.BufferGeometry();
+          const geom = new BufferGeometry();
           geom.setAttribute(
             "position",
-            new THREE2.BufferAttribute(new Float32Array(pos.buffer), 3)
+            new BufferAttribute(new Float32Array(pos.buffer), 3)
           );
           geom.setAttribute(
             "ids",
-            new THREE2.BufferAttribute(new Uint32Array(ids.buffer), 1)
+            new BufferAttribute(new Uint32Array(ids.buffer), 1)
           );
           let indexArr;
           if (ind && ind.length) {
@@ -6295,7 +6266,7 @@ var BMTLoader = class {
           const uint32 = new Uint32Array(indexArr);
           indState[chunkName] = uint32;
           defIndState[chunkName] = uint32;
-          geom.setIndex(new THREE2.BufferAttribute(uint32, 1));
+          geom.setIndex(new BufferAttribute(uint32, 1));
           geom.computeVertexNormals();
           geom.computeBoundingBox();
           const idsAttr = geom.attributes.ids;
@@ -6322,7 +6293,7 @@ var BMTLoader = class {
             geom.applyMatrix4(this.curMatrix);
             geom.applyMatrix4(this.context.coordinationMatrix);
           }
-          const mesh = new THREE2.Mesh(geom, curMaterial.material);
+          const mesh = new Mesh(geom, curMaterial.material);
           mesh.name = chunkName.toString();
           group.add(mesh);
           meshData = null;
@@ -6343,7 +6314,7 @@ var BMTLoader = class {
         case 5 /* MATRIX */:
           if (length) {
             const matrixArr = JSON.parse(this.decodeBuffer(data2));
-            this.curMatrix = new THREE2.Matrix4().fromArray(matrixArr).invert();
+            this.curMatrix = new Matrix4().fromArray(matrixArr).invert();
             if (!this.context.coordinationMatrix) {
               this.context.coordinationMatrix = this.curMatrix.clone().invert();
             }
@@ -6604,7 +6575,7 @@ var Selection = class {
         for (const matId of Object.keys(vertIndexes)) {
           const indexes = vertIndexes[Number(matId)];
           const exArr = curState[Number(matId)].index;
-          const newIndexArr = new THREE2.BufferAttribute(
+          const newIndexArr = new BufferAttribute(
             new Uint32Array(exArr.count + indexes.length),
             1
           );
@@ -6638,7 +6609,7 @@ var Selection = class {
         this._useSelectBind
       );
     }
-    this._selectedMesh = new THREE2.Group();
+    this._selectedMesh = new Group();
     this._selectedMesh.frustumCulled = false;
     this._selectedMesh.renderOrder = 2;
     this.context.context.context.scene.threeScene.add(this._selectedMesh);
@@ -6780,7 +6751,7 @@ var PreSelection = class {
     this._usePreSelectBind = this.usePreSelect.bind(this);
     this._activeElement = -1;
     this._activeFace = -1;
-    this._activePoint = new THREE2.Vector3();
+    this._activePoint = new Vector3();
     this._activeModelID = 0;
     this._intersectLength = 0;
     this._intersectDistance = 0;
@@ -6803,7 +6774,7 @@ var PreSelection = class {
     if (this._active) {
       _context.renderer.addCallback(this._usePreSelectBind);
     }
-    this._preSelectMesh = new THREE2.Group();
+    this._preSelectMesh = new Group();
     this._preSelectMesh.frustumCulled = false;
     this._preSelectMesh.renderOrder = 1;
     _context.scene.threeScene.add(this._preSelectMesh);
@@ -6917,24 +6888,24 @@ var SelectionBox = class {
     this.dragging = false;
     this.selectionShapeNeedsUpdate = false;
     this.selectionNeedsUpdate = false;
-    this.invWorldMatrix = new THREE2.Matrix4();
-    this.camLocalPosition = new THREE2.Vector3();
-    this.tempRay = new THREE2.Ray();
-    this.centroid = new THREE2.Vector3();
-    this.screenCentroid = new THREE2.Vector3();
-    this.faceNormal = new THREE2.Vector3();
-    this.toScreenSpaceMatrix = new THREE2.Matrix4();
+    this.invWorldMatrix = new Matrix4();
+    this.camLocalPosition = new Vector3();
+    this.tempRay = new Ray();
+    this.centroid = new Vector3();
+    this.screenCentroid = new Vector3();
+    this.faceNormal = new Vector3();
+    this.toScreenSpaceMatrix = new Matrix4();
     //@ts-ignore
-    this.boxPoints = new Array(8).fill().map(() => new THREE2.Vector3());
+    this.boxPoints = new Array(8).fill().map(() => new Vector3());
     //@ts-ignore
-    this.boxLines = new Array(12).fill().map(() => new THREE2.Line3());
+    this.boxLines = new Array(12).fill().map(() => new Line3());
     this.lassoSegments = [];
     this.perBoundsSegments = [];
     this.renderSelectionBind = this.renderSelection.bind(this);
     this.usePreselectionState = this.context.usePreSelection;
-    this.selectionShape = new THREE2.Line(
-      new THREE2.BufferGeometry(),
-      new THREE2.LineBasicMaterial({ linewidth: 3 })
+    this.selectionShape = new Line(
+      new BufferGeometry(),
+      new LineBasicMaterial({ linewidth: 3 })
     );
     const _context = this.context.context.context;
     this.selectionShape.material.color.set(16750592).convertSRGBToLinear();
@@ -6956,9 +6927,9 @@ var SelectionBox = class {
     let prevY = -Infinity;
     let helperStartX = -Infinity;
     let helperStartY = -Infinity;
-    const tempVec0 = new THREE2.Vector2();
-    const tempVec1 = new THREE2.Vector2();
-    const tempVec2 = new THREE2.Vector2();
+    const tempVec0 = new Vector2();
+    const tempVec1 = new Vector2();
+    const tempVec2 = new Vector2();
     const renderer = _context.renderer.threeRenderer;
     renderer.domElement.parentElement.appendChild(this.helper);
     _context.renderer.addCallback(this.renderSelectionBind);
@@ -7120,15 +7091,15 @@ var SelectionBox = class {
     });
   }
   reset() {
-    this.invWorldMatrix = new THREE2.Matrix4();
-    this.camLocalPosition = new THREE2.Vector3();
-    this.tempRay = new THREE2.Ray();
-    this.centroid = new THREE2.Vector3();
-    this.screenCentroid = new THREE2.Vector3();
-    this.faceNormal = new THREE2.Vector3();
-    this.toScreenSpaceMatrix = new THREE2.Matrix4();
-    this.boxPoints = new Array(8).fill().map(() => new THREE2.Vector3());
-    this.boxLines = new Array(12).fill().map(() => new THREE2.Line3());
+    this.invWorldMatrix = new Matrix4();
+    this.camLocalPosition = new Vector3();
+    this.tempRay = new Ray();
+    this.centroid = new Vector3();
+    this.screenCentroid = new Vector3();
+    this.faceNormal = new Vector3();
+    this.toScreenSpaceMatrix = new Matrix4();
+    this.boxPoints = new Array(8).fill().map(() => new Vector3());
+    this.boxLines = new Array(12).fill().map(() => new Line3());
     this.lassoSegments = [];
     this.perBoundsSegments = [];
   }
@@ -7155,13 +7126,13 @@ var SelectionBox = class {
         );
         this.selectionShape.geometry.setAttribute(
           "position",
-          new THREE2.Float32BufferAttribute(this.selectionPoints, 3, false)
+          new Float32BufferAttribute(this.selectionPoints, 3, false)
         );
         this.selectionPoints.length = ogLength;
       } else {
         this.selectionShape.geometry.setAttribute(
           "position",
-          new THREE2.Float32BufferAttribute([], 3, false)
+          new Float32BufferAttribute([], 3, false)
         );
       }
       this.selectionShape.geometry.attributes.position.needsUpdate = true;
@@ -7197,8 +7168,8 @@ var SelectionBox = class {
         }
       }
     }
-    if (camera instanceof THREE2.PerspectiveCamera) {
-      const yScale = Math.tan(THREE2.MathUtils.DEG2RAD * camera.fov / 2) * this.selectionShape.position.z;
+    if (camera instanceof PerspectiveCamera) {
+      const yScale = Math.tan(MathUtils.DEG2RAD * camera.fov / 2) * this.selectionShape.position.z;
       this.selectionShape.scale.set(-yScale * camera.aspect, -yScale, 1);
     }
   }
@@ -7208,7 +7179,7 @@ var SelectionBox = class {
     const camera = this.context.context.context.camera.threeCamera;
     this.toScreenSpaceMatrix.copy(mesh.matrixWorld).premultiply(camera.matrixWorldInverse).premultiply(camera.projectionMatrix);
     while (this.lassoSegments.length < this.selectionPoints.length) {
-      this.lassoSegments.push(new THREE2.Line3());
+      this.lassoSegments.push(new Line3());
     }
     this.lassoSegments.length = this.selectionPoints.length;
     for (let s = 0, l = this.selectionPoints.length; s < l; s += 3) {
@@ -7268,7 +7239,7 @@ var SelectionBox = class {
           segmentsToCheck.push(line);
         }
         if (segmentsToCheck.length === 0) {
-          return threeMeshBvh.NOT_INTERSECTED;
+          return NOT_INTERSECTED;
         }
         const hull = this.getConvexHull(this.boxPoints);
         const lines = hull.map((p, i) => {
@@ -7282,7 +7253,7 @@ var SelectionBox = class {
           segmentsToCheck[0].start,
           lines
         ) % 2 === 1) {
-          return threeMeshBvh.INTERSECTED;
+          return INTERSECTED;
         }
         let crossings = 0;
         for (let i = 0, l = hull.length; i < l; i++) {
@@ -7295,18 +7266,18 @@ var SelectionBox = class {
             crossings = pCrossings;
           }
           if (crossings !== pCrossings) {
-            return threeMeshBvh.INTERSECTED;
+            return INTERSECTED;
           }
         }
         for (let i = 0, l = lines.length; i < l; i++) {
           const boxLine = lines[i];
           for (let s = 0, ls = segmentsToCheck.length; s < ls; s++) {
             if (this.lineCrossesLine(boxLine, segmentsToCheck[s])) {
-              return threeMeshBvh.INTERSECTED;
+              return INTERSECTED;
             }
           }
         }
-        return crossings % 2 === 0 ? threeMeshBvh.NOT_INTERSECTED : threeMeshBvh.CONTAINED;
+        return crossings % 2 === 0 ? NOT_INTERSECTED : CONTAINED;
       },
       //@ts-ignore
       intersectsTriangle: (tri, index, contained, depth) => {
@@ -7329,7 +7300,7 @@ var SelectionBox = class {
               );
               const res = mesh.geometry.boundsTree.raycastFirst(
                 this.tempRay,
-                THREE2.DoubleSide
+                DoubleSide
               );
               if (res) {
                 return false;
@@ -7345,7 +7316,7 @@ var SelectionBox = class {
           }
           const vertices = [tri.a, tri.b, tri.c];
           for (let j = 0; j < 3; j++) {
-            const v2 = new THREE2.Vector3();
+            const v2 = new Vector3();
             v2.copy(vertices[j]).applyMatrix4(
               this.toScreenSpaceMatrix
             );
@@ -7525,15 +7496,15 @@ var SelectionBox = class {
 var Selector = class {
   constructor(context) {
     this.context = context;
-    this.selMaterial = new THREE2.MeshLambertMaterial({
-      color: new THREE2.Color("rgb(17, 148, 189)"),
+    this.selMaterial = new MeshLambertMaterial({
+      color: new Color("rgb(17, 148, 189)"),
       clippingPlanes: [],
-      side: THREE2.DoubleSide
+      side: DoubleSide
     });
-    this.preSelMaterial = new THREE2.MeshLambertMaterial({
-      color: new THREE2.Color("rgb(104, 198, 227)"),
+    this.preSelMaterial = new MeshLambertMaterial({
+      color: new Color("rgb(104, 198, 227)"),
       clippingPlanes: [],
-      side: THREE2.DoubleSide
+      side: DoubleSide
     });
     this.selectedElements = {};
     this.isSelected = false;
@@ -7544,11 +7515,11 @@ var Selector = class {
     this.selectionBox = new SelectionBox(this);
   }
   get useDoubleSideMaterial() {
-    return this.selMaterial.side === THREE2.DoubleSide;
+    return this.selMaterial.side === DoubleSide;
   }
   set useDoubleSideMaterial(bool) {
-    this.selMaterial.side = bool ? THREE2.DoubleSide : THREE2.FrontSide;
-    this.preSelMaterial.side = bool ? THREE2.DoubleSide : THREE2.FrontSide;
+    this.selMaterial.side = bool ? DoubleSide : FrontSide;
+    this.preSelMaterial.side = bool ? DoubleSide : FrontSide;
   }
   set usePreSelection(usePreSelection) {
     this._preSelection.active = usePreSelection;
@@ -7636,7 +7607,7 @@ var GeometryUtils = class {
           } else {
             let l = 0;
             excludeInd.forEach((arr) => l += arr.length);
-            const newArr = new THREE2.BufferAttribute(new Uint32Array(l), 1);
+            const newArr = new BufferAttribute(new Uint32Array(l), 1);
             let offset = 0;
             excludeInd.forEach((arr) => {
               newArr.set(arr, offset);
@@ -7680,7 +7651,7 @@ var GeometryUtils = class {
           const arrs = map.get(mesh.name);
           let l = 0;
           arrs.forEach((arr) => l += arr.length);
-          const indexArr = new THREE2.BufferAttribute(new Uint32Array(l), 1);
+          const indexArr = new BufferAttribute(new Uint32Array(l), 1);
           let offset = 0;
           arrs.forEach((arr) => {
             indexArr.set(arr, offset);
@@ -7727,12 +7698,12 @@ var GeometryUtils = class {
       if (!material) {
         let color = config.color;
         if (!color) {
-          color = new THREE2.Color("#484848");
+          color = new Color("#484848");
         }
         if (typeof color === "string") {
-          color = new THREE2.Color(color);
+          color = new Color(color);
         }
-        material = new THREE2.MeshLambertMaterial({ color });
+        material = new MeshLambertMaterial({ color });
       }
       config.removePrevious;
       const modelID = config.modelID;
@@ -7835,23 +7806,23 @@ var GeometryUtils = class {
               offset += arr.length;
             });
           }
-          mesh2.geometry.setIndex(new THREE2.BufferAttribute(newIndexes, 1));
+          mesh2.geometry.setIndex(new BufferAttribute(newIndexes, 1));
           _context.bvhManager.update(mesh2);
         }
       });
-      const geom = new THREE2.BufferGeometry();
+      const geom = new BufferGeometry();
       geom.setAttribute(
         "position",
-        new THREE2.BufferAttribute(new Float32Array(newPosAttr), 3)
+        new BufferAttribute(new Float32Array(newPosAttr), 3)
       );
       geom.setAttribute(
         "ids",
-        new THREE2.BufferAttribute(new Uint32Array(newIdsAttr), 1)
+        new BufferAttribute(new Uint32Array(newIdsAttr), 1)
       );
       geom.computeVertexNormals();
       geom.setIndex(allIndexOfChunk);
       _context.bvhManager.applyThreeMeshBVH(geom);
-      const mesh = new THREE2.Mesh(geom, material);
+      const mesh = new Mesh(geom, material);
       model.threeGeometry.add(mesh);
       mesh.name = chunkID.toString();
       if (model.activeElements.size !== Object.keys(modelDataIds).length) {
@@ -7883,7 +7854,7 @@ var GeometryUtils = class {
       if (!indexArr) {
         indexArr = null;
       }
-      mesh.geometry.setIndex(new THREE2.BufferAttribute(indexArr, 1));
+      mesh.geometry.setIndex(new BufferAttribute(indexArr, 1));
       this.context.context.bvhManager.update(mesh);
     }
     model.activeElements = new Set(
@@ -8087,18 +8058,18 @@ var PropsUtils = class {
     }
   }
 };
-var PlaneHelper = class extends THREE2.Object3D {
+var PlaneHelper = class extends Object3D {
   constructor(context, plane, location, normal) {
     super();
     this.context = context;
     this.plane = plane;
     this.location = location;
-    this.helper = new THREE2.Group();
+    this.helper = new Group();
     this.thickness = 0.08;
     this._deltaVector = null;
-    this.material = new THREE2.MeshBasicMaterial({
+    this.material = new MeshBasicMaterial({
       color: "#858585",
-      side: THREE2.DoubleSide,
+      side: DoubleSide,
       transparent: true,
       opacity: 0.3
     });
@@ -8144,19 +8115,19 @@ var PlaneHelper = class extends THREE2.Object3D {
     const pointTech = e2.point;
     if (!this._deltaVector) {
       if (e2.object.position.z === 0) {
-        this._deltaVector = new THREE2.Vector3(0, 0, 0);
+        this._deltaVector = new Vector3(0, 0, 0);
       } else {
         const curPos2 = pointTech.clone().applyMatrix4(e2.object.matrixWorld);
         console.log(curPos2);
         console.log(this.helper.position);
-        this._deltaVector = new THREE2.Vector3(
+        this._deltaVector = new Vector3(
           this.helper.position.x - curPos2.x,
           this.helper.position.y - curPos2.y,
           this.helper.position.z - curPos2.z
         );
       }
     }
-    const point = new THREE2.Vector3(
+    const point = new Vector3(
       pointTech.x + this._deltaVector.x,
       pointTech.y + this._deltaVector.y,
       pointTech.z + this._deltaVector.z
@@ -8195,11 +8166,11 @@ var PlaneHelper = class extends THREE2.Object3D {
       this.context.context.context.context.controls.moving = true;
       this.context.context.context.selector.preSelection.resetPreselect();
     }
-    this.material.color = new THREE2.Color("#ebeb34");
+    this.material.color = new Color("#ebeb34");
   }
   hoverOff(e2) {
     this.context.context.context.context.controls.moving = false;
-    this.material.color = new THREE2.Color("#858585");
+    this.material.color = new Color("#858585");
   }
   dispose() {
     this.removeFromView();
@@ -8239,17 +8210,17 @@ var PlaneHelper = class extends THREE2.Object3D {
     this.context.context.context.context.scene.threeScene.add(this.helper);
   }
   getHelperGeometry() {
-    const planeHelper = new THREE2.Mesh(new THREE2.PlaneGeometry(3, 3), this.material);
+    const planeHelper = new Mesh(new PlaneGeometry(3, 3), this.material);
     this.customArrow();
     return planeHelper;
   }
   customArrow() {
     const length = 2;
-    const ARROW_BODY = new THREE2.CylinderGeometry(1, 1, 1, 12).rotateX(Math.PI / 2).translate(0, 0, 0.5);
-    const ARROW_HEAD = new THREE2.ConeGeometry(1, 1, 12).rotateX(-Math.PI / 2).translate(0, 0, -0.5);
-    var body = new THREE2.Mesh(ARROW_BODY, this.material);
+    const ARROW_BODY = new CylinderGeometry(1, 1, 1, 12).rotateX(Math.PI / 2).translate(0, 0, 0.5);
+    const ARROW_HEAD = new ConeGeometry(1, 1, 12).rotateX(-Math.PI / 2).translate(0, 0, -0.5);
+    var body = new Mesh(ARROW_BODY, this.material);
     body.scale.set(this.thickness / 2, this.thickness / 2, -length);
-    var head = new THREE2.Mesh(ARROW_HEAD, this.material);
+    var head = new Mesh(ARROW_HEAD, this.material);
     head.position.set(0, 0, -length);
     head.scale.set(
       3 * this.thickness,
@@ -8259,17 +8230,17 @@ var PlaneHelper = class extends THREE2.Object3D {
     this.helper.add(body, head);
   }
 };
-var ClippingEdges = class extends THREE2.Object3D {
+var ClippingEdges = class extends Object3D {
   constructor(context, plane) {
     super();
     this.context = context;
     this.plane = plane;
-    this.tempVector = new THREE2.Vector3();
-    this.tempVector1 = new THREE2.Vector3();
-    this.tempVector2 = new THREE2.Vector3();
-    this.tempVector3 = new THREE2.Vector3();
-    this.tempLine = new THREE2.Line3();
-    this.localPlane = new THREE2.Plane();
+    this.tempVector = new Vector3();
+    this.tempVector1 = new Vector3();
+    this.tempVector2 = new Vector3();
+    this.tempVector3 = new Vector3();
+    this.tempLine = new Line3();
+    this.localPlane = new Plane();
     this.active = this.context.edgesActive;
     const clippingPlanes = [];
     for (const edge of context.edges) {
@@ -8291,7 +8262,7 @@ var ClippingEdges = class extends THREE2.Object3D {
         clippingPlanes.push(edge.plane);
       }
     }
-    this.material = new THREE2.LineBasicMaterial({
+    this.material = new LineBasicMaterial({
       clippingPlanes,
       color: "black"
     });
@@ -8334,16 +8305,16 @@ var ClippingEdges = class extends THREE2.Object3D {
     }
   }
   create() {
-    this.tempVector = new THREE2.Vector3();
-    this.tempVector1 = new THREE2.Vector3();
-    this.tempVector2 = new THREE2.Vector3();
-    this.tempVector3 = new THREE2.Vector3();
-    this.tempLine = new THREE2.Line3();
-    this.localPlane = new THREE2.Plane();
+    this.tempVector = new Vector3();
+    this.tempVector1 = new Vector3();
+    this.tempVector2 = new Vector3();
+    this.tempVector3 = new Vector3();
+    this.tempLine = new Line3();
+    this.localPlane = new Plane();
     if (!this.lines) {
       this.lines = {};
     }
-    const res = new THREE2.Group();
+    const res = new Group();
     for (const modelID of Object.keys(
       this.context.context.context.models
     )) {
@@ -8358,15 +8329,15 @@ var ClippingEdges = class extends THREE2.Object3D {
     const modelState = {};
     for (const mesh of model.threeGeometry.children) {
       const matId = Number(mesh.name);
-      const lineGeometry = new THREE2.BufferGeometry();
-      const linePosAttr = new THREE2.BufferAttribute(
+      const lineGeometry = new BufferGeometry();
+      const linePosAttr = new BufferAttribute(
         new Float32Array(3e5),
         3,
         false
       );
-      linePosAttr.setUsage(THREE2.DynamicDrawUsage);
+      linePosAttr.setUsage(DynamicDrawUsage);
       lineGeometry.setAttribute("position", linePosAttr);
-      const segment = new THREE2.LineSegments(lineGeometry, this.material);
+      const segment = new LineSegments(lineGeometry, this.material);
       segment.frustumCulled = false;
       segment.material.color.set("black").convertSRGBToLinear();
       modelState[matId] = segment;
@@ -8514,7 +8485,7 @@ var ClippingUtils = class {
     const meshes = Object.values(models).map((m) => m.threeGeometry.children).flat();
     const intersect = this.context.context.context.controls.getIntersects(meshes);
     if (intersect[0]) {
-      const plane = new THREE2.Plane();
+      const plane = new Plane();
       const point = intersect[0].point.clone();
       const normal = intersect[0].normal;
       point.add(normal.clone().multiplyScalar(1e-3));
@@ -8663,7 +8634,7 @@ var ViewCubeContainer = class {
       return;
     }
     const camera = this.context.context.context.camera.threeCamera;
-    const mat = new THREE2.Matrix4();
+    const mat = new Matrix4();
     const hasModel = Object.keys(
       this.context.context.context.context.context.context.models
     ).length > 0;
@@ -8684,12 +8655,12 @@ var ViewCubeContainer = class {
     const two = 3;
     const zero = 0;
     var r = 40;
-    var c = new THREE2.Vector3(zero, zero, zero);
+    var c = new Vector3(zero, zero, zero);
     if (this.boundingSphere) {
       r = this.boundingSphere.radius * two - 40;
       c = this.boundingSphere.center;
     }
-    const coords = new THREE2.Vector3(zero, zero, zero);
+    const coords = new Vector3(zero, zero, zero);
     switch (name) {
       case "left":
         coords.x = -r + c.x;
@@ -8909,7 +8880,7 @@ var ViewCubeContainer = class {
     }
   }
   updateBoundingSphere() {
-    this.boundingSphere = new THREE2.Sphere().setFromPoints([
+    this.boundingSphere = new Sphere().setFromPoints([
       this.context.context.context.sizes.modelSize.max,
       this.context.context.context.sizes.modelSize.min
     ]);
@@ -9306,7 +9277,7 @@ var _DimensionLine = class _DimensionLine {
     this.endpointMaterial = endpointMaterial;
     this.endpoint = endpoint;
     this.className = className;
-    this.root = new THREE2.Group();
+    this.root = new Group();
     this.root.renderOrder = 3;
     this.boundingSize = 0.05;
     this.context = context;
@@ -9314,8 +9285,8 @@ var _DimensionLine = class _DimensionLine {
     this.scale = endpointScale;
     this.length = this.getLength();
     this.center = this.getCenter();
-    this.axis = new THREE2.BufferGeometry().setFromPoints([start, end]);
-    this.line = new THREE2.Line(this.axis, this.lineMaterial);
+    this.axis = new BufferGeometry().setFromPoints([start, end]);
+    this.line = new Line(this.axis, this.lineMaterial);
     this.root.add(this.line);
     this.addEndpointMeshes();
     this.textLabel = this.newText();
@@ -9429,8 +9400,8 @@ var _DimensionLine = class _DimensionLine {
   }
   rescaleMesh(mesh, scalefactor = 1, x = true, y = true, z = true) {
     const camera = this.context.context.context.context.camera.threeCamera;
-    let scale = new THREE2.Vector3().subVectors(mesh.position, camera.position).length();
-    if (camera instanceof THREE2.OrthographicCamera) {
+    let scale = new Vector3().subVectors(mesh.position, camera.position).length();
+    if (camera instanceof OrthographicCamera) {
       scale *= 0.1;
     }
     scale *= scalefactor;
@@ -9445,7 +9416,7 @@ var _DimensionLine = class _DimensionLine {
   }
   newEndpointMesh(position, direction) {
     if (this.endpoint && this.endpointMaterial && this.root) {
-      const mesh = new THREE2.Mesh(this.endpoint, this.endpointMaterial);
+      const mesh = new Mesh(this.endpoint, this.endpointMaterial);
       mesh.position.set(position.x, position.y, position.z);
       mesh.scale.set(this.scale.x, this.scale.y, this.scale.z);
       mesh.lookAt(direction);
@@ -9457,7 +9428,7 @@ var _DimensionLine = class _DimensionLine {
     const htmlText = document.createElement("div");
     htmlText.className = this.labelClassName;
     htmlText.textContent = this.getTextContent();
-    const label = new CSS2DRenderer.CSS2DObject(htmlText);
+    const label = new CSS2DObject(htmlText);
     label.position.set(this.center.x, this.center.y, this.center.z);
     this.root?.add(label);
     return label;
@@ -9466,8 +9437,8 @@ var _DimensionLine = class _DimensionLine {
     return `${this.length * _DimensionLine.scale} ${_DimensionLine.units}`;
   }
   newBoundingBox() {
-    const box = new THREE2.BoxGeometry(1, 1, this.length);
-    return new THREE2.Mesh(box);
+    const box = new BoxGeometry(1, 1, this.length);
+    return new Mesh(box);
   }
   setupBoundingBox(end) {
     if (!this.boundingMesh) return;
@@ -9508,28 +9479,28 @@ var DimensionsUtils = class _DimensionsUtils {
     this.preview = false;
     this.dragging = false;
     this.snapDistance = 0.25;
-    this.baseScale = new THREE2.Vector3(1, 1, 1);
-    this.lineMaterial = new THREE2.LineDashedMaterial({
+    this.baseScale = new Vector3(1, 1, 1);
+    this.lineMaterial = new LineDashedMaterial({
       color: 0,
       linewidth: 2,
       depthTest: false,
       dashSize: 0.2,
       gapSize: 0.2
     });
-    this.endpointsMaterial = new THREE2.MeshBasicMaterial({
+    this.endpointsMaterial = new MeshBasicMaterial({
       color: 0,
       depthTest: false
     });
-    this.startPoint = new THREE2.Vector3();
-    this.endPoint = new THREE2.Vector3();
+    this.startPoint = new Vector3();
+    this.endPoint = new Vector3();
     this.endpoint = _DimensionsUtils.getDefaultEndpointGeometry();
     const htmlPreview = document.createElement("div");
     htmlPreview.className = this.previewClassName;
-    this.previewElement = new CSS2DRenderer.CSS2DObject(htmlPreview);
+    this.previewElement = new CSS2DObject(htmlPreview);
     this.previewElement.visible = true;
     const pivotElement = document.createElement("div");
     pivotElement.className = "camera-pivot-marker";
-    this.measureObject = new CSS2DRenderer.CSS2DObject(pivotElement);
+    this.measureObject = new CSS2DObject(pivotElement);
     this.measureObject.visible = false;
     this.context.context.context.scene.threeScene.add(this.measureObject);
     this._selectionState = {
@@ -9567,7 +9538,7 @@ var DimensionsUtils = class _DimensionsUtils {
     }
   }
   setPreviewElement(element) {
-    this.previewElement = new CSS2DRenderer.CSS2DObject(element);
+    this.previewElement = new CSS2DObject(element);
   }
   get active() {
     return this.enabled;
@@ -9728,13 +9699,13 @@ var DimensionsUtils = class _DimensionsUtils {
     return this.dimensions.map((dim) => dim.boundingBox).filter((box) => box !== void 0 && box !== null);
   }
   static getDefaultEndpointGeometry(height = 0.1, radius = 0.03) {
-    const coneGeometry = new THREE2.ConeGeometry(radius, height);
+    const coneGeometry = new ConeGeometry(radius, height);
     coneGeometry.translate(0, -height / 2, 0);
     coneGeometry.rotateX(-Math.PI / 2);
     return coneGeometry;
   }
   getClosestVertex(intersects) {
-    let closestVertex = new THREE2.Vector3();
+    let closestVertex = new Vector3();
     let vertexFound = false;
     let closestDistance = Number.MAX_SAFE_INTEGER;
     const vertices = this.getVertices(intersects);
@@ -9762,7 +9733,7 @@ var DimensionsUtils = class _DimensionsUtils {
   getVertex(index, geom) {
     if (index === void 0) return null;
     const vertices = geom.attributes.position;
-    return new THREE2.Vector3(
+    return new Vector3(
       vertices.getX(index),
       vertices.getY(index),
       vertices.getZ(index)
@@ -9770,7 +9741,7 @@ var DimensionsUtils = class _DimensionsUtils {
   }
   changeAxes() {
     if (this.measureInPros && this.found) {
-      const curFound = new THREE2.Vector3();
+      const curFound = new Vector3();
       switch (this.curAxis) {
         case "x":
           curFound.x = this.startPoint.x;
@@ -9808,7 +9779,7 @@ var DimensionsUtils = class _DimensionsUtils {
       return;
     }
     this.measureObject.visible = true;
-    const curFound = new THREE2.Vector3();
+    const curFound = new Vector3();
     if (e2.shiftKey) {
       const xDist = Math.sqrt(
         Math.pow(this.found.y - this.startPoint.y, 2) + Math.pow(this.found.z - this.startPoint.z, 2)
@@ -10008,13 +9979,13 @@ var Utils = class {
     this.navigationCubeUtil = new ViewCubeContainer(this);
     this.osUtils = new OsUtils(this);
     this.keysUtils = new KeysUtils(this);
-    this.decoder = decoder__default.default;
-    this.gui = new GUI__default.default();
+    this.decoder = decoder;
+    this.gui = new GUI();
     this.gui.hide();
   }
   set useStats(useStats) {
     if (useStats) {
-      this.stats = new Stats__default.default();
+      this.stats = new Stats();
       this.stats.showPanel(1);
       document.body.appendChild(this.stats.dom);
     } else {
@@ -10066,7 +10037,7 @@ var BimatterViewer = class {
       this,
       modelID,
       false,
-      new THREE2.Group(),
+      new Group(),
       {},
       { type: "null", id: 1, children: [] },
       void 0,
@@ -10140,7 +10111,7 @@ var BimatterViewer = class {
 var BimatterConverter = class {
   constructor() {
     this.loaders = new Loaders(this);
-    this.utils = { decoder: decoder__default.default };
+    this.utils = { decoder: decoder };
     this.models = {};
   }
 };
@@ -10157,5 +10128,4 @@ var BimatterConverter = class {
  * Released under the MIT License.
  */
 
-exports.BimatterConverter = BimatterConverter;
-exports.default = BimatterViewer;
+export { BimatterConverter, BimatterViewer as default };
