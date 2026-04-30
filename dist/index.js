@@ -36,7 +36,7 @@ function _interopNamespace(e) {
 
 var THREE2__namespace = /*#__PURE__*/_interopNamespace(THREE2);
 var CameraControls2__default = /*#__PURE__*/_interopDefault(CameraControls2);
-var decoder__default = /*#__PURE__*/_interopDefault(decoder);
+var decoder__namespace = /*#__PURE__*/_interopNamespace(decoder);
 var Stats__default = /*#__PURE__*/_interopDefault(Stats);
 var GUI__default = /*#__PURE__*/_interopDefault(GUI);
 
@@ -6164,7 +6164,7 @@ var BMTLoader = class {
     }
   }
   decodeBuffer(buffer) {
-    return this.textDecoder.decode(decoder__default.default.inflate(buffer));
+    return this.textDecoder.decode(decoder__namespace.inflate(buffer));
   }
   parseMesh(data) {
     const view = new DataView(data.buffer, data.byteOffset);
@@ -6229,7 +6229,7 @@ var BMTLoader = class {
     const posData = {};
     let structure = { id: 1, type: "none", children: [] };
     const materialState = {};
-    const inflate = (data2) => this.context.context.utils.decoder.inflate(data2);
+    const inflate2 = (data2) => this.context.context.utils.decoder.inflate(data2);
     let materialId = 0;
     while (!reader.eof()) {
       const type = reader.readUint8();
@@ -6238,9 +6238,9 @@ var BMTLoader = class {
       switch (type) {
         case 2 /* MESH */:
           let meshData = this.parseMesh(data2);
-          let pos = inflate(meshData.pos);
-          let ids = inflate(meshData.ids);
-          let ind = inflate(meshData.ind.data);
+          let pos = inflate2(meshData.pos);
+          let ids = inflate2(meshData.ids);
+          let ind = inflate2(meshData.ind.data);
           const opacity = meshData.colorId.opacity;
           let chunkName = meshData.colorId.name?.toString();
           const colorId = `${meshData.colorId.r},${meshData.colorId.g},${meshData.colorId.b},${opacity}`;
@@ -10008,7 +10008,7 @@ var Utils = class {
     this.navigationCubeUtil = new ViewCubeContainer(this);
     this.osUtils = new OsUtils(this);
     this.keysUtils = new KeysUtils(this);
-    this.decoder = decoder__default.default;
+    this.decoder = decoder__namespace;
     this.gui = new GUI__default.default();
     this.gui.hide();
   }
@@ -10140,7 +10140,7 @@ var BimatterViewer = class {
 var BimatterConverter = class {
   constructor() {
     this.loaders = new Loaders(this);
-    this.utils = { decoder: decoder__default.default };
+    this.utils = { decoder: decoder__namespace };
     this.models = {};
   }
 };

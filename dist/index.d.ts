@@ -5,7 +5,7 @@ import CameraControls from 'camera-controls';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { CSS3DRenderer } from 'three/examples/jsm/renderers/CSS3DRenderer.js';
 import { IfcAPI } from 'web-ifc';
-import pako from 'pako';
+import * as pako from 'pako';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import GUI from 'lil-gui';
@@ -28,6 +28,37 @@ declare class BvhManager {
     setupThreeMeshBVH(): void;
 }
 
+interface IFaceData {
+    vert: number[];
+    mat: TMaterialId;
+    par: number;
+}
+interface IElementData {
+    guid: string;
+}
+interface IMaterialData {
+    col: TMaterialColor;
+    a: number;
+    face: number[];
+    name: string;
+}
+type Enumerate<N extends number, Acc extends number[] = []> = Acc["length"] extends N ? Acc[number] : Enumerate<N, [...Acc, Acc["length"]]>;
+type IntRange<F extends number, T extends number> = Exclude<Enumerate<T>, Enumerate<F>>;
+type TMaterialColor = IntRange<0, 255>[];
+type TMaterialId = number;
+
+type TfitToViewFunc = () => void;
+interface IModelData {
+    facesMap: {
+        [faceId: number]: IFaceData;
+    };
+    elementsMap: {
+        [elementId: number]: IElementData;
+    };
+    materialsMap: {
+        [materialId: number]: IMaterialData;
+    };
+}
 type State = {
     idsMap: {
         [elemId: number]: {
@@ -71,6 +102,11 @@ interface PropSet {
     name: string;
     props: any;
 }
+type PosData = {
+    posData: Float32Array;
+    idsData: Uint32Array;
+    indDAta: Uint32Array;
+};
 
 declare class Properties {
     readonly context: Model;
@@ -848,4 +884,4 @@ declare class BimatterConverter {
     constructor();
 }
 
-export { BimatterConverter, BimatterViewer as default };
+export { BimatterConverter, type DefaultState, type GeometryChunkConfig, type IModelData, type LoadingState, type OSType, type PosData, type PropData, type PropsData, type State, type Structure, type TDecoder, type TModels, type TfitToViewFunc, type ViewerSettings, BimatterViewer as default, type onLoadCallbackT };

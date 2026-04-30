@@ -7,7 +7,7 @@ import { CSS3DRenderer } from 'three/examples/jsm/renderers/CSS3DRenderer.js';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { IfcAPI, IFCGRID, IFCRELDEFINESBYTYPE, IFCRELASSOCIATESMATERIAL, IFCRELDEFINESBYPROPERTIES, IFCRELCONTAINEDINSPATIALSTRUCTURE, IFCRELAGGREGATES, IFCPROJECT, IFCELEMENTASSEMBLY, IFCPRODUCTDEFINITIONSHAPE } from 'web-ifc';
-import decoder from 'pako';
+import * as decoder from 'pako';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import GUI from 'lil-gui';
 
@@ -6200,7 +6200,7 @@ var BMTLoader = class {
     const posData = {};
     let structure = { id: 1, type: "none", children: [] };
     const materialState = {};
-    const inflate = (data2) => this.context.context.utils.decoder.inflate(data2);
+    const inflate2 = (data2) => this.context.context.utils.decoder.inflate(data2);
     let materialId = 0;
     while (!reader.eof()) {
       const type = reader.readUint8();
@@ -6209,9 +6209,9 @@ var BMTLoader = class {
       switch (type) {
         case 2 /* MESH */:
           let meshData = this.parseMesh(data2);
-          let pos = inflate(meshData.pos);
-          let ids = inflate(meshData.ids);
-          let ind = inflate(meshData.ind.data);
+          let pos = inflate2(meshData.pos);
+          let ids = inflate2(meshData.ids);
+          let ind = inflate2(meshData.ind.data);
           const opacity = meshData.colorId.opacity;
           let chunkName = meshData.colorId.name?.toString();
           const colorId = `${meshData.colorId.r},${meshData.colorId.g},${meshData.colorId.b},${opacity}`;
