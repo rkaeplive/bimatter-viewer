@@ -8890,8 +8890,6 @@ var ViewCubeContainer = class {
       parent = document.body;
     }
     const wrapDiv = document.createElement("div");
-    wrapDiv.style.transformStyle = "preserve-3d !important";
-    wrapDiv.style.perspective = "1000px";
     this.cubeContainer = wrapDiv;
     wrapDiv.id = "cube__wrap";
     wrapDiv.classList.add("cube__wrap");
@@ -8899,8 +8897,6 @@ var ViewCubeContainer = class {
     const cube = document.createElement("div");
     cube.id = "cube";
     cube.classList.add("cube");
-    cube.style.transformStyle = "preserve-3d !important";
-    cube.style.perspective = "1000px";
     wrapDiv.appendChild(cube);
     const cfb = document.createElement("div");
     cfb.classList.add("cube__face");
