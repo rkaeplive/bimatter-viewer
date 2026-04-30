@@ -10158,4 +10158,19 @@ var BimatterConverter = class {
  */
 
 exports.BimatterConverter = BimatterConverter;
+exports.BimatterViewer = BimatterViewer;
+exports.BvhManager = BvhManager;
+exports.Camera = Camera;
+exports.ClippingUtils = ClippingUtils;
+exports.Context = Context;
+exports.Environment = Environment;
+exports.KeysUtils = KeysUtils;
+exports.Loaders = Loaders;
+exports.Model = Model;
+exports.OsUtils = OsUtils;
+exports.Renderer = Renderer;
+exports.Scene = Scene2;
+exports.Selector = Selector;
+exports.Utils = Utils;
+exports.ViewCubeContainer = ViewCubeContainer;
 exports.default = BimatterViewer;

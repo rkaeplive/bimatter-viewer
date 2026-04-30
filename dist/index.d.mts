@@ -884,4 +884,4 @@ declare class BimatterConverter {
     constructor();
 }
 
-export { BimatterConverter, type DefaultState, type GeometryChunkConfig, type IModelData, type LoadingState, type OSType, type PosData, type PropData, type PropsData, type State, type Structure, type TDecoder, type TModels, type TfitToViewFunc, type ViewerSettings, BimatterViewer as default, type onLoadCallbackT };
+export { BimatterConverter, BimatterViewer, BvhManager, Camera, ClippingUtils, Context, type DefaultState, Environment, type GeometryChunkConfig, type IModelData, KeysUtils, Loaders, type LoadingState, Model, type OSType, OsUtils, type PosData, type PropData, type PropsData, Renderer, Scene, Selector, type State, type Structure, type TDecoder, type TModels, type TfitToViewFunc, Utils, ViewCubeContainer, type ViewerSettings, BimatterViewer as default, type onLoadCallbackT };

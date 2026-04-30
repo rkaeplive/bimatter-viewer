@@ -1,5 +1,5 @@
 import * as THREE2 from 'three';
-import { Plane, Raycaster, Vector2, Vector3, Matrix4, Sphere, Line3, Box3, Spherical, Quaternion, Vector4, Ray, Group, TextureLoader, Clock, MeshLambertMaterial, DoubleSide, Color, FrontSide, BufferGeometry, Mesh, BufferAttribute, PerspectiveCamera, WebGLRenderer, SRGBColorSpace, Line, LineBasicMaterial, Float32BufferAttribute, MathUtils, LineDashedMaterial, MeshBasicMaterial, ConeGeometry, Texture, EventDispatcher, Object3D, AmbientLight, DirectionalLight, DynamicDrawUsage, LineSegments, PlaneGeometry, CylinderGeometry, BoxGeometry, Triangle, OrthographicCamera } from 'three';
+import { Plane, Raycaster, Vector2, Vector3, Matrix4, Sphere, Line3, Box3, Spherical, Quaternion, Vector4, Ray, BufferGeometry, Mesh, PerspectiveCamera, AmbientLight, DirectionalLight, Clock, WebGLRenderer, SRGBColorSpace, TextureLoader, Group, MeshLambertMaterial, DoubleSide, Color, FrontSide, Texture, LineBasicMaterial, Line, BufferAttribute, Float32BufferAttribute, MathUtils, Object3D, DynamicDrawUsage, LineSegments, MeshBasicMaterial, PlaneGeometry, CylinderGeometry, ConeGeometry, LineDashedMaterial, EventDispatcher, BoxGeometry, Triangle, OrthographicCamera } from 'three';
 import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast, MeshBVH, NOT_INTERSECTED, INTERSECTED, CONTAINED } from 'three-mesh-bvh';
 import CameraControls2 from 'camera-controls';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
@@ -10128,4 +10128,4 @@ var BimatterConverter = class {
  * Released under the MIT License.
  */
 
-export { BimatterConverter, BimatterViewer as default };
+export { BimatterConverter, BimatterViewer, BvhManager, Camera, ClippingUtils, Context, Environment, KeysUtils, Loaders, Model, OsUtils, Renderer, Scene2 as Scene, Selector, Utils, ViewCubeContainer, BimatterViewer as default };
